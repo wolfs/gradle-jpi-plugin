@@ -21,7 +21,7 @@ Add the following to your build.gradle:
 >        description = "A description of your plugin"
 >
 >        jenkinsPlugin {
->            coreVersion = '1.409'                                               // Version of Jenkins core this plugin depends on.
+>            coreVersion = '1.420'                                               // Version of Jenkins core this plugin depends on.
 >            displayName = 'Hello World plugin built with Gradle'                // Human-readable name of plugin.
 >            url = 'http://wiki.jenkins-ci.org/display/JENKINS/SomePluginPage'   // URL for plugin on Jenkins wiki or elsewhere.
 >        }
@@ -37,3 +37,8 @@ repositories are defined in your build.gradle.
   local Maven repository.
 * 'gradle uploadArchives' (or 'gradle deploy') - Deploy your plugin to
   the Jenkins Maven repository to be included in the Update Center.
+
+## Caveats
+
+* As of now, plugins which directly extend hudson.Plugin can only be
+  properly built against core versions of Jenkins of 1.420 or later.

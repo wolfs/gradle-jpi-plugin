@@ -19,10 +19,13 @@ description = "This is a sample plugin, built with Gradle."
 apply plugin: 'jpi'
 
 jenkinsPlugin {
-    coreVersion = '1.409'                                               // Version of Jenkins core this plugin depends on.
+    coreVersion = '1.420'                                               // Version of Jenkins core this plugin depends on.
     displayName = 'Hello World plugin built with Gradle'                // Human-readable name of plugin.
     url = 'http://wiki.jenkins-ci.org/display/JENKINS/SomePluginPage'   // URL for plugin on Jenkins wiki or elsewhere.
 }
+
+// Note that as of right now, a minimum core version of 1.420 is required for any plugins
+// extending hudson.Plugin for initialization, etc.
 
 // If specifying additional repositories, do so *after* applying the jpi plugin and and specifying the core version.
 // Otherwise, the additional repositories will end up ahead of mavenLocal, mavenCentral and the Jenkins repo, and will get
