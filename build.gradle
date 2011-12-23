@@ -48,11 +48,12 @@ uploadArchives {
         
         licenses {
           license {
-                name 'The MIT license'
-                url 'http://www.opensource.org/licenses/mit-license.php'
-                distribution 'repo'
+            name 'Apache 2.0'
+            url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+            distribution 'repo'
           }
         }
+        
         developers {
           developer {
             id 'abayer'

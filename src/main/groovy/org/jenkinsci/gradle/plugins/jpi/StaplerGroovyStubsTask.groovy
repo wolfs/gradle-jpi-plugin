@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 the original author or authors.
+ * Copyright 2011 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,11 @@ import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.OutputDirectory
 
+/**
+ * Generates Java stubs from Groovy source, in order to be processed by javac for JSR-269 annotations.
+ *
+ * @author Andrew Bayer
+ */
 class StaplerGroovyStubsTask extends DefaultTask { 
   @OutputDirectory
   File destinationDir
