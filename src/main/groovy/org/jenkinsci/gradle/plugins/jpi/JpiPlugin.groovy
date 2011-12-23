@@ -87,15 +87,10 @@ public class JpiPlugin implements Plugin<Project> {
         gradleProject.extensions.jenkinsPlugin = ext;
 
         gradleProject.tasks.withType(Jpi) { Jpi task ->
-            task.from {
-                return warConvention.webAppDir;
-            }
             task.dependsOn {
                 ext.mainSourceTree().runtimeClasspath
             }
-            task.classpath {
-                ext.runtimeClasspath;
-            }
+            task.setClasspath(ext.runtimeClasspath)
             task.archiveName = "${ext.shortName}.${ext.fileExtension}";
         }
         gradleProject.tasks.withType(ServerTask) { ServerTask task ->
