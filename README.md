@@ -16,7 +16,7 @@ Add the following to your build.gradle:
 >                // The plugin is currently only available via the Jenkins Maven repository.
 >            }
 >            dependencies {
->                classpath 'org.jenkins-ci.tools:gradle-jpi-plugin:0.1'
+>                classpath 'org.jenkins-ci.tools:gradle-jpi-plugin:0.2'
 >            }
 >        }
 >        apply plugin: 'jpi'
