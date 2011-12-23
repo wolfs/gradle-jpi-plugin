@@ -8,7 +8,13 @@ plugins, written in Groovy or Java.
 Add the following to your build.gradle:
 
 >        buildscript {
->            mavenCentral()
+>            repositories {
+>                maven {
+>                    name "m.g.o"
+>                    delegate.url("http://maven.glassfish.org/content/groups/public/")
+>                }
+>                // The plugin is currently only available via the Jenkins Maven repository.
+>            }
 >            dependencies {
 >                classpath 'org.jenkins-ci.tools:gradle-jpi-plugin:0.1'
 >            }
@@ -40,5 +46,4 @@ repositories are defined in your build.gradle.
 
 ## Caveats
 
-* As of now, plugins which directly extend hudson.Plugin can only be
-  properly built against core versions of Jenkins of 1.420 or later.
+* As of now, a minimum Jenkins core version of 1.420 is required.

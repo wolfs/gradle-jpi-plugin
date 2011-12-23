@@ -3,13 +3,16 @@
  * the cloned repo, and run "gradle jpi".
  */
 buildscript {
-  repositories {
-    mavenCentral()
-    mavenLocal() // mavenLocal() is only in here until the plugin has been released to Maven Central.
-  }
-  dependencies {
-    classpath group: 'org.jenkins-ci.tools', name: 'gradle-jpi-plugin', version: '0.1-SNAPSHOT'
-  }
+    repositories {
+        maven {
+            name "m.g.o"
+            delegate.url("http://maven.glassfish.org/content/groups/public/")
+        }
+        // The plugin is currently only available via the Jenkins Maven repository.
+    }
+    dependencies {
+        classpath group: 'org.jenkins-ci.tools', name: 'gradle-jpi-plugin', version: '0.1'
+    }
 }
 
 group = "org.jenkinsci.plugins"
@@ -24,8 +27,7 @@ jenkinsPlugin {
     url = 'http://wiki.jenkins-ci.org/display/JENKINS/SomePluginPage'   // URL for plugin on Jenkins wiki or elsewhere.
 }
 
-// Note that as of right now, a minimum core version of 1.420 is required for any plugins
-// extending hudson.Plugin for initialization, etc.
+// Note that as of right now, a minimum core version of 1.420 is required.
 
 // If specifying additional repositories, do so *after* applying the jpi plugin and and specifying the core version.
 // Otherwise, the additional repositories will end up ahead of mavenLocal, mavenCentral and the Jenkins repo, and will get

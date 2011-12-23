@@ -4,11 +4,16 @@ apply plugin: 'signing'
 
 repositories {
   mavenCentral()
+  maven {
+    name "m.g.o"
+    delegate.url("http://maven.glassfish.org/content/groups/public/")
+  }
 }
 
 dependencies {
   compile gradleApi()
-  compile 'org.jvnet.localizer:maven-localizer-plugin:1.12'
+  compile('org.jvnet.localizer:maven-localizer-plugin:1.12',
+          'org.jenkins-ci:version-number:1.0')
   groovy localGroovy()
 }
 
@@ -25,8 +30,8 @@ uploadArchives {
     mavenDeployer {
       beforeDeployment { MavenDeployment deployment -> signPom(deployment) }
       
-      repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-        authentication(userName: sonatypeUsername, password: sonatypePassword)
+      repository(url: "http://maven.jenkins-ci.org:8081/content/repositories/releases") { 
+        authentication(userName: jenkinsUsername, password: jenkinsPassword)
       }
  
       pom.project {

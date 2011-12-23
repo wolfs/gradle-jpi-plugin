@@ -5,11 +5,14 @@ import org.gradle.api.file.FileCollection
 import org.gradle.api.plugins.JavaPluginConvention
 import org.gradle.api.plugins.WarPlugin
 import org.gradle.api.tasks.SourceSet
+import org.gradle.api.GradleException
+import hudson.util.VersionNumber
 
 /**
  * This gets exposed to the project as 'jpi' to offer additional convenience methods.
  *
  * @author Kohsuke Kawaguchi
+ * @author Andrew Bayer
  */
 class JpiExtension {
     final Project project
@@ -93,6 +96,10 @@ class JpiExtension {
     void setCoreVersion(String v) {
         this.coreVersion = v
 
+        if (new VersionNumber(this.coreVersion).compareTo(new VersionNumber("1.419.99"))<=0)
+            throw new GradleException("The gradle-jpi-plugin requires Jenkins 1.420 or later")
+
+        if (this.coreVersion)
         project.repositories { 
             mavenLocal()
             mavenCentral()
