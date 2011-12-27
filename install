@@ -1,7 +1,7 @@
 //
 // this gradle build script fragment can be referenced from your build as
 //
-//   apply from:"http://jenkins-ci.org/gradle-jpi-plugin/latest"
+//   apply from:"https://raw.github.com/jenkinsci/gradle-jpi-plugin/master/install"
 //
 buildscript {
     repositories {
