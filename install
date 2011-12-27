@@ -1,0 +1,17 @@
+# this gradle build script fragment can be referenced from your build as
+#
+#    apply from:"http://jenkins-ci.org/gradle-jpi-plugin/latest"
+# 
+buildscript {
+    repositories {
+        maven {
+            name "m.g.o"
+                delegate.url("http://maven.glassfish.org/content/groups/public/")
+        }
+        // The plugin is currently only available via the Jenkins Maven repository.
+    }
+    dependencies {
+        classpath 'org.jenkins-ci.tools:gradle-jpi-plugin:0.2'
+    }
+}
+apply plugin: 'jpi'
