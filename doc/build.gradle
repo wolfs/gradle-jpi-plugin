@@ -2,24 +2,12 @@
  * Rough demo of gradle HPI/JPI plugin. Clone git://github.com/jenkinsci/hello-world-plugin.git, copy this into
  * the cloned repo, and run "gradle jpi".
  */
-buildscript {
-    repositories {
-        maven {
-            name "m.g.o"
-            delegate.url("http://maven.glassfish.org/content/groups/public/")
-        }
-        // The plugin is currently only available via the Jenkins Maven repository.
-    }
-    dependencies {
-        classpath group: 'org.jenkins-ci.tools', name: 'gradle-jpi-plugin', version: '0.2'
-    }
-}
 
+apply from:"https://raw.github.com/jenkinsci/gradle-jpi-plugin/master/install"
+                  
 group = "org.jenkinsci.plugins"
 version = "1.0-SNAPSHOT"
 description = "This is a sample plugin, built with Gradle."
-
-apply plugin: 'jpi'
 
 jenkinsPlugin {
     coreVersion = '1.420'                                               // Version of Jenkins core this plugin depends on.

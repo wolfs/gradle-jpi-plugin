@@ -7,19 +7,7 @@ plugins, written in Groovy or Java.
 
 Add the following to your build.gradle:
 
->        buildscript {
->            repositories {
->                maven {
->                    name "m.g.o"
->                    delegate.url("http://maven.glassfish.org/content/groups/public/")
->                }
->                // The plugin is currently only available via the Jenkins Maven repository.
->            }
->            dependencies {
->                classpath 'org.jenkins-ci.tools:gradle-jpi-plugin:0.2'
->            }
->        }
->        apply plugin: 'jpi'
+>        apply from:"https://raw.github.com/jenkinsci/gradle-jpi-plugin/master/install"
 >        // Whatever other plugins you need to load.
 >
 >        groupId = "org.jenkins-ci.plugins"
