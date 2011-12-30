@@ -32,6 +32,7 @@ import org.gradle.api.plugins.MavenPlugin
 import org.gradle.api.plugins.MavenPluginConvention
 import org.gradle.api.artifacts.maven.Conf2ScopeMappingContainer;
 import org.gradle.api.artifacts.maven.MavenResolver
+import org.gradle.api.artifacts.maven.MavenDeployer
 import org.gradle.api.artifacts.maven.MavenPom;
 
 /**
@@ -148,6 +149,40 @@ public class JpiPlugin implements Plugin<Project> {
 
         def installer = gradleProject.tasks.getByName("install")
 
+
+        installer.repositories.mavenInstaller.pom.whenConfigured { p -> 
+            p.project { 
+                parent {
+                    groupId 'org.jenkins-ci.plugins'
+                    artifactId 'plugin'
+                    version ext.getCoreVersion()
+                }
+                url ext.url
+                description gradleProject.description
+                name ext.getDisplayName()
+                artifactId ext.shortName
+                if (ext.gitHubUrl != null && ext.gitHubUrl =~ /^https:\/\/github\.com/) {
+                    scm {
+                        connection ext.getGitHubSCMConnection()
+                        developerConnection ext.getGitHubSCMDevConnection()
+                        url ext.gitHubUrl
+                    }
+                }
+                repositories { 
+                    gradleProject.repositories.each { repo ->
+                        if (repo.name == 'MavenRepo' || repo.name == 'MavenLocal') {
+                            // do not include the Maven Central repository or the local cache.
+                            return
+                        }
+                        repository {
+                            id = repo.name
+                            url = repo.url
+                        }
+                    }
+                }
+            }
+        }
+
         // default configuration of uploadArchives Maven task
         def uploadArchives = gradleProject.tasks.getByName("uploadArchives")
         uploadArchives.doFirst {
@@ -166,45 +201,7 @@ public class JpiPlugin implements Plugin<Project> {
                             authentication(userName:props["userName"], password:props["password"])
                         }
                     }
-                }
-            }
-        }
-
-        def mavenUploaders = [installer,uploadArchives]*.repositories*.find { it instanceof MavenResolver }
-
-        mavenUploaders.each { m ->
-            if (m != null) { 
-                m.pom.whenConfigured { p -> 
-                    p.project { 
-                        parent {
-                            groupId 'org.jenkins-ci.plugins'
-                            artifactId 'plugin'
-                            version ext.getCoreVersion()
-                        }
-                        url ext.url
-                        description gradleProject.description
-                        name ext.getDisplayName()
-                        artifactId ext.shortName
-                        if (ext.gitHubUrl != null && ext.gitHubUrl =~ /^https:\/\/github\.com/) {
-                            scm {
-                                connection ext.getGitHubSCMConnection()
-                                developerConnection ext.getGitHubSCMDevConnection()
-                                url ext.gitHubUrl
-                            }
-                        }
-                        repositories { 
-                            gradleProject.repositories.each { repo ->
-                                if (repo.name == 'MavenRepo' || repo.name == 'MavenLocal') {
-                                    // do not include the Maven Central repository or the local cache.
-                                    return
-                                }
-                                repository {
-                                    id = repo.name
-                                    url = repo.url
-                                }
-                            }
-                        }
-                    }
+                    pom = installer.repositories.mavenInstaller.pom
                 }
             }
         }
