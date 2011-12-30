@@ -215,7 +215,27 @@ class JpiExtension {
         this.snapshotRepoUrl = snapshotRepoUrl
     }
 
+    /**
+     * The GitHub URL. Optional. Used to construct the SCM section of the POM.
+     */
+    String gitHubUrl
 
+    String getGitHubSCMConnection() {
+        if (gitHubUrl != null && gitHubUrl =~ /^https:\/\/github\.com/) {
+            return gitHubUrl.replaceFirst(~/https:/, "scm:git:git:") + ".git"
+        } else {
+            return ''
+        }
+    }
+
+    String getGitHubSCMDevConnection() {
+        if (gitHubUrl != null && gitHubUrl =~ /^https:\/\/github\.com/) {
+            return gitHubUrl.replaceFirst(~/https:\/\//, "scm:git:ssh://git@") + ".git"
+        } else {
+            return ''
+        }
+    }
+    
     /**
      * Maven repo deployment credentials.
      */

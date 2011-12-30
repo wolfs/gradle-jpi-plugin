@@ -184,6 +184,14 @@ public class JpiPlugin implements Plugin<Project> {
                         url ext.url
                         description gradleProject.description
                         name ext.getDisplayName()
+                        artifactId ext.shortName
+                        if (ext.gitHubUrl != null && ext.gitHubUrl =~ /^https:\/\/github\.com/) {
+                            scm {
+                                connection ext.getGitHubSCMConnection()
+                                developerConnection ext.getGitHubSCMDevConnection()
+                                url ext.gitHubUrl
+                            }
+                        }
                         repositories { 
                             gradleProject.repositories.each { repo ->
                                 if (repo.name == 'MavenRepo' || repo.name == 'MavenLocal') {

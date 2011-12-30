@@ -18,6 +18,7 @@ Add the following to your build.gradle:
 >            coreVersion = '1.420'                                               // Version of Jenkins core this plugin depends on.
 >            displayName = 'Hello World plugin built with Gradle'                // Human-readable name of plugin.
 >            url = 'http://wiki.jenkins-ci.org/display/JENKINS/SomePluginPage'   // URL for plugin on Jenkins wiki or elsewhere.
+>            gitHubUrl = 'https://github.com/jenkinsci/some-plugin'              // Plugin URL on GitHub. Optional.
 >        }
 
 Be sure to add the jenkinsPlugin { ... } section before any additional
