@@ -23,6 +23,7 @@ import org.gradle.api.plugins.WarPlugin
 import org.gradle.api.plugins.GroovyBasePlugin
 import org.gradle.api.tasks.SourceSet
 import org.gradle.api.GradleException
+import org.gradle.util.ConfigureUtil
 import hudson.util.VersionNumber
 
 /**
@@ -254,6 +255,14 @@ class JpiExtension {
             return ''
         }
     }
+
+    Developers developers = new Developers()
+    
+    def developers(Closure closure) {
+        ConfigureUtil.configure(closure, developers)
+    }
+
+    
     
     /**
      * Runtime dependencies
@@ -272,6 +281,34 @@ class JpiExtension {
     public SourceSet testSourceTree() {
         return project.convention.getPlugin(JavaPluginConvention)
                 .sourceSets.getByName(SourceSet.TEST_SOURCE_SET_NAME)
+    }
+
+
+    public class Developers {
+        def developerMap = [:]
+
+        def getProperty(String id) {
+            developerMap[id]
+        }
+
+        void setProperty(String id, val) {
+            developerMap[id] = val
+        }
+        
+        def developer(Closure closure) {
+            def d = new JpiDeveloper(JpiExtension.this.project.logger)
+            ConfigureUtil.configure(closure, d)
+            setProperty(d.id, d)
+        }
+
+        def each(Closure closure) {
+            developerMap.values().each(closure)
+        }
+        
+        def getProperties() {
+            developerMap
+        }
+        
     }
 
 }

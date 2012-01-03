@@ -180,6 +180,25 @@ public class JpiPlugin implements Plugin<Project> {
                         }
                     }
                 }
+                developers {
+                    ext.developers.each { dev ->
+                        developer { 
+                            id dev.id
+                            if (dev.name != null)
+                                name dev.name
+                            if (dev.email != null)
+                                email dev.email
+                            if (dev.url != null)
+                                url dev.url
+                            if (dev.organization != null)
+                                organization dev.organization
+                            if (dev.organizationUrl != null)
+                                organizationUrl dev.organizationUrl
+                            if (dev.timezone != null)
+                                timezone dev.timezone
+                        }
+                    }
+                }
             }
         }
 
@@ -191,7 +210,7 @@ public class JpiPlugin implements Plugin<Project> {
                     // configure this only when the user didn't give any explicit configuration
                     // whatever in build.gradle should win what we have here
                     if (repository==null && snapshotRepository==null) {
-                        System.out.println("Deploying to the Jenkins community repository")
+                        gradleProject.logger.warn("Deploying to the Jenkins community repository")
                         def props = loadDotJenkinsOrg()
 
                         repository(url: ext.repoUrl) {

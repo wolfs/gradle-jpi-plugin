@@ -19,6 +19,15 @@ Add the following to your build.gradle:
 >            displayName = 'Hello World plugin built with Gradle'                // Human-readable name of plugin.
 >            url = 'http://wiki.jenkins-ci.org/display/JENKINS/SomePluginPage'   // URL for plugin on Jenkins wiki or elsewhere.
 >            gitHubUrl = 'https://github.com/jenkinsci/some-plugin'              // Plugin URL on GitHub. Optional.
+>
+>            // The developers section is optional, and corresponds to the POM developers section.
+>            developers {
+>                developer {
+>                    id 'abayer'
+>                    name 'Andrew Bayer'
+>                    email 'andrew.bayer@gmail.com'
+>                }
+>            }                           
 >        }
 
 Be sure to add the jenkinsPlugin { ... } section before any additional
