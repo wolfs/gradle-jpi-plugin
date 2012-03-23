@@ -5,8 +5,8 @@ apply plugin: 'signing'
 repositories {
   mavenCentral()
   maven {
-    name "m.g.o"
-    delegate.url("http://maven.glassfish.org/content/groups/public/")
+    name "jenkins"
+    delegate.url("http://maven.jenkins-ci.org/content/repositories/releases/")
   }
 }
 
@@ -85,7 +85,7 @@ uploadArchives {
 }
 
 group = 'org.jenkins-ci.tools'
-version = '0.3.2'
+version = '0.3.3'
 archivesBaseName = 'gradle-jpi-plugin'
 description = 'Gradle plugin for building and packaging Jenkins plugins'
 
