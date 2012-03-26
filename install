@@ -12,7 +12,7 @@ buildscript {
         // The plugin is currently only available via the Jenkins Maven repository.
     }
     dependencies {
-        classpath 'org.jenkins-ci.tools:gradle-jpi-plugin:0.2'
+        classpath 'org.jenkins-ci.tools:gradle-jpi-plugin:0.3.4'
     }
 }
 apply plugin: 'jpi'
