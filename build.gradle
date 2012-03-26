@@ -6,7 +6,7 @@ repositories {
   mavenCentral()
   maven {
     name "jenkins"
-    delegate.url("http://maven.jenkins-ci.org/content/repositories/releases/")
+    delegate.url("http://repo.jenkins-ci.org/releases")
   }
 }
 
@@ -85,7 +85,7 @@ uploadArchives {
 }
 
 group = 'org.jenkins-ci.tools'
-version = '0.3.3'
+version = '0.3.4'
 archivesBaseName = 'gradle-jpi-plugin'
 description = 'Gradle plugin for building and packaging Jenkins plugins'
 

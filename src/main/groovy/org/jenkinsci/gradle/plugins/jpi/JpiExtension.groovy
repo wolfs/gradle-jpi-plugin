@@ -123,7 +123,7 @@ class JpiExtension {
             mavenCentral()
             maven {
                 name "jenkins"
-                delegate.url("http://maven.jenkins-ci.org/content/repositories/releases/")
+                delegate.url("http://repo.jenkins-ci.org/releases")
             }
         }
 
