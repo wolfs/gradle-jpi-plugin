@@ -117,29 +117,30 @@ class JpiExtension {
         if (new VersionNumber(this.coreVersion).compareTo(new VersionNumber("1.419.99"))<=0)
             throw new GradleException("The gradle-jpi-plugin requires Jenkins 1.420 or later")
 
-        if (this.coreVersion)
-        project.repositories { 
-            mavenLocal()
-            mavenCentral()
-            maven {
-                name "jenkins"
-                delegate.url("http://repo.jenkins-ci.org/releases")
+        if (this.coreVersion) { 
+            project.repositories { 
+                mavenLocal()
+                mavenCentral()
+                maven {
+                    name "jenkins"
+                    delegate.url("http://maven.jenkins-ci.org/content/repositories/releases/")
+                }
             }
-        }
 
-        project.dependencies {
-            jenkinsCore(
-                [group: 'org.jenkins-ci.main', name: 'jenkins-core', version: v, ext: 'jar', transitive: true],
-                [group: 'javax.servlet', name: 'servlet-api', version: '2.4']
-            )
-
-            jenkinsWar(group: 'org.jenkins-ci.main', name: 'jenkins-war', version: v, ext: 'war')
-
-            jenkinsTest("org.jenkins-ci.main:jenkins-test-harness:${v}@jar") { transitive = true }
-            jenkinsTest("org.jenkins-ci.main:ui-samples-plugin:${v}@jar",
-                        "org.jenkins-ci.main:maven-plugin:${v}@jar",
-                        "org.jenkins-ci.main:jenkins-war:${v}:war-for-test@jar",
-                        "junit:junit-dep:4.10@jar")
+            project.dependencies {
+                jenkinsCore(
+                    [group: 'org.jenkins-ci.main', name: 'jenkins-core', version: v, ext: 'jar', transitive: true],
+                    [group: 'javax.servlet', name: 'servlet-api', version: '2.4']
+                )
+                
+                jenkinsWar(group: 'org.jenkins-ci.main', name: 'jenkins-war', version: v, ext: 'war')
+                
+                jenkinsTest("org.jenkins-ci.main:jenkins-test-harness:${v}@jar") { transitive = true }
+                jenkinsTest("org.jenkins-ci.main:ui-samples-plugin:${v}@jar",
+                            "org.jenkins-ci.main:maven-plugin:${v}@jar",
+                            "org.jenkins-ci.main:jenkins-war:${v}:war-for-test@jar",
+                            "junit:junit-dep:4.10@jar")
+            }
         }
     }
     

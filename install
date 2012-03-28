@@ -7,12 +7,12 @@ buildscript {
     repositories {
         maven {
             name "jenkins"
-            delegate.url("http://repo.jenkins-ci.org/releases")
+            delegate.url("http://maven.jenkins-ci.org/content/repositories/releases/")
         }
         // The plugin is currently only available via the Jenkins Maven repository.
     }
     dependencies {
-        classpath 'org.jenkins-ci.tools:gradle-jpi-plugin:0.3.4'
+        classpath 'org.jenkins-ci.tools:gradle-jpi-plugin:0.4.0'
     }
 }
 apply plugin: 'jpi'

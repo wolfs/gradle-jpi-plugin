@@ -85,7 +85,7 @@ uploadArchives {
 }
 
 group = 'org.jenkins-ci.tools'
-version = '0.3.4'
+version = '0.4.0'
 archivesBaseName = 'gradle-jpi-plugin'
 description = 'Gradle plugin for building and packaging Jenkins plugins'
 
