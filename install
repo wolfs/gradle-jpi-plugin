@@ -3,13 +3,17 @@
 //
 //   apply from:"https://raw.github.com/jenkinsci/gradle-jpi-plugin/master/install"
 //
+// Or you can copy the below directly into your build.gradle.
+//
 buildscript {
     repositories {
         maven {
             name "jenkins"
             delegate.url("http://maven.jenkins-ci.org/content/repositories/releases/")
         }
-        // The plugin is currently only available via the Jenkins Maven repository.
+        // The plugin is currently only available via the Jenkins
+        // Maven repository, but has dependencies in Maven Central.
+        mavenCentral()
     }
     dependencies {
         classpath 'org.jenkins-ci.tools:gradle-jpi-plugin:0.4.0'
