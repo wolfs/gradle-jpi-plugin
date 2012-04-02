@@ -8,6 +8,8 @@ plugins, written in Groovy or Java.
 Add the following to your build.gradle:
 
 >        apply from:"https://raw.github.com/jenkinsci/gradle-jpi-plugin/master/install"
+>        // ...or copy the contents of that URL into your build.gradle directly.
+>
 >        // Whatever other plugins you need to load.
 >
 >        groupId = "org.jenkins-ci.plugins"
