@@ -119,11 +119,11 @@ class JpiExtension {
 
         if (this.coreVersion) { 
             project.repositories { 
-                mavenLocal()
                 mavenCentral()
+                mavenLocal()
                 maven {
                     name "jenkins"
-                    delegate.url("http://maven.jenkins-ci.org/content/repositories/releases/")
+                    delegate.url("http://repo.jenkins-ci.org/releases/")
                 }
             }
 
