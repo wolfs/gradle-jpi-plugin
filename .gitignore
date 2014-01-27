@@ -6,3 +6,6 @@ gradle-app.setting
 /local*
 /build
 .gradletasknamecache
+*.iml
+/.idea
+/classes
