@@ -33,7 +33,7 @@ dependencies {
     compile gradleApi()
     compile('org.jvnet.localizer:maven-localizer-plugin:1.13',
             'org.jenkins-ci:version-number:1.0')
-    groovy localGroovy()
+    compile localGroovy()
 }
 
 artifacts {
