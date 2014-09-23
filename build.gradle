@@ -50,10 +50,6 @@ uploadArchives {
         mavenDeployer {
             beforeDeployment { MavenDeployment deployment -> signPom(deployment) }
 
-            repository(url: "http://maven.jenkins-ci.org:8081/content/repositories/releases") {
-                authentication(userName: jenkinsUsername, password: jenkinsPassword)
-            }
-
             pom.project {
                 name 'Gradle JPI Plugin'
                 packaging 'jar'
@@ -109,3 +105,32 @@ version = '0.5.2'
 archivesBaseName = 'gradle-jpi-plugin'
 description = 'Gradle plugin for building and packaging Jenkins plugins'
 
+gradle.taskGraph.whenReady { taskGraph ->
+    if (taskGraph.hasTask(uploadArchives)) {
+        uploadArchives {
+            repositories {
+                mavenDeployer {
+                    def credentials = loadCredentialsForJenkinsCommunityRepository()
+                    repository(url: 'http://maven.jenkins-ci.org:8081/content/repositories/releases') {
+                        authentication(credentials)
+                    }
+                    snapshotRepository(url: 'http://maven.jenkins-ci.org:8081/content/repositories/snapshots') {
+                        authentication(credentials)
+                    }
+                }
+            }
+        }
+    }
+}
+
+private loadCredentialsForJenkinsCommunityRepository() {
+    def dotFile = new File(System.getProperty('user.home'), '.jenkins-ci.org')
+
+    if (!dotFile.exists()) {
+        throw new Exception("Trying to deploy to Jenkins community repository but there's no credential file ${dotFile}. See https://wiki.jenkins-ci.org/display/JENKINS/Dot+Jenkins+Ci+Dot+Org")
+    }
+
+    def props = new Properties()
+    dotFile.withInputStream { props.load(it) }
+    [userName: props.userName, password: props.password]
+}
