@@ -127,7 +127,7 @@ class JpiExtension {
         mavenLocal()
         maven {
           name "jenkins"
-          delegate.url("http://repo.jenkins-ci.org/releases/")
+          delegate.url("http://repo.jenkins-ci.org/public/")
         }
       }
 
