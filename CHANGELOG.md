@@ -8,3 +8,4 @@
     [JENKINS-24298](https://issues.jenkins-ci.org/browse/JENKINS-24298)
   * added pluginFirstClassLoader attribute
     [JENKINS-24808](https://issues.jenkins-ci.org/browse/JENKINS-24808)
+  * removed deprecation warnings by using newer API which has been introduced in Gradle 1.6 
