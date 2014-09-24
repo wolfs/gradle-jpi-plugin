@@ -256,7 +256,6 @@ public class JpiPlugin implements Plugin<Project> {
                 setDescription("Optional Jenkins plugins dependencies which your plugin is built against");
         Configuration jenkinsTestConfiguration = cc.add(JENKINS_TEST_DEPENDENCY_CONFIGURATION_NAME).setVisible(false)
                 .setDescription("Jenkins plugin test dependencies.")
-        .exclude(group: "org.jenkins-ci.modules", module: 'instance-identity') 
         .exclude(group: "org.jenkins-ci.modules", module: 'ssh-cli-auth') 
         .exclude(group: "org.jenkins-ci.modules", module: 'sshd');
         cc.getByName(WarPlugin.PROVIDED_COMPILE_CONFIGURATION_NAME).extendsFrom(jenkinsCoreConfiguration);
