@@ -104,6 +104,7 @@ public class JpiPlugin implements Plugin<Project> {
             task.destinationDir = ext.getStaplerStubDir()
         }
         gradleProject.tasks.withType(LocalizerTask) { LocalizerTask task ->
+            task.sourceDirs = gradleProject.sourceSets.main.resources.srcDirs
             task.destinationDir = ext.getLocalizerDestDir()
         }
 
