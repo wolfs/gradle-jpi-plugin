@@ -22,6 +22,8 @@ Add the following to your build.gradle:
 >            url = 'http://wiki.jenkins-ci.org/display/JENKINS/SomePluginPage'   // URL for plugin on Jenkins wiki or elsewhere.
 >            gitHubUrl = 'https://github.com/jenkinsci/some-plugin'              // Plugin URL on GitHub. Optional.
 >
+>            pluginFirstClassLoader = true                                       // Use the plugin class loader before the core class loader. Defaults to false.
+>
 >            // The developers section is optional, and corresponds to the POM developers section.
 >            developers {
 >                developer {

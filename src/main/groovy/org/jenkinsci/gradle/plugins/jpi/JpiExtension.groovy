@@ -102,6 +102,8 @@ class JpiExtension {
    */
   public String maskClasses;
 
+  public boolean pluginFirstClassLoader
+
   /**
    * Version of core that we depend on.
    */
