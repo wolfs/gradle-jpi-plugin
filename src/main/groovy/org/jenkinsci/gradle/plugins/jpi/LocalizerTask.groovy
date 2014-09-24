@@ -17,10 +17,9 @@
 package org.jenkinsci.gradle.plugins.jpi
 
 import org.gradle.api.DefaultTask
+import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.OutputDirectory
-
-import org.jvnet.localizer.GeneratorTask
 
 /**
  * Generates Java source based on localization properties files.
@@ -32,6 +31,9 @@ class LocalizerTask extends DefaultTask {
 
     @OutputDirectory
     File destinationDir
+
+    @InputFiles
+    Set<File> sourceDirs
 
     @TaskAction
     def generateLocalized() {
@@ -45,7 +47,7 @@ class LocalizerTask extends DefaultTask {
                     pathelement(path: p.buildscript.configurations.classpath.asPath)
                 }
             }
-            p.sourceSets.main.getResources().getSrcDirs().each { rsrcDir ->
+            sourceDirs.each { rsrcDir ->
                 generator(todir: destinationDir.canonicalPath, dir: rsrcDir)
             }
         }
