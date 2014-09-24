@@ -67,11 +67,12 @@ class JpiManifest extends HashMap<String,Object> {
         if(dep.length()>0)
             this["Plugin-Dependencies"] = dep;
 
+        if (conv.pluginFirstClassLoader) {
+            this['PluginFirstClassLoader'] = true
+        }
+
         // more TODO
 /*
-        if(pluginFirstClassLoader)
-            mainSection.addAttributeAndCheck( new Attribute( "PluginFirstClassLoader", "true" ) );
-
         if (project.getDevelopers() != null) {
             mainSection.addAttributeAndCheck(new Attribute("Plugin-Developers",getDevelopersForManifest()));
         }
