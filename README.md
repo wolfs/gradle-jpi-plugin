@@ -35,23 +35,23 @@ Add the following to your build.gradle:
 Be sure to add the jenkinsPlugin { ... } section before any additional
 repositories are defined in your build.gradle.
 
-## Dependencies on other jenkins plugins
+## Dependencies on other Jenkins Plugins
 
-If your plugin depends on a different jenkins plugin you can specify the dependency in the following way:
+If your plugin depends on other Jenkins plugins you can specify the dependencies in the following way:
 
 	dependencies {
-		providedCompile 'org.jenkinsci.plugins:git:1.1.15'
 		jenkinsPlugins 'org.jenkinsci.plugins:git:1.1.15@jar'
+		optionalJenkinsPlugins 'org.jenkins-ci.plugins:ant:1.2@jar'
+		jenkinsTest 'org.jenkins-ci.main:maven-plugin:1.480@jar'
 	}
 
-Adding the dependency to the `providedCompile` configuration will make all of classes from the dependencies of
-the plugin you depend on available during compilation. Adding it to the `jenkinsPlugins` on the other hand will make
-all classes of the plugin you depend on available during compilation and also add the dependency to the manifest of
-your plugin. Note that for the `jenkinsPlugins` configuration you want to use the artifact only notation (append `@jar`
-if you're using the semicolon notation as in the example or specify `ext: 'jar'` if you're using the map-style notation).
-
-If you wish to optionally depend on a plugin then use `optionalJenkinsPlugins` configuration instead of `jenkinsPlugins`
+Adding the dependency to the `jenkinsPlugins` configuration will make all classes available during compilation and
+also add the dependency to the manifest of your plugin. To define an optional dependency on a plugin then use
+the `optionalJenkinsPlugins` configuration and to use a plugin only for testing, add a dependency to the `jenkinsTest`
 configuration.
+
+Note that you must use the artifact only notation (append `@jar` if you're using the semicolon notation as in the
+example or specify `ext: 'jar'` if you're using the map-style notation). 
 
 ## Usage
 
