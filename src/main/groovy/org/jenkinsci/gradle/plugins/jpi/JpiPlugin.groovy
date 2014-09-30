@@ -109,16 +109,16 @@ public class JpiPlugin implements Plugin<Project> {
             task.destinationDir = ext.getLocalizerDestDir()
         }
 
-        def jpi = gradleProject.tasks.add(Jpi.TASK_NAME, Jpi);
+        def jpi = gradleProject.tasks.create(Jpi.TASK_NAME, Jpi);
         jpi.description = "Generates the JPI package";
         jpi.group = BasePlugin.BUILD_GROUP;
         gradleProject.extensions.getByType(DefaultArtifactPublicationSet).addCandidate(new ArchivePublishArtifact(jpi));
 
-        def server = gradleProject.tasks.add(ServerTask.TASK_NAME, ServerTask);
+        def server = gradleProject.tasks.create(ServerTask.TASK_NAME, ServerTask);
         server.description = "Run Jenkins in place with the plugin being developed";
         server.group = BasePlugin.BUILD_GROUP; // TODO
 
-        def stubs = gradleProject.tasks.add(StaplerGroovyStubsTask.TASK_NAME, StaplerGroovyStubsTask)
+        def stubs = gradleProject.tasks.create(StaplerGroovyStubsTask.TASK_NAME, StaplerGroovyStubsTask)
         stubs.description = "Generates the Java stubs from Groovy source to enable Stapler annotation processing."
         stubs.group = BasePlugin.BUILD_GROUP
 
@@ -126,7 +126,7 @@ public class JpiPlugin implements Plugin<Project> {
 
         gradleProject.tasks.compileJava.dependsOn(StaplerGroovyStubsTask.TASK_NAME)
 
-        def localizer = gradleProject.tasks.add(LocalizerTask.TASK_NAME, LocalizerTask)
+        def localizer = gradleProject.tasks.create(LocalizerTask.TASK_NAME, LocalizerTask)
         localizer.description = "Generates the Java source for the localizer."
         localizer.group = BasePlugin.BUILD_GROUP
 
@@ -262,13 +262,13 @@ public class JpiPlugin implements Plugin<Project> {
     }
 
     public void configureConfigurations(ConfigurationContainer cc) {
-        Configuration jenkinsCoreConfiguration = cc.add(CORE_DEPENDENCY_CONFIGURATION_NAME).setVisible(false).
+        Configuration jenkinsCoreConfiguration = cc.create(CORE_DEPENDENCY_CONFIGURATION_NAME).setVisible(false).
                 setDescription("Jenkins core that your plugin is built against");
-        Configuration jenkinsPluginsConfiguration = cc.add(PLUGINS_DEPENDENCY_CONFIGURATION_NAME).setVisible(false).
+        Configuration jenkinsPluginsConfiguration = cc.create(PLUGINS_DEPENDENCY_CONFIGURATION_NAME).setVisible(false).
                 setDescription("Jenkins plugins which your plugin is built against");
-        Configuration optionalJenkinsPluginsConfiguration = cc.add(OPTIONAL_PLUGINS_DEPENDENCY_CONFIGURATION_NAME).setVisible(false).
+        Configuration optionalJenkinsPluginsConfiguration = cc.create(OPTIONAL_PLUGINS_DEPENDENCY_CONFIGURATION_NAME).setVisible(false).
                 setDescription("Optional Jenkins plugins dependencies which your plugin is built against");
-        Configuration jenkinsTestConfiguration = cc.add(JENKINS_TEST_DEPENDENCY_CONFIGURATION_NAME).setVisible(false)
+        Configuration jenkinsTestConfiguration = cc.create(JENKINS_TEST_DEPENDENCY_CONFIGURATION_NAME).setVisible(false)
                 .setDescription("Jenkins plugin test dependencies.")
         .exclude(group: "org.jenkins-ci.modules", module: 'ssh-cli-auth') 
         .exclude(group: "org.jenkins-ci.modules", module: 'sshd');
@@ -277,7 +277,7 @@ public class JpiPlugin implements Plugin<Project> {
         cc.getByName(WarPlugin.PROVIDED_COMPILE_CONFIGURATION_NAME).extendsFrom(optionalJenkinsPluginsConfiguration);
         cc.getByName(JavaPlugin.TEST_COMPILE_CONFIGURATION_NAME).extendsFrom(jenkinsTestConfiguration);
 
-        cc.add(WAR_DEPENDENCY_CONFIGURATION_NAME).setVisible(false).
+        cc.create(WAR_DEPENDENCY_CONFIGURATION_NAME).setVisible(false).
                 setDescription("Jenkins war that corresponds to the Jenkins core");
     }
 
