@@ -7,34 +7,61 @@ plugins, written in Groovy or Java.
 
 Add the following to your build.gradle:
 
->        apply from:"https://raw.github.com/jenkinsci/gradle-jpi-plugin/master/install"
->        // ...or copy the contents of that URL into your build.gradle directly.
->
->        // Whatever other plugins you need to load.
->
->        group = "org.jenkins-ci.plugins"
->        version = "0.0.1-SNAPSHOT"    // Or whatever your version is.
->        description = "A description of your plugin"
->
->        jenkinsPlugin {
->            coreVersion = '1.420'                                               // Version of Jenkins core this plugin depends on.
->            displayName = 'Hello World plugin built with Gradle'                // Human-readable name of plugin.
->            url = 'http://wiki.jenkins-ci.org/display/JENKINS/SomePluginPage'   // URL for plugin on Jenkins wiki or elsewhere.
->            gitHubUrl = 'https://github.com/jenkinsci/some-plugin'              // Plugin URL on GitHub. Optional.
->
->            pluginFirstClassLoader = true                                       // Use the plugin class loader before the core class loader. Defaults to false.
->
->            // The developers section is optional, and corresponds to the POM developers section.
->            developers {
->                developer {
->                    id 'abayer'
->                    name 'Andrew Bayer'
->                    email 'andrew.bayer@gmail.com'
->                }
->            }                           
->        }
+```groovy
+buildscript {
+    repositories {
+        // The plugin is currently only available via the Jenkins
+        // Maven repository, but has dependencies in Maven Central.
+        mavenCentral()
+        maven {
+            url 'http://repo.jenkins-ci.org/releases/'
+        }
+    }
+    dependencies {
+        classpath 'org.jenkins-ci.tools:gradle-jpi-plugin:0.6.0'
+    }
+}
 
-Be sure to add the jenkinsPlugin { ... } section before any additional
+apply plugin: 'jpi'
+
+group = 'org.jenkins-ci.plugins'
+version = '1.2.0-SNAPSHOT'
+description = 'A description of your plugin'
+
+jenkinsPlugin {
+    // Version of Jenkins core this plugin depends on.
+    coreVersion = '1.420'
+
+    // Human-readable name of plugin.                                               
+    displayName = 'Hello World plugin built with Gradle'
+
+    // URL for plugin on Jenkins wiki or elsewhere.
+    url = 'http://wiki.jenkins-ci.org/display/JENKINS/SomePluginPage'
+
+    // Plugin URL on GitHub. Optional.
+    gitHubUrl = 'https://github.com/jenkinsci/some-plugin'              
+
+    // Use the plugin class loader before the core class loader. Defaults to false.
+    pluginFirstClassLoader = true
+
+    // Optional list of package prefixes that your plugin doesn't want to see from core. 
+    maskClasses = 'groovy.grape org.apache.commons.codec'
+
+    // Optional version number from which this plugin release is configuration-compatible.
+    compatibleSinceVersion = '1.1.0'
+
+    // The developers section is optional, and corresponds to the POM developers section.
+    developers {
+        developer {
+            id 'abayer'
+            name 'Andrew Bayer'
+            email 'andrew.bayer@gmail.com'
+        }
+    }                           
+}
+```
+
+Be sure to add the `jenkinsPlugin { ... }` section before any additional
 repositories are defined in your build.gradle.
 
 ## Dependencies on other Jenkins Plugins
