@@ -9,3 +9,8 @@
   * added pluginFirstClassLoader attribute
     [JENKINS-24808](https://issues.jenkins-ci.org/browse/JENKINS-24808)
   * removed deprecation warnings by using newer API which has been introduced in Gradle 1.6 
+
+## 0.5.2 (unreleased)
+
+  * use ui-samples-plugin version 2.0 in jenkinsTests configuration when using Jenkins core 1.533 or later
+    [JENKINS-21431](https://issues.jenkins-ci.org/browse/JENKINS-21431)
