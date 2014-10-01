@@ -80,6 +80,10 @@ uploadArchives {
                         id 'kohsuke'
                         name 'Kohsuke Kawaguchi'
                     }
+                    developer {
+                        id 'daspilker'
+                        name 'Daniel Spilker'
+                    }
                 }
             }
 
