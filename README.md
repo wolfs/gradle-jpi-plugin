@@ -67,3 +67,10 @@ example or specify `ext: 'jar'` if you're using the map-style notation).
 ## Caveats
 
 * As of now, a minimum Jenkins core version of 1.420 is required.
+
+## Examples
+
+Here are some real world examples of Jenkins plugins using the Gradle JPI plugin:
+
+* [Job DSL Plugin](https://github.com/jenkinsci/job-dsl-plugin)
+* [Selenium Axis Plugin](https://github.com/jenkinsci/selenium-axis-plugin)
