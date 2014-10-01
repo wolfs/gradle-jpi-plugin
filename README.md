@@ -29,28 +29,28 @@ version = '1.2.0-SNAPSHOT'
 description = 'A description of your plugin'
 
 jenkinsPlugin {
-    // Version of Jenkins core this plugin depends on.
+    // version of Jenkins core this plugin depends on, must be 1.420 or later
     coreVersion = '1.420'
 
-    // Human-readable name of plugin.                                               
+    // human-readable name of plugin                                               
     displayName = 'Hello World plugin built with Gradle'
 
-    // URL for plugin on Jenkins wiki or elsewhere.
+    // URL for plugin on Jenkins wiki or elsewhere
     url = 'http://wiki.jenkins-ci.org/display/JENKINS/SomePluginPage'
 
-    // Plugin URL on GitHub. Optional.
+    // plugin URL on GitHub, optional
     gitHubUrl = 'https://github.com/jenkinsci/some-plugin'              
 
-    // Use the plugin class loader before the core class loader. Defaults to false.
+    // use the plugin class loader before the core class loader, defaults to false
     pluginFirstClassLoader = true
 
-    // Optional list of package prefixes that your plugin doesn't want to see from core. 
+    // optional list of package prefixes that your plugin doesn't want to see from core 
     maskClasses = 'groovy.grape org.apache.commons.codec'
 
-    // Optional version number from which this plugin release is configuration-compatible.
+    // optional version number from which this plugin release is configuration-compatible
     compatibleSinceVersion = '1.1.0'
 
-    // The developers section is optional, and corresponds to the POM developers section.
+    // the developers section is optional, and corresponds to the POM developers section
     developers {
         developer {
             id 'abayer'
@@ -84,16 +84,12 @@ example or specify `ext: 'jar'` if you're using the map-style notation).
 
 ## Usage
 
-* 'gradle jpi' - Build the Jenkins plugin file, which can then be
+* `gradle jpi` - Build the Jenkins plugin file, which can then be
   found in the build directory. The file will currently end in ".hpi".
-* 'gradle install' - Build the Jenkins plugin and install it into your
+* `gradle install` - Build the Jenkins plugin and install it into your
   local Maven repository.
-* 'gradle uploadArchives' (or 'gradle deploy') - Deploy your plugin to
+* `gradle uploadArchives` (or `gradle deploy`) - Deploy your plugin to
   the Jenkins Maven repository to be included in the Update Center.
-
-## Caveats
-
-* As of now, a minimum Jenkins core version of 1.420 is required.
 
 ## Examples
 
