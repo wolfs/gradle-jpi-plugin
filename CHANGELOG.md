@@ -1,3 +1,5 @@
+## 0.6.1 (unreleased)
+
 ## 0.6.0 (2014-10-01)
 
   * do not exclude org.jenkins-ci.modules:instance-identity from jenkinsTest configuration
