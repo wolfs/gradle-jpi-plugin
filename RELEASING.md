@@ -1,0 +1,43 @@
+Releasing the Gradle JPI Plugin
+===============================
+
+These are the instructions to release the Gradle JPI Plugin.
+
+
+Prerequisites
+-------------
+
+Ensure you have your Jenkins credentials in `~/.jenkins-ci.org`:
+
+    userName=kohsuke
+    password=mypassword
+
+See [Dot Jenkins Ci Dot Org](https://wiki.jenkins-ci.org/display/JENKINS/Dot+Jenkins+Ci+Dot+Org) for details.
+
+Ensure you have your signing credentials in `~/.gradle/gradle.properties`:
+
+    signing.keyId=24875D73
+    signing.secretKeyRingFile=/Users/me/.gnupg/secring.gpg
+    
+You do not need to store your private key password there, the build script will ask for it. See
+[The Signing Plugin](https://www.gradle.org/docs/current/userguide/signing_plugin.html) for details.
+
+
+Steps
+-----
+
+* Ensure you have the latest code: `git checkout master && git pull`
+* Edit `gradle.properties` to strip `-SNAPSHOT` from version
+* Update `CHANGELOG.md`, set the release date
+* Ensure everything is checked in: `git commit -am "releasing 0.6.0"`
+* Tag the source as it is: `git tag -a 0.6.0 -m "Gradle JPI Plugin 0.6.0"`
+* Build the code: `gradlew clean check install`
+* Test the plugin with Jenkins plugin projects using it (e.g. https://github.com/jenkinsci/job-dsl-plugin)
+* Deploy: `gradlew uploadArchives`
+* Increment the version in `gradle.properties` and append `-SNAPSHOT`
+* Update `CHANGELOG.md`, add the next version
+* Commit the updated version number: `git commit -am "bumping version"`
+* Push the two new commit and the tag back to GitHub: `git push && git push --tags`
+* Close all resolved issues in JIRA: https://issues.jenkins-ci.org/browse/JENKINS/component/16321
+* Send an email to jenkinsci-dev@googlegroups.com
+
