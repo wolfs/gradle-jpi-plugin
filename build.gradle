@@ -3,6 +3,7 @@ apply plugin: 'maven'
 apply plugin: 'signing'
 apply plugin: 'idea'
 apply plugin: 'release'
+apply plugin: 'codenarc'
 
 buildscript {
     repositories {
@@ -98,6 +99,12 @@ uploadArchives {
             }
         }
     }
+}
+
+codenarc {
+    toolVersion = '0.21'
+    configFile = file('config/codenarc/rules.groovy')
+    ignoreFailures = true
 }
 
 group = 'org.jenkins-ci.tools'
