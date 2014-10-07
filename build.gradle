@@ -20,6 +20,7 @@ dependencies {
     compile 'org.jvnet.localizer:maven-localizer-plugin:1.13'
     compile 'org.jenkins-ci:version-number:1.0'
     compile localGroovy()
+    testCompile 'org.spockframework:spock-core:0.7-groovy-1.8'
 }
 
 artifacts {
@@ -91,6 +92,10 @@ uploadArchives {
 codenarc {
     toolVersion = '0.21'
     configFile = file('config/codenarc/rules.groovy')
+}
+
+codenarcTest {
+    configFile = file('config/codenarc/rules-test.groovy')
 }
 
 group = 'org.jenkins-ci.tools'
