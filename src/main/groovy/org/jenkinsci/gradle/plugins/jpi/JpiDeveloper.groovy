@@ -28,7 +28,7 @@ class JpiDeveloper {
     private final static LEGAL_FIELDS = ['id', 'name', 'email', 'url', 'organization', 'organizationUrl', 'timezone']
 
     private final fields = [:]
-                           
+
     private final Logger logger
 
     JpiDeveloper(Logger logger) {
@@ -46,11 +46,11 @@ class JpiDeveloper {
     def methodMissing(String name, args) {
         if (LEGAL_FIELDS.contains(name)) {
             setProperty(name, *args)
-        } else { 
+        } else {
             logger.log(LogLevel.WARN, "JPI POM developer field ${name} not implemented.")
         }
     }
-    
+
     def configure(Closure closure) {
         ConfigureUtil.configure(closure, this)
     }

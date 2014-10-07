@@ -160,8 +160,8 @@ class JpiPlugin implements Plugin<Project> {
 
         def installer = gradleProject.tasks.getByName('install')
 
-        installer.repositories.mavenInstaller.pom.whenConfigured { p -> 
-            p.project { 
+        installer.repositories.mavenInstaller.pom.whenConfigured { p ->
+            p.project {
                 parent {
                     groupId 'org.jenkins-ci.plugins'
                     artifactId 'plugin'
@@ -178,7 +178,7 @@ class JpiPlugin implements Plugin<Project> {
                         url ext.gitHubUrl
                     }
                 }
-                repositories { 
+                repositories {
                     gradleProject.repositories.each { repo ->
                         if (repo.name == 'MavenRepo' || repo.name == 'MavenLocal') {
                             // do not include the Maven Central repository or the local cache.
@@ -240,7 +240,7 @@ class JpiPlugin implements Plugin<Project> {
                 }
             }
         }
-                
+
         // creating alias for making migration from Maven easy.
         gradleProject.tasks.create('deploy').dependsOn(uploadArchives)
 
@@ -252,7 +252,7 @@ class JpiPlugin implements Plugin<Project> {
         }
         gradleProject.tasks.getByName('test').dependsOn(generateTestHpl)
     }
-    
+
     private static Properties loadDotJenkinsOrg() {
         Properties props = new Properties()
         def dot = new File(new File(System.getProperty('user.home')), '.jenkins-ci.org')
@@ -279,8 +279,8 @@ class JpiPlugin implements Plugin<Project> {
         Configuration jenkinsTestConfiguration = cc.create(JENKINS_TEST_DEPENDENCY_CONFIGURATION_NAME).
                 setVisible(false).
                 setDescription('Jenkins plugin test dependencies.')
-        .exclude(group: 'org.jenkins-ci.modules', module: 'ssh-cli-auth')
-        .exclude(group: 'org.jenkins-ci.modules', module: 'sshd')
+                .exclude(group: 'org.jenkins-ci.modules', module: 'ssh-cli-auth')
+                .exclude(group: 'org.jenkins-ci.modules', module: 'sshd')
         cc.getByName(WarPlugin.PROVIDED_COMPILE_CONFIGURATION_NAME).extendsFrom(jenkinsCoreConfiguration)
         cc.getByName(WarPlugin.PROVIDED_COMPILE_CONFIGURATION_NAME).extendsFrom(jenkinsPluginsConfiguration)
         cc.getByName(WarPlugin.PROVIDED_COMPILE_CONFIGURATION_NAME).extendsFrom(optionalJenkinsPluginsConfiguration)

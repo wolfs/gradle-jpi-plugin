@@ -38,7 +38,7 @@ class LocalizerTask extends DefaultTask {
     @TaskAction
     def generateLocalized() {
         def p = project
-        
+
         def isolatedAnt = services.get(IsolatedAntBuilder)
         isolatedAnt.execute {
             mkdir(dir: destinationDir.canonicalPath)
