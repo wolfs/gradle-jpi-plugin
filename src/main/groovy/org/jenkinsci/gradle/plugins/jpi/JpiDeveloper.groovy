@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jenkinsci.gradle.plugins.jpi
 
 import org.gradle.api.logging.LogLevel
@@ -25,20 +24,17 @@ import org.gradle.util.ConfigureUtil
  *
  * @author Andrew Bayer
  */
-
 class JpiDeveloper {
-    private legalFields = ['id', 'name', 'email', 'url', 'organization',
-                           'organizationUrl', 'timezone'];
+    private final static LEGAL_FIELDS = ['id', 'name', 'email', 'url', 'organization', 'organizationUrl', 'timezone']
 
-    private fields = [:]
+    private final fields = [:]
                            
-    private Logger logger
+    private final Logger logger
 
-    def JpiDeveloper(Logger logger) {
+    JpiDeveloper(Logger logger) {
         this.logger = logger
     }
 
-    
     def getProperty(String f) {
         fields[f]
     }
@@ -48,7 +44,7 @@ class JpiDeveloper {
     }
 
     def methodMissing(String name, args) {
-        if (legalFields.contains(name)) {
+        if (LEGAL_FIELDS.contains(name)) {
             setProperty(name, *args)
         } else { 
             logger.log(LogLevel.WARN, "JPI POM developer field ${name} not implemented.")
@@ -58,5 +54,4 @@ class JpiDeveloper {
     def configure(Closure closure) {
         ConfigureUtil.configure(closure, this)
     }
-
 }
