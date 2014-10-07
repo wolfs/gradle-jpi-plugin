@@ -8,7 +8,12 @@ apply plugin: 'codenarc'
 buildscript {
     repositories {
         mavenCentral()
-        repositories { maven { url 'http://dl.bintray.com/content/netflixoss/external-gradle-plugins/' } } // For gradle-release
+        repositories {
+            maven {
+                // For gradle-release
+                url 'http://dl.bintray.com/content/netflixoss/external-gradle-plugins/'
+            }
+        }
     }
     dependencies {
         classpath 'nl.javadude.gradle.plugins:license-gradle-plugin:0.6.1'
@@ -25,15 +30,15 @@ task wrapper(type: Wrapper) {
 repositories {
     mavenCentral()
     maven {
-        name "jenkins"
-        delegate.url("http://repo.jenkins-ci.org/releases")
+        name 'jenkins'
+        url 'http://repo.jenkins-ci.org/releases'
     }
 }
 
 dependencies {
     compile gradleApi()
-    compile('org.jvnet.localizer:maven-localizer-plugin:1.13',
-            'org.jenkins-ci:version-number:1.0')
+    compile 'org.jvnet.localizer:maven-localizer-plugin:1.13'
+    compile 'org.jenkins-ci:version-number:1.0'
     compile localGroovy()
 }
 
@@ -58,9 +63,7 @@ uploadArchives {
                 url 'http://github.com/jenkinsci/gradle-jpi-plugin'
 
                 scm {
-                    url 'scm:git@github.com:jenkinsci/gradle-jpi-plugin.git'
-                    connection 'scm:git@github.com:jenkinsci/gradle-jpi-plugin.git'
-                    developerConnection 'scm:git@github.com:jenkinsci/gradle-jpi-plugin.git'
+                    url 'https://github.com/jenkinsci/gradle-jpi-plugin'
                 }
 
                 licenses {
@@ -133,13 +136,13 @@ gradle.taskGraph.whenReady { taskGraph ->
     }
     if (taskGraph.allTasks.any { it instanceof Sign && it.required }) {
         Console console = System.console()
-        console.printf "\n\nWe have to sign some things in this build.\n\n"
+        console.printf '\n\nWe have to sign some things in this build.\n\n'
 
-        def password = console.readPassword("PGP Private Key Password: ")
+        def password = console.readPassword('PGP Private Key Password: ')
 
-        allprojects { ext."signing.password" = password }
+        allprojects { ext.'signing.password' = password }
 
-        console.printf "\nThanks.\n\n"
+        console.printf '\nThanks.\n\n'
     }
 }
 
@@ -147,7 +150,10 @@ private loadCredentialsForJenkinsCommunityRepository() {
     def dotFile = new File(System.getProperty('user.home'), '.jenkins-ci.org')
 
     if (!dotFile.exists()) {
-        throw new Exception("Trying to deploy to Jenkins community repository but there's no credential file ${dotFile}. See https://wiki.jenkins-ci.org/display/JENKINS/Dot+Jenkins+Ci+Dot+Org")
+        throw new Exception(
+                "Trying to deploy to Jenkins community repository but there's no credential file ${dotFile}." +
+                        ' See https://wiki.jenkins-ci.org/display/JENKINS/Dot+Jenkins+Ci+Dot+Org'
+        )
     }
 
     def props = new Properties()
