@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jenkinsci.gradle.plugins.jpi
 
 import org.gradle.api.Project
@@ -35,24 +34,25 @@ import hudson.util.VersionNumber
 class JpiExtension {
   final Project project
 
-  def JpiExtension(Project project) {
+  JpiExtension(Project project) {
     this.project = project
   }
 
-  private String shortName;
+  private String shortName
 
   /**
    * Short name of the plugin is the ID that uniquely identifies a plugin.
    * If unspecified, we use the project name except the trailing "-plugin"
    */
   String getShortName() {
-    return shortName ?: trimOffPluginSuffix(project.name)
+    shortName ?: trimOffPluginSuffix(project.name)
   }
 
   private String trimOffPluginSuffix(String s) {
-    if (s.endsWith("-plugin"))
-      s = s[0..-8]
-    return s;
+    if (s.endsWith('-plugin')) {
+      return s[0..-8]
+    }
+    s
   }
 
   private String fileExtension
@@ -61,75 +61,77 @@ class JpiExtension {
    * File extension for plugin archives.
    */
   String getFileExtension() {
-    return fileExtension ?: "hpi"
+    fileExtension ?: 'hpi'
   }
 
   void setFileExtension(String s) {
     this.fileExtension = s
   }
 
-  private String displayName;
+  private String displayName
 
   /**
    * One-line display name of this plugin. Should be human readable.
    * For example, "Git plugin", "Acme Executor plugin", etc.
    */
   String getDisplayName() {
-    return displayName ?: getShortName()
+    displayName ?: getShortName()
   }
 
   void setDisplayName(String s) {
-    this.displayName = s;
+    this.displayName = s
   }
 
   /**
    * URL that points to the home page of this plugin.
    */
-  public String url;
+  public String url
 
   /**
    * TODO: document
    */
-  public String compatibleSinceVersion;
+  public String compatibleSinceVersion
 
   /**
    * TODO: document
    */
-  public boolean sandboxStatus;
+  public boolean sandboxStatus
 
   /**
    * TODO: document
    */
-  public String maskClasses;
+  public String maskClasses
 
   public boolean pluginFirstClassLoader
 
   /**
    * Version of core that we depend on.
    */
-  private String coreVersion;
+  private String coreVersion
 
   String getCoreVersion() {
-    return coreVersion
+    coreVersion
   }
 
   void setCoreVersion(String v) {
     this.coreVersion = v
     def uiSamplesVersion = v
 
-    if (new VersionNumber(this.coreVersion).compareTo(new VersionNumber("1.419.99"))<=0)
-      throw new GradleException("The gradle-jpi-plugin requires Jenkins 1.420 or later")
+    if (new VersionNumber(this.coreVersion) <= new VersionNumber('1.419.99')) {
+      throw new GradleException('The gradle-jpi-plugin requires Jenkins 1.420 or later')
+    }
 
-    if (new VersionNumber(this.coreVersion).compareTo(new VersionNumber("1.533"))>=0)
-      uiSamplesVersion = "2.0"
+    if (new VersionNumber(this.coreVersion) >= new VersionNumber('1.533')) {
+      uiSamplesVersion = '2.0'
+    }
 
     if (this.coreVersion) {
       project.repositories {
         mavenCentral()
         mavenLocal()
         maven {
-          name "jenkins"
-          delegate.url("http://repo.jenkins-ci.org/public/")
+          name 'jenkins'
+          delegate.url('http://repo.jenkins-ci.org/public/')
         }
       }
 
@@ -145,7 +147,7 @@ class JpiExtension {
         jenkinsTest("org.jenkins-ci.main:ui-samples-plugin:${uiSamplesVersion}@jar",
                 "org.jenkins-ci.main:maven-plugin:${v}@jar",
                 "org.jenkins-ci.main:jenkins-war:${v}:war-for-test@jar",
-                "junit:junit-dep:4.10@jar")
+                'junit:junit-dep:4.10@jar')
       }
     }
   }
@@ -184,10 +186,10 @@ class JpiExtension {
     project.file("${project.buildDir}/${destDir}")
   }
 
-  private File workDir;
+  private File workDir
 
   File getWorkDir() {
-    return workDir ?: new File(project.rootDir,"work");
+    workDir ?: new File(project.rootDir,'work')
   }
 
   /**
@@ -203,7 +205,7 @@ class JpiExtension {
    * The URL for the Maven repository to deploy the built plugin to.
    */
   String getRepoUrl() {
-    return repoUrl ?: 'http://maven.jenkins-ci.org:8081/content/repositories/releases'
+    repoUrl ?: 'http://maven.jenkins-ci.org:8081/content/repositories/releases'
   }
 
   void setRepoUrl(String repoUrl) {
@@ -216,7 +218,7 @@ class JpiExtension {
    * The URL for the Maven snapshot repository to deploy the built plugin to.
    */
   String getSnapshotRepoUrl() {
-    return repoUrl ?: 'http://maven.jenkins-ci.org:8081/content/repositories/snapshots'
+    repoUrl ?: 'http://maven.jenkins-ci.org:8081/content/repositories/snapshots'
   }
 
   void setSnapshotRepoUrl(String snapshotRepoUrl) {
@@ -230,37 +232,33 @@ class JpiExtension {
 
   String getGitHubSCMConnection() {
     if (gitHubUrl != null && gitHubUrl =~ /^https:\/\/github\.com/) {
-      return gitHubUrl.replaceFirst(~/https:/, "scm:git:git:") + ".git"
-    } else {
-      return ''
+      return gitHubUrl.replaceFirst(~/https:/, 'scm:git:git:') + '.git'
     }
+    ''
   }
 
   String getGitHubSCMDevConnection() {
     if (gitHubUrl != null && gitHubUrl =~ /^https:\/\/github\.com/) {
-      return gitHubUrl.replaceFirst(~/https:\/\//, "scm:git:ssh://git@") + ".git"
-    } else {
-      return ''
+      return gitHubUrl.replaceFirst(~/https:\/\//, 'scm:git:ssh://git@') + '.git'
     }
+    ''
   }
 
   /**
    * Maven repo deployment credentials.
    */
   String getJpiDeployUser() {
-    if (project.hasProperty("jpi.deploy.user")) {
-      return project.property("jpi.deploy.user")
-    } else {
-      return ''
+    if (project.hasProperty('jpi.deploy.user')) {
+      return project.property('jpi.deploy.user')
     }
+    ''
   }
 
   String getJpiDeployPassword() {
-    if (project.hasProperty("jpi.deploy.password")) {
-      return project.property("jpi.deploy.password")
-    } else {
-      return ''
+    if (project.hasProperty('jpi.deploy.password')) {
+      return project.property('jpi.deploy.password')
     }
+    ''
   }
 
   Developers developers = new Developers()
@@ -269,29 +267,24 @@ class JpiExtension {
     ConfigureUtil.configure(closure, developers)
   }
 
-
-
   /**
    * Runtime dependencies
    */
-  public FileCollection getRuntimeClasspath() {
-    def providedRuntime = project.configurations.getByName(WarPlugin.PROVIDED_RUNTIME_CONFIGURATION_NAME);
+  FileCollection getRuntimeClasspath() {
+    def providedRuntime = project.configurations.getByName(WarPlugin.PROVIDED_RUNTIME_CONFIGURATION_NAME)
     def groovyRuntime = project.configurations.getByName(GroovyBasePlugin.GROOVY_CONFIGURATION_NAME)
-    return mainSourceTree().runtimeClasspath.minus(providedRuntime).minus(groovyRuntime)
+    mainSourceTree().runtimeClasspath - providedRuntime - groovyRuntime
   }
 
-  public SourceSet mainSourceTree() {
-    return project.convention.getPlugin(JavaPluginConvention)
-            .sourceSets.getByName(SourceSet.MAIN_SOURCE_SET_NAME)
+  SourceSet mainSourceTree() {
+    project.convention.getPlugin(JavaPluginConvention).sourceSets.getByName(SourceSet.MAIN_SOURCE_SET_NAME)
   }
 
-  public SourceSet testSourceTree() {
-    return project.convention.getPlugin(JavaPluginConvention)
-            .sourceSets.getByName(SourceSet.TEST_SOURCE_SET_NAME)
+  SourceSet testSourceTree() {
+    project.convention.getPlugin(JavaPluginConvention).sourceSets.getByName(SourceSet.TEST_SOURCE_SET_NAME)
   }
 
-
-  public class Developers {
+  class Developers {
     def developerMap = [:]
 
     def getProperty(String id) {
@@ -315,7 +308,5 @@ class JpiExtension {
     def getProperties() {
       developerMap
     }
-
   }
-
 }
