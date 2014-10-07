@@ -26,38 +26,38 @@ import org.gradle.api.tasks.OutputDirectory
  * @author Andrew Bayer
  */
 class StaplerGroovyStubsTask extends DefaultTask {
-  @OutputDirectory
-  File destinationDir
+    @OutputDirectory
+    File destinationDir
 
-  @TaskAction
-  def generateStubs() {
-    def p = project
-    def isolatedAnt = services.get(IsolatedAntBuilder)
-    isolatedAnt.execute {
-      mkdir(dir: destinationDir.canonicalPath)
-      taskdef(name: 'generatestubs', classname: 'org.codehaus.groovy.ant.GenerateStubsTask') {
-        classpath {
-        pathelement path: p.sourceSets.main.compileClasspath.asPath
-        }
-      }
-
-      generatestubs(destdir: destinationDir.canonicalPath) {
-        configuration(targetByteCode: '1.6')
-        classpath {
-        pathelement path: p.sourceSets.main.compileClasspath.asPath
-        }
-        src {
-          p.sourceSets.main.groovy.srcDirs.each { srcDir ->
-            if (srcDir.exists()) {
-              dirset(dir: srcDir) {
-              exclude name: '**/*.properties'
-              }
+    @TaskAction
+    def generateStubs() {
+        def p = project
+        def isolatedAnt = services.get(IsolatedAntBuilder)
+        isolatedAnt.execute {
+            mkdir(dir: destinationDir.canonicalPath)
+            taskdef(name: 'generatestubs', classname: 'org.codehaus.groovy.ant.GenerateStubsTask') {
+                classpath {
+                    pathelement path: p.sourceSets.main.compileClasspath.asPath
+                }
             }
-          }
-        }
-      }
-    }
-  }
 
-  public static final String TASK_NAME = 'stapler'
+            generatestubs(destdir: destinationDir.canonicalPath) {
+                configuration(targetByteCode: '1.6')
+                classpath {
+                    pathelement path: p.sourceSets.main.compileClasspath.asPath
+                }
+                src {
+                    p.sourceSets.main.groovy.srcDirs.each { srcDir ->
+                        if (srcDir.exists()) {
+                            dirset(dir: srcDir) {
+                                exclude name: '**/*.properties'
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public static final String TASK_NAME = 'stapler'
 }
