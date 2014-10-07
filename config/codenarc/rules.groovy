@@ -9,7 +9,10 @@ ruleset {
 
     ruleset('rulesets/design.xml')
 
-    ruleset('rulesets/dry.xml')
+    ruleset('rulesets/dry.xml') {
+        // does not necessarily lead to better code
+        exclude 'DuplicateStringLiteral'
+    }
 
     // these rules cause compilation failure warnings
     // ruleset('rulesets/enhanced.xml')
@@ -42,7 +45,10 @@ ruleset {
 
     ruleset('rulesets/naming.xml')
 
-    ruleset('rulesets/security.xml')
+    ruleset('rulesets/security.xml') {
+        // we don't care for the Enterprise Java Bean specification here
+        exclude 'JavaIoPackageAccess'
+    }
 
     ruleset('rulesets/serialization.xml')
 
