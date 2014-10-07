@@ -13,12 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jenkinsci.gradle.plugins.jpi
 
 import java.util.jar.JarFile
 import org.gradle.api.DefaultTask
-import org.gradle.api.plugins.WarPluginConvention
+import org.gradle.api.GradleException
 import org.gradle.api.tasks.TaskAction
 
 /**
@@ -27,28 +26,28 @@ import org.gradle.api.tasks.TaskAction
  * @author Kohsuke Kawaguchi
  */
 class ServerTask extends DefaultTask {
-
     @TaskAction
     def start() {
         def c = project.configurations.getByName(JpiPlugin.WAR_DEPENDENCY_CONFIGURATION_NAME)
-        def files = c.resolve();
-        if (files.isEmpty())
-            throw new Error("No jenkins.war dependency is specified");
+        def files = c.resolve()
+        if (files.isEmpty()) {
+            throw new GradleException('No jenkins.war dependency is specified')
+        }
         File war = files.toArray()[0]
 
-        generateHpl();
+        generateHpl()
 
         def conv = project.extensions.getByType(JpiExtension)
-        System.setProperty("JENKINS_HOME",conv.workDir.getAbsolutePath())
-        System.setProperty("stapler.trace","true")
-        System.setProperty("debug.YUI","true")
+        System.setProperty('JENKINS_HOME', conv.workDir.absolutePath)
+        System.setProperty('stapler.trace', 'true')
+        System.setProperty('debug.YUI', 'true')
 
         def cl = new URLClassLoader([war.toURI().toURL()] as URL[])
-        def mainClass = new JarFile(war).getManifest().mainAttributes.getValue("Main-Class")
-        cl.loadClass(mainClass).main();
-        
+        def mainClass = new JarFile(war).manifest.mainAttributes.getValue('Main-Class')
+        cl.loadClass(mainClass).main()
+
         // make the thread hang
-        synchronized (this) { wait(); }
+        Thread.currentThread().join()
     }
 
     void generateHpl() {
@@ -60,5 +59,5 @@ class ServerTask extends DefaultTask {
         m.writeTo(hpl)
     }
 
-    public static final String TASK_NAME = "server";
+    public static final String TASK_NAME = 'server'
 }
