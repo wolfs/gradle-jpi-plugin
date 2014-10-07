@@ -74,6 +74,7 @@ class JpiExtension {
    * One-line display name of this plugin. Should be human readable.
    * For example, "Git plugin", "Acme Executor plugin", etc.
    */
+  @SuppressWarnings('UnnecessaryGetter')
   String getDisplayName() {
     displayName ?: getShortName()
   }

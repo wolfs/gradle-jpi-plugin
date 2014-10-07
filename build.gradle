@@ -91,7 +91,6 @@ uploadArchives {
 codenarc {
     toolVersion = '0.21'
     configFile = file('config/codenarc/rules.groovy')
-    ignoreFailures = true
 }
 
 group = 'org.jenkins-ci.tools'
