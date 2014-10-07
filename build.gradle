@@ -7,7 +7,6 @@ apply plugin: 'codenarc'
 
 buildscript {
     repositories {
-        mavenCentral()
         repositories {
             maven {
                 // For gradle-release
@@ -17,7 +16,6 @@ buildscript {
     }
     dependencies {
         classpath 'gradle-release:gradle-release:1.1.5'
-        classpath 'org.ajoberstar:gradle-git:0.5.0'
     }
 }
 
