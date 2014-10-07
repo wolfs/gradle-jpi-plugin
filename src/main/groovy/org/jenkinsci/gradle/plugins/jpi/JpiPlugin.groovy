@@ -13,10 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.jenkinsci.gradle.plugins.jpi
 
-package org.jenkinsci.gradle.plugins.jpi;
-
-
+import org.gradle.api.GradleException
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
@@ -26,14 +25,10 @@ import org.gradle.api.internal.plugins.DefaultArtifactPublicationSet
 import org.gradle.api.plugins.BasePlugin
 import org.gradle.api.plugins.JavaPlugin
 import org.gradle.api.plugins.WarPlugin
-import org.gradle.api.plugins.WarPluginConvention
 import org.gradle.api.plugins.GroovyPlugin
 import org.gradle.api.plugins.MavenPlugin
 import org.gradle.api.plugins.MavenPluginConvention
-import org.gradle.api.artifacts.maven.Conf2ScopeMappingContainer;
-import org.gradle.api.artifacts.maven.MavenResolver
-import org.gradle.api.artifacts.maven.MavenDeployer
-import org.gradle.api.artifacts.maven.MavenPom;
+import org.gradle.api.artifacts.maven.Conf2ScopeMappingContainer
 import org.gradle.api.tasks.bundling.Jar
 
 /**
@@ -43,56 +38,54 @@ import org.gradle.api.tasks.bundling.Jar
  * @author Kohsuke Kawaguchi
  * @author Andrew Bayer
  */
-public class JpiPlugin implements Plugin<Project> {
+class JpiPlugin implements Plugin<Project> {
     /**
      * Represents the dependency to the Jenkins core.
      */
-    public static final String CORE_DEPENDENCY_CONFIGURATION_NAME = "jenkinsCore";
+    public static final String CORE_DEPENDENCY_CONFIGURATION_NAME = 'jenkinsCore'
 
     /**
      * Represents the dependency to the Jenkins war. Test scope.
      */
-    public static final String WAR_DEPENDENCY_CONFIGURATION_NAME = "jenkinsWar";
+    public static final String WAR_DEPENDENCY_CONFIGURATION_NAME = 'jenkinsWar'
 
     /**
      * Represents the dependencies on other Jenkins plugins.
      */
-    public static final String PLUGINS_DEPENDENCY_CONFIGURATION_NAME = "jenkinsPlugins"
+    public static final String PLUGINS_DEPENDENCY_CONFIGURATION_NAME = 'jenkinsPlugins'
 
     /**
      * Represents the dependencies on other Jenkins plugins.
      *
      * Using a separate configuration until we see GRADLE-1749.
      */
-    public static final String OPTIONAL_PLUGINS_DEPENDENCY_CONFIGURATION_NAME = "optionalJenkinsPlugins"
+    public static final String OPTIONAL_PLUGINS_DEPENDENCY_CONFIGURATION_NAME = 'optionalJenkinsPlugins'
 
     /**
      * Represents the Jenkins plugin test dependencies.
      */
-    public static final String JENKINS_TEST_DEPENDENCY_CONFIGURATION_NAME = "jenkinsTest"
+    public static final String JENKINS_TEST_DEPENDENCY_CONFIGURATION_NAME = 'jenkinsTest'
 
-    public static final String WEB_APP_GROUP = "web application";
+    public static final String WEB_APP_GROUP = 'web application'
 
-    public void apply(final Project gradleProject) {
-        gradleProject.plugins.apply(JavaPlugin);
-        gradleProject.plugins.apply(WarPlugin);
-        gradleProject.plugins.apply(MavenPlugin);
-        gradleProject.plugins.apply(GroovyPlugin);
-
-        def warConvention = gradleProject.convention.getPlugin(WarPluginConvention);
+    void apply(final Project gradleProject) {
+        gradleProject.plugins.apply(JavaPlugin)
+        gradleProject.plugins.apply(WarPlugin)
+        gradleProject.plugins.apply(MavenPlugin)
+        gradleProject.plugins.apply(GroovyPlugin)
 
         // never run war as it's useless
-        gradleProject.tasks.getByName("war").onlyIf { false }
+        gradleProject.tasks.getByName('war').onlyIf { false }
 
         def ext = new JpiExtension(gradleProject)
-        gradleProject.extensions.jenkinsPlugin = ext;
+        gradleProject.extensions.jenkinsPlugin = ext
 
         gradleProject.tasks.withType(Jpi) { Jpi task ->
             task.dependsOn {
                 ext.mainSourceTree().runtimeClasspath
             }
             task.setClasspath(ext.runtimeClasspath)
-            task.archiveName = "${ext.shortName}.${ext.fileExtension}";
+            task.archiveName = "${ext.shortName}.${ext.fileExtension}"
         }
         gradleProject.tasks.withType(ServerTask) { ServerTask task ->
             task.dependsOn {
@@ -100,39 +93,39 @@ public class JpiPlugin implements Plugin<Project> {
             }
         }
         gradleProject.tasks.withType(StaplerGroovyStubsTask) { StaplerGroovyStubsTask task ->
-            task.destinationDir = ext.getStaplerStubDir()
+            task.destinationDir = ext.staplerStubDir
         }
         gradleProject.tasks.withType(LocalizerTask) { LocalizerTask task ->
             task.sourceDirs = gradleProject.sourceSets.main.resources.srcDirs
-            task.destinationDir = ext.getLocalizerDestDir()
+            task.destinationDir = ext.localizerDestDir
         }
 
-        def jpi = gradleProject.tasks.create(Jpi.TASK_NAME, Jpi);
-        jpi.description = "Generates the JPI package";
-        jpi.group = BasePlugin.BUILD_GROUP;
-        gradleProject.extensions.getByType(DefaultArtifactPublicationSet).addCandidate(new ArchivePublishArtifact(jpi));
+        def jpi = gradleProject.tasks.create(Jpi.TASK_NAME, Jpi)
+        jpi.description = 'Generates the JPI package'
+        jpi.group = BasePlugin.BUILD_GROUP
+        gradleProject.extensions.getByType(DefaultArtifactPublicationSet).addCandidate(new ArchivePublishArtifact(jpi))
 
-        def server = gradleProject.tasks.create(ServerTask.TASK_NAME, ServerTask);
-        server.description = "Run Jenkins in place with the plugin being developed";
-        server.group = BasePlugin.BUILD_GROUP; // TODO
+        def server = gradleProject.tasks.create(ServerTask.TASK_NAME, ServerTask)
+        server.description = 'Run Jenkins in place with the plugin being developed'
+        server.group = BasePlugin.BUILD_GROUP // TODO
 
         def stubs = gradleProject.tasks.create(StaplerGroovyStubsTask.TASK_NAME, StaplerGroovyStubsTask)
-        stubs.description = "Generates the Java stubs from Groovy source to enable Stapler annotation processing."
+        stubs.description = 'Generates the Java stubs from Groovy source to enable Stapler annotation processing.'
         stubs.group = BasePlugin.BUILD_GROUP
 
-        gradleProject.sourceSets.main.java.srcDirs += ext.getStaplerStubDir()
+        gradleProject.sourceSets.main.java.srcDirs += ext.staplerStubDir
 
         gradleProject.tasks.compileJava.dependsOn(StaplerGroovyStubsTask.TASK_NAME)
 
         def localizer = gradleProject.tasks.create(LocalizerTask.TASK_NAME, LocalizerTask)
-        localizer.description = "Generates the Java source for the localizer."
+        localizer.description = 'Generates the Java source for the localizer.'
         localizer.group = BasePlugin.BUILD_GROUP
 
-        gradleProject.sourceSets.main.java.srcDirs += ext.getLocalizerDestDir()
+        gradleProject.sourceSets.main.java.srcDirs += ext.localizerDestDir
 
         gradleProject.tasks.compileJava.dependsOn(LocalizerTask.TASK_NAME)
 
-        def sourcesJar = gradleProject.task('sourcesJar', type: Jar, dependsOn:'classes') {
+        def sourcesJar = gradleProject.task('sourcesJar', type: Jar, dependsOn: 'classes') {
             classifier = 'sources'
             from gradleProject.sourceSets.main.allSource
         }
@@ -144,39 +137,44 @@ public class JpiPlugin implements Plugin<Project> {
             archives sourcesJar, javadocJar
         }
 
-        configureConfigurations(gradleProject.configurations);
+        configureConfigurations(gradleProject.configurations)
 
         def mvnConvention = gradleProject.convention.getPlugin(MavenPluginConvention)
-        mvnConvention.conf2ScopeMappings.addMapping(MavenPlugin.PROVIDED_COMPILE_PRIORITY,
-                                                         gradleProject.configurations[CORE_DEPENDENCY_CONFIGURATION_NAME],
-                                                         Conf2ScopeMappingContainer.PROVIDED)
+        mvnConvention.conf2ScopeMappings.addMapping(
+                MavenPlugin.PROVIDED_COMPILE_PRIORITY,
+                gradleProject.configurations[CORE_DEPENDENCY_CONFIGURATION_NAME],
+                Conf2ScopeMappingContainer.PROVIDED
+        )
 
-        mvnConvention.conf2ScopeMappings.addMapping(MavenPlugin.PROVIDED_COMPILE_PRIORITY,
-                                                         gradleProject.configurations[PLUGINS_DEPENDENCY_CONFIGURATION_NAME],
-                                                         Conf2ScopeMappingContainer.PROVIDED)
+        mvnConvention.conf2ScopeMappings.addMapping(
+                MavenPlugin.PROVIDED_COMPILE_PRIORITY,
+                gradleProject.configurations[PLUGINS_DEPENDENCY_CONFIGURATION_NAME],
+                Conf2ScopeMappingContainer.PROVIDED
+        )
 
-        mvnConvention.conf2ScopeMappings.addMapping(MavenPlugin.PROVIDED_COMPILE_PRIORITY,
-                                                         gradleProject.configurations[OPTIONAL_PLUGINS_DEPENDENCY_CONFIGURATION_NAME],
-                                                         Conf2ScopeMappingContainer.PROVIDED)
+        mvnConvention.conf2ScopeMappings.addMapping(
+                MavenPlugin.PROVIDED_COMPILE_PRIORITY,
+                gradleProject.configurations[OPTIONAL_PLUGINS_DEPENDENCY_CONFIGURATION_NAME],
+                Conf2ScopeMappingContainer.PROVIDED
+        )
 
-        def installer = gradleProject.tasks.getByName("install")
-
+        def installer = gradleProject.tasks.getByName('install')
 
         installer.repositories.mavenInstaller.pom.whenConfigured { p -> 
             p.project { 
                 parent {
                     groupId 'org.jenkins-ci.plugins'
                     artifactId 'plugin'
-                    version ext.getCoreVersion()
+                    version ext.coreVersion
                 }
                 url ext.url
                 description gradleProject.description
-                name ext.getDisplayName()
+                name ext.displayName
                 artifactId ext.shortName
                 if (ext.gitHubUrl != null && ext.gitHubUrl =~ /^https:\/\/github\.com/) {
                     scm {
-                        connection ext.getGitHubSCMConnection()
-                        developerConnection ext.getGitHubSCMDevConnection()
+                        connection ext.gitHubSCMConnection
+                        developerConnection ext.gitHubSCMDevConnection
                         url ext.gitHubUrl
                     }
                 }
@@ -194,20 +192,26 @@ public class JpiPlugin implements Plugin<Project> {
                 }
                 developers {
                     ext.developers.each { dev ->
-                        developer { 
+                        developer {
                             id dev.id
-                            if (dev.name != null)
+                            if (dev.name != null) {
                                 name dev.name
-                            if (dev.email != null)
+                            }
+                            if (dev.email != null) {
                                 email dev.email
-                            if (dev.url != null)
+                            }
+                            if (dev.url != null) {
                                 url dev.url
-                            if (dev.organization != null)
+                            }
+                            if (dev.organization != null) {
                                 organization dev.organization
-                            if (dev.organizationUrl != null)
+                            }
+                            if (dev.organizationUrl != null) {
                                 organizationUrl dev.organizationUrl
-                            if (dev.timezone != null)
+                            }
+                            if (dev.timezone != null) {
                                 timezone dev.timezone
+                            }
                         }
                     }
                 }
@@ -215,21 +219,21 @@ public class JpiPlugin implements Plugin<Project> {
         }
 
         // default configuration of uploadArchives Maven task
-        def uploadArchives = gradleProject.tasks.getByName("uploadArchives")
+        def uploadArchives = gradleProject.tasks.getByName('uploadArchives')
         uploadArchives.doFirst {
             repositories {
                 mavenDeployer {
                     // configure this only when the user didn't give any explicit configuration
                     // whatever in build.gradle should win what we have here
-                    if (repository==null && snapshotRepository==null) {
-                        gradleProject.logger.warn("Deploying to the Jenkins community repository")
+                    if (repository == null && snapshotRepository == null) {
+                        gradleProject.logger.warn('Deploying to the Jenkins community repository')
                         def props = loadDotJenkinsOrg()
 
                         repository(url: ext.repoUrl) {
-                            authentication(userName:props["userName"], password:props["password"])
+                            authentication(userName: props['userName'], password: props['password'])
                         }
-                        snapshotRepository(url:ext.snapshotRepoUrl) {
-                            authentication(userName:props["userName"], password:props["password"])
+                        snapshotRepository(url: ext.snapshotRepoUrl) {
+                            authentication(userName: props['userName'], password: props['password'])
                         }
                     }
                     pom = installer.repositories.mavenInstaller.pom
@@ -237,46 +241,53 @@ public class JpiPlugin implements Plugin<Project> {
             }
         }
                 
-
         // creating alias for making migration from Maven easy.
-        gradleProject.tasks.create("deploy").dependsOn(uploadArchives)
+        gradleProject.tasks.create('deploy').dependsOn(uploadArchives)
 
         // generate test hpl manifest for the current plugin, to be used during unit test
-        def generateTestHpl = gradleProject.tasks.create("generate-test-hpl") << {
-            def hpl = new File(ext.testSourceTree().output.classesDir, "the.hpl")
+        def generateTestHpl = gradleProject.tasks.create('generate-test-hpl') << {
+            def hpl = new File(ext.testSourceTree().output.classesDir, 'the.hpl')
             hpl.parentFile.mkdirs()
             new JpiHplManifest(gradleProject).writeTo(hpl)
         }
-        gradleProject.tasks.getByName("test").dependsOn(generateTestHpl)
+        gradleProject.tasks.getByName('test').dependsOn(generateTestHpl)
     }
     
-    private Properties loadDotJenkinsOrg() {
+    private static Properties loadDotJenkinsOrg() {
         Properties props = new Properties()
-        def dot = new File(new File(System.getProperty("user.home")), ".jenkins-ci.org")
-        if (!dot.exists())
-            throw new Exception("Trying to deploy to Jenkins community repository but there's no credential file ${dot}. See https://wiki.jenkins-ci.org/display/JENKINS/Dot+Jenkins+Ci+Dot+Org")
+        def dot = new File(new File(System.getProperty('user.home')), '.jenkins-ci.org')
+        if (!dot.exists()) {
+            throw new GradleException(
+                    "Trying to deploy to Jenkins community repository but there's no credential file ${dot}." +
+                            ' See https://wiki.jenkins-ci.org/display/JENKINS/Dot+Jenkins+Ci+Dot+Org'
+            )
+        }
         dot.withInputStream { i -> props.load(i) }
-        return props
+        props
     }
 
-    public void configureConfigurations(ConfigurationContainer cc) {
-        Configuration jenkinsCoreConfiguration = cc.create(CORE_DEPENDENCY_CONFIGURATION_NAME).setVisible(false).
-                setDescription("Jenkins core that your plugin is built against");
-        Configuration jenkinsPluginsConfiguration = cc.create(PLUGINS_DEPENDENCY_CONFIGURATION_NAME).setVisible(false).
-                setDescription("Jenkins plugins which your plugin is built against");
-        Configuration optionalJenkinsPluginsConfiguration = cc.create(OPTIONAL_PLUGINS_DEPENDENCY_CONFIGURATION_NAME).setVisible(false).
-                setDescription("Optional Jenkins plugins dependencies which your plugin is built against");
-        Configuration jenkinsTestConfiguration = cc.create(JENKINS_TEST_DEPENDENCY_CONFIGURATION_NAME).setVisible(false)
-                .setDescription("Jenkins plugin test dependencies.")
-        .exclude(group: "org.jenkins-ci.modules", module: 'ssh-cli-auth') 
-        .exclude(group: "org.jenkins-ci.modules", module: 'sshd');
-        cc.getByName(WarPlugin.PROVIDED_COMPILE_CONFIGURATION_NAME).extendsFrom(jenkinsCoreConfiguration);
-        cc.getByName(WarPlugin.PROVIDED_COMPILE_CONFIGURATION_NAME).extendsFrom(jenkinsPluginsConfiguration);
-        cc.getByName(WarPlugin.PROVIDED_COMPILE_CONFIGURATION_NAME).extendsFrom(optionalJenkinsPluginsConfiguration);
-        cc.getByName(JavaPlugin.TEST_COMPILE_CONFIGURATION_NAME).extendsFrom(jenkinsTestConfiguration);
+    void configureConfigurations(ConfigurationContainer cc) {
+        Configuration jenkinsCoreConfiguration = cc.create(CORE_DEPENDENCY_CONFIGURATION_NAME).
+                setVisible(false).
+                setDescription('Jenkins core that your plugin is built against')
+        Configuration jenkinsPluginsConfiguration = cc.create(PLUGINS_DEPENDENCY_CONFIGURATION_NAME).
+                setVisible(false).
+                setDescription('Jenkins plugins which your plugin is built against')
+        Configuration optionalJenkinsPluginsConfiguration = cc.create(OPTIONAL_PLUGINS_DEPENDENCY_CONFIGURATION_NAME).
+                setVisible(false).
+                setDescription('Optional Jenkins plugins dependencies which your plugin is built against')
+        Configuration jenkinsTestConfiguration = cc.create(JENKINS_TEST_DEPENDENCY_CONFIGURATION_NAME).
+                setVisible(false).
+                setDescription('Jenkins plugin test dependencies.')
+        .exclude(group: 'org.jenkins-ci.modules', module: 'ssh-cli-auth')
+        .exclude(group: 'org.jenkins-ci.modules', module: 'sshd')
+        cc.getByName(WarPlugin.PROVIDED_COMPILE_CONFIGURATION_NAME).extendsFrom(jenkinsCoreConfiguration)
+        cc.getByName(WarPlugin.PROVIDED_COMPILE_CONFIGURATION_NAME).extendsFrom(jenkinsPluginsConfiguration)
+        cc.getByName(WarPlugin.PROVIDED_COMPILE_CONFIGURATION_NAME).extendsFrom(optionalJenkinsPluginsConfiguration)
+        cc.getByName(JavaPlugin.TEST_COMPILE_CONFIGURATION_NAME).extendsFrom(jenkinsTestConfiguration)
 
-        cc.create(WAR_DEPENDENCY_CONFIGURATION_NAME).setVisible(false).
-                setDescription("Jenkins war that corresponds to the Jenkins core");
+        cc.create(WAR_DEPENDENCY_CONFIGURATION_NAME).
+                setVisible(false).
+                setDescription('Jenkins war that corresponds to the Jenkins core')
     }
-
 }
