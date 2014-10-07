@@ -43,7 +43,10 @@ ruleset {
 
     ruleset('rulesets/logging.xml')
 
-    ruleset('rulesets/naming.xml')
+    ruleset('rulesets/naming.xml') {
+        // Gradle encourages violations of this rule
+        exclude 'ConfusingMethodName'
+    }
 
     ruleset('rulesets/security.xml') {
         // we don't care for the Enterprise Java Bean specification here
