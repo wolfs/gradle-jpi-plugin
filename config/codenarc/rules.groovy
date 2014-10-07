@@ -57,8 +57,12 @@ ruleset {
             maxNestedBlockDepth = 6
         }
 
+        // we don't care for now
+        exclude 'AbcMetric'
         // we have no Cobertura coverage file yet
         exclude 'CrapMetric'
+        // we don't care for now
+        exclude 'MethodSize'
     }
 
     ruleset('rulesets/unnecessary.xml')
