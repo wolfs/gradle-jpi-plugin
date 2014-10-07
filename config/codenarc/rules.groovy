@@ -47,6 +47,10 @@ ruleset {
     ruleset('rulesets/serialization.xml')
 
     ruleset('rulesets/size.xml') {
+        NestedBlockDepth {
+            maxNestedBlockDepth = 6
+        }
+
         // we have no Cobertura coverage file yet
         exclude 'CrapMetric'
     }
