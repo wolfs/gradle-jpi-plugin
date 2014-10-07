@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jenkinsci.gradle.plugins.jpi
 
 import org.gradle.api.DefaultTask
+import org.gradle.api.internal.project.IsolatedAntBuilder
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.OutputDirectory
 
@@ -25,24 +25,24 @@ import org.gradle.api.tasks.OutputDirectory
  *
  * @author Andrew Bayer
  */
-class StaplerGroovyStubsTask extends DefaultTask { 
+class StaplerGroovyStubsTask extends DefaultTask {
   @OutputDirectory
   File destinationDir
-  
+
   @TaskAction
   def generateStubs() {
     def p = project
-    def isolatedAnt = services.get(org.gradle.api.internal.project.IsolatedAntBuilder)
+    def isolatedAnt = services.get(IsolatedAntBuilder)
     isolatedAnt.execute {
       mkdir(dir: destinationDir.canonicalPath)
-      taskdef(name: "generatestubs", classname: "org.codehaus.groovy.ant.GenerateStubsTask") {
+      taskdef(name: 'generatestubs', classname: 'org.codehaus.groovy.ant.GenerateStubsTask') {
         classpath {
         pathelement path: p.sourceSets.main.compileClasspath.asPath
         }
       }
-      
+
       generatestubs(destdir: destinationDir.canonicalPath) {
-        configuration(targetByteCode:"1.6")
+        configuration(targetByteCode: '1.6')
         classpath {
         pathelement path: p.sourceSets.main.compileClasspath.asPath
         }
@@ -50,7 +50,7 @@ class StaplerGroovyStubsTask extends DefaultTask {
           p.sourceSets.main.groovy.srcDirs.each { srcDir ->
             if (srcDir.exists()) {
               dirset(dir: srcDir) {
-              exclude name: "**/*.properties"
+              exclude name: '**/*.properties'
               }
             }
           }
@@ -59,6 +59,5 @@ class StaplerGroovyStubsTask extends DefaultTask {
     }
   }
 
-  
-  public static final String TASK_NAME = "stapler"
+  public static final String TASK_NAME = 'stapler'
 }
