@@ -1,5 +1,7 @@
 ## 0.6.1 (unreleased)
 
+  * `jpiDeployUser` and `jpiDeployPassword` properties from `org.jenkinsci.gradle.plugins.jpi.JpiExtension` were not
+    used and have been removed
   * `org.jenkinsci.gradle.plugins.jpi.JpiPluginConvention` was not used and has been removed
 
 ## 0.6.0 (2014-10-01)

@@ -245,23 +245,6 @@ class JpiExtension {
         ''
     }
 
-    /**
-     * Maven repo deployment credentials.
-     */
-    String getJpiDeployUser() {
-        if (project.hasProperty('jpi.deploy.user')) {
-            return project.property('jpi.deploy.user')
-        }
-        ''
-    }
-
-    String getJpiDeployPassword() {
-        if (project.hasProperty('jpi.deploy.password')) {
-            return project.property('jpi.deploy.password')
-        }
-        ''
-    }
-
     Developers developers = new Developers()
 
     def developers(Closure closure) {
