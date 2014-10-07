@@ -2,22 +2,7 @@ apply plugin: 'groovy'
 apply plugin: 'maven'
 apply plugin: 'signing'
 apply plugin: 'idea'
-apply plugin: 'release'
 apply plugin: 'codenarc'
-
-buildscript {
-    repositories {
-        repositories {
-            maven {
-                // For gradle-release
-                url 'http://dl.bintray.com/content/netflixoss/external-gradle-plugins/'
-            }
-        }
-    }
-    dependencies {
-        classpath 'gradle-release:gradle-release:1.1.5'
-    }
-}
 
 task wrapper(type: Wrapper) {
     gradleVersion = '1.8'
