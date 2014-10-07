@@ -1,5 +1,7 @@
 ## 0.6.1 (unreleased)
 
+  * `org.jenkinsci.gradle.plugins.jpi.JpiPluginConvention` was not used and has been removed
+
 ## 0.6.0 (2014-10-01)
 
   * do not exclude org.jenkins-ci.modules:instance-identity from jenkinsTest configuration

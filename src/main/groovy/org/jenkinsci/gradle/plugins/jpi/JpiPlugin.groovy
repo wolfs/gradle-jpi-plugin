@@ -78,8 +78,6 @@ public class JpiPlugin implements Plugin<Project> {
         gradleProject.plugins.apply(WarPlugin);
         gradleProject.plugins.apply(MavenPlugin);
         gradleProject.plugins.apply(GroovyPlugin);
-        def pluginConvention = new JpiPluginConvention();
-        gradleProject.convention.plugins["jpi"] = pluginConvention
 
         def warConvention = gradleProject.convention.getPlugin(WarPluginConvention);
 
