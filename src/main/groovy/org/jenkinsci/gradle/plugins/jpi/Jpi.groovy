@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jenkinsci.gradle.plugins.jpi
 
 import org.gradle.api.tasks.bundling.War
@@ -37,5 +36,5 @@ class Jpi extends War {
         super.copy()
     }
 
-    public static final String TASK_NAME = "jpi";
+    public static final String TASK_NAME = 'jpi'
 }
