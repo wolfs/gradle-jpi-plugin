@@ -1,5 +1,6 @@
 package org.jenkinsci.gradle.plugins.jpi
 
+import org.gradle.api.GradleException
 import org.gradle.api.Project
 import spock.lang.Specification
 
@@ -61,5 +62,35 @@ class JpiExtensionSpec extends Specification {
 
         then:
         jpiExtension.displayName == 'foo'
+    }
+
+    def 'file extenstion defaults to hpi if not set'(String value) {
+        when:
+        jpiExtension.fileExtension = value
+
+        then:
+        jpiExtension.fileExtension == 'hpi'
+
+        where:
+        value << [null, '']
+    }
+
+    def 'file extension is used when set'() {
+        when:
+        jpiExtension.fileExtension = 'jpi'
+
+        then:
+        jpiExtension.fileExtension == 'jpi'
+    }
+
+    def 'core versions earlier than 1.420 are not supported'(String version) {
+        when:
+        jpiExtension.coreVersion = version
+
+        then:
+        thrown(GradleException)
+
+        where:
+        version << ['1.419.99', '1.390', '1.1']
     }
 }
