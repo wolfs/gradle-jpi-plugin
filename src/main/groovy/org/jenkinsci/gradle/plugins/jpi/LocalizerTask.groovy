@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jenkinsci.gradle.plugins.jpi
 
 import org.gradle.api.DefaultTask
+import org.gradle.api.internal.project.IsolatedAntBuilder
 import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.OutputDirectory
@@ -27,7 +27,7 @@ import org.gradle.api.tasks.OutputDirectory
  * @author Andrew Bayer
  */
 class LocalizerTask extends DefaultTask {
-    public static final String TASK_NAME = "localizer"
+    public static final String TASK_NAME = 'localizer'
 
     @OutputDirectory
     File destinationDir
@@ -39,10 +39,10 @@ class LocalizerTask extends DefaultTask {
     def generateLocalized() {
         def p = project
         
-        def isolatedAnt = services.get(org.gradle.api.internal.project.IsolatedAntBuilder)
+        def isolatedAnt = services.get(IsolatedAntBuilder)
         isolatedAnt.execute {
             mkdir(dir: destinationDir.canonicalPath)
-            taskdef(name: "generator", classname: "org.jvnet.localizer.GeneratorTask") {
+            taskdef(name: 'generator', classname: 'org.jvnet.localizer.GeneratorTask') {
                 classpath {
                     pathelement(path: p.buildscript.configurations.classpath.asPath)
                 }
