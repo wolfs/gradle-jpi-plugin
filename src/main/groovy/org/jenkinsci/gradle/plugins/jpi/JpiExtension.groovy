@@ -48,7 +48,7 @@ class JpiExtension {
     shortName ?: trimOffPluginSuffix(project.name)
   }
 
-  private String trimOffPluginSuffix(String s) {
+  private static String trimOffPluginSuffix(String s) {
     if (s.endsWith('-plugin')) {
       return s[0..-8]
     }
@@ -85,24 +85,24 @@ class JpiExtension {
   /**
    * URL that points to the home page of this plugin.
    */
-  public String url
+  String url
 
   /**
    * TODO: document
    */
-  public String compatibleSinceVersion
+  String compatibleSinceVersion
 
   /**
    * TODO: document
    */
-  public boolean sandboxStatus
+  boolean sandboxStatus
 
   /**
    * TODO: document
    */
-  public String maskClasses
+  String maskClasses
 
-  public boolean pluginFirstClassLoader
+  boolean pluginFirstClassLoader
 
   /**
    * Version of core that we depend on.
