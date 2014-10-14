@@ -1,5 +1,6 @@
 ## 0.6.1 (unreleased)
 
+  * updated Gradle to version 1.12
   * added `org.jenkins-ci.jpi` as alternative qualified plugin id for Gradle plugin portal inclusion
   * `jpiDeployUser` and `jpiDeployPassword` properties from `org.jenkinsci.gradle.plugins.jpi.JpiExtension` were not
     used and have been removed
