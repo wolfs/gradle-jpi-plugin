@@ -115,7 +115,7 @@ class JpiManifest extends HashMap<String, Object> {
             buf.append(':')
             buf.append(a.moduleVersion.id.version)
             if (optional) {
-                buf.append('resolution:=optional')
+                buf.append(';resolution:=optional')
             }
         }
     }
