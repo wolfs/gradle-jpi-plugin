@@ -289,6 +289,10 @@ class JpiExtension {
             developerMap.values().each(closure)
         }
 
+        def collect(Closure closure) {
+            developerMap.values().collect(closure)
+        }
+
         def getProperties() {
             developerMap
         }
