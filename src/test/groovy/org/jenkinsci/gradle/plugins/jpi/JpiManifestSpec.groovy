@@ -28,7 +28,7 @@ class JpiManifestSpec extends Specification {
         new JpiManifest(project).writeTo(file)
 
         then:
-        file.text == JpiManifestSpec.getResourceAsStream('basics.mf').text
+        file.text == readManifest('basics.mf')
     }
 
     def 'dependency'() {
@@ -50,7 +50,7 @@ class JpiManifestSpec extends Specification {
         new JpiManifest(project).writeTo(file)
 
         then:
-        file.text == JpiManifestSpec.getResourceAsStream('dependency.mf').text
+        file.text == readManifest('dependency.mf')
     }
 
     def 'dependencies'() {
@@ -73,7 +73,7 @@ class JpiManifestSpec extends Specification {
         new JpiManifest(project).writeTo(file)
 
         then:
-        file.text == JpiManifestSpec.getResourceAsStream('dependencies.mf').text
+        file.text == readManifest('dependencies.mf')
     }
 
     def 'optional dependency'() {
@@ -95,7 +95,7 @@ class JpiManifestSpec extends Specification {
         new JpiManifest(project).writeTo(file)
 
         then:
-        file.text == JpiManifestSpec.getResourceAsStream('optional-dependency.mf').text
+        file.text == readManifest('optional-dependency.mf')
     }
 
     def 'optional dependencies'() {
@@ -118,7 +118,7 @@ class JpiManifestSpec extends Specification {
         new JpiManifest(project).writeTo(file)
 
         then:
-        file.text == JpiManifestSpec.getResourceAsStream('optional-dependencies.mf').text
+        file.text == readManifest('optional-dependencies.mf')
     }
 
     def 'complex dependencies'() {
@@ -143,7 +143,7 @@ class JpiManifestSpec extends Specification {
         new JpiManifest(project).writeTo(file)
 
         then:
-        file.text == JpiManifestSpec.getResourceAsStream('complex-dependencies.mf').text
+        file.text == readManifest('complex-dependencies.mf')
     }
 
     def 'compatible since version'() {
@@ -163,7 +163,7 @@ class JpiManifestSpec extends Specification {
         new JpiManifest(project).writeTo(file)
 
         then:
-        file.text == JpiManifestSpec.getResourceAsStream('compatible-since-version.mf').text
+        file.text == readManifest('compatible-since-version.mf')
     }
 
     def 'mask classes'() {
@@ -183,7 +183,7 @@ class JpiManifestSpec extends Specification {
         new JpiManifest(project).writeTo(file)
 
         then:
-        file.text == JpiManifestSpec.getResourceAsStream('mask-classes.mf').text
+        file.text == readManifest('mask-classes.mf')
     }
 
     def 'plugin first class loader'() {
@@ -203,6 +203,11 @@ class JpiManifestSpec extends Specification {
         new JpiManifest(project).writeTo(file)
 
         then:
-        file.text == JpiManifestSpec.getResourceAsStream('plugin-first-class-loader.mf').text
+        file.text == readManifest('plugin-first-class-loader.mf')
     }
+
+    private static String readManifest(String fileName) {
+        JpiManifestSpec.getResourceAsStream(fileName).text.replace(System.getProperty('line.separator'), '\r\n')
+    }
+
 }
