@@ -2,6 +2,7 @@
 
   * updated Gradle to version 1.12
   * added support for `Plugin-Developers` manifest attribute
+  * added support for `Support-Dynamic-Loading` manifest attribute
   * replaced usages of deprecated `groovy` configuration by `compile` configuration
   * added `org.jenkins-ci.jpi` as alternative qualified plugin id for Gradle plugin portal inclusion
   * `jpiDeployUser` and `jpiDeployPassword` properties from `org.jenkinsci.gradle.plugins.jpi.JpiExtension` were not

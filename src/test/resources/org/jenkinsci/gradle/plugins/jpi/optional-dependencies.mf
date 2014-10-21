@@ -4,6 +4,7 @@ Group-Id: org.example
 Plugin-Dependencies: git:1.1.15;resolution:=optional,ant:1.2;resolutio
  n:=optional
 v: 1.0
+Support-Dynamic-Loading: true
 Short-Name: test
 Plugin-Version: 1.0
 Long-Name: test

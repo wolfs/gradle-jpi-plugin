@@ -4,6 +4,7 @@ Group-Id: org.example
 v: 1.2
 Plugin-Developers: :abayer:andrew.bayer@gmail.com,Kohsuke Kawaguchi:ko
  hsuke:
+Support-Dynamic-Loading: true
 Short-Name: test
 Plugin-Version: 1.2
 Long-Name: test

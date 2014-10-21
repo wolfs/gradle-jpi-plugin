@@ -19,6 +19,7 @@ dependencies {
     compile gradleApi()
     compile 'org.jvnet.localizer:maven-localizer-plugin:1.13'
     compile 'org.jenkins-ci:version-number:1.0'
+    compile 'net.java.sezpoz:sezpoz:1.9'
     compile localGroovy()
     testCompile('org.spockframework:spock-core:0.7-groovy-1.8') {
         exclude module: 'groovy-all' // use the version that is distributed with Gradle

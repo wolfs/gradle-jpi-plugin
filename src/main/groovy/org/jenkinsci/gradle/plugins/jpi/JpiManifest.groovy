@@ -15,6 +15,10 @@
  */
 package org.jenkinsci.gradle.plugins.jpi
 
+import hudson.Extension
+import jenkins.YesNoMaybe
+import net.java.sezpoz.Index
+
 import java.text.SimpleDateFormat
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaPluginConvention
@@ -85,12 +89,11 @@ class JpiManifest extends HashMap<String, Object> {
             }.join(',')
         }
 
-        // more TODO
-/*
-        Boolean b = isSupportDynamicLoading()
-        if (b!=null)
-            mainSection.addAttributeAndCheck(new Attribute("Support-Dynamic-Loading",b.toString()))
-*/
+        YesNoMaybe supportDynamicLoading = isSupportDynamicLoading(classDir)
+        if (supportDynamicLoading != YesNoMaybe.MAYBE) {
+            this['Support-Dynamic-Loading'] = supportDynamicLoading == YesNoMaybe.YES
+        }
+
         // remove empty values
         this.entrySet().removeAll { it.value == null || it.value.toString().empty }
     }
@@ -116,6 +119,21 @@ class JpiManifest extends HashMap<String, Object> {
                 buf.append(';resolution:=optional')
             }
         }
+    }
+
+    private static YesNoMaybe isSupportDynamicLoading(File classDir) throws IOException {
+        ClassLoader classLoader = new URLClassLoader(
+                [classDir.toURI().toURL()] as URL[],
+                JpiManifest.classLoader as ClassLoader
+        )
+        def enums = Index.load(Extension, Object, classLoader).collect { it.annotation().dynamicLoadable() }
+        if (enums.contains(YesNoMaybe.NO)) {
+            return YesNoMaybe.NO
+        }
+        if (enums.contains(YesNoMaybe.MAYBE)) {
+            return YesNoMaybe.MAYBE
+        }
+        YesNoMaybe.YES
     }
 
     void writeTo(File f) {
