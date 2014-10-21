@@ -5,6 +5,8 @@
   * added support for `Support-Dynamic-Loading` manifest attribute
   * set `stapler.jelly.noCache` system property to `true` when running `server` task
   * removed `v` attribute from manifest
+  * ignore non-existing source directories in `localizer` task
+  * ignore non-existing library paths in `server` task
   * replaced usages of deprecated `groovy` configuration by `compile` configuration
   * added `org.jenkins-ci.jpi` as alternative qualified plugin id for Gradle plugin portal inclusion
   * `jpiDeployUser` and `jpiDeployPassword` properties from `org.jenkinsci.gradle.plugins.jpi.JpiExtension` were not

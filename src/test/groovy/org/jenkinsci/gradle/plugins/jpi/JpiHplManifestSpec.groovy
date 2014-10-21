@@ -11,11 +11,26 @@ class JpiHplManifestSpec extends Specification {
         setup:
         project.with {
             apply plugin: 'jpi'
-            group = 'org.example'
-            version = '1.2'
-            jenkinsPlugin {
-                coreVersion = '1.509.3'
-            }
+        }
+        def libraries = [
+                new File(project.projectDir, 'src/main/resources'),
+                new File(project.buildDir, 'classes/main'),
+                new File(project.buildDir, 'resources/main'),
+        ]
+        libraries*.mkdirs()
+
+        when:
+        JpiHplManifest manifest = new JpiHplManifest(project)
+
+        then:
+        manifest['Resource-Path'] == new File(project.projectDir, 'src/main/webapp').path
+        manifest['Libraries'] == libraries*.path.join(',')
+    }
+
+    def 'non-existing libraries are ignored'() {
+        setup:
+        project.with {
+            apply plugin: 'jpi'
         }
 
         when:
@@ -23,10 +38,6 @@ class JpiHplManifestSpec extends Specification {
 
         then:
         manifest['Resource-Path'] == new File(project.projectDir, 'src/main/webapp').path
-        manifest['Libraries'] == [
-                new File(project.projectDir, 'src/main/resources'),
-                new File(project.buildDir, 'classes/main'),
-                new File(project.buildDir, 'resources/main'),
-        ]*.path.join(',')
+        manifest['Libraries'] == ''
     }
 }

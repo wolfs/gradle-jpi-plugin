@@ -47,7 +47,7 @@ class LocalizerTask extends DefaultTask {
                     pathelement(path: p.buildscript.configurations.classpath.asPath)
                 }
             }
-            sourceDirs.each { rsrcDir ->
+            sourceDirs.findAll { it.exists() }.each { rsrcDir ->
                 generator(todir: destinationDir.canonicalPath, dir: rsrcDir)
             }
         }
