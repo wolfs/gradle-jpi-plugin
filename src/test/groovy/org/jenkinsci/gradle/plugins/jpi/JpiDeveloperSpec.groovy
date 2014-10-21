@@ -1,9 +1,7 @@
 package org.jenkinsci.gradle.plugins.jpi
 
-import org.gradle.api.Project
 import org.gradle.api.logging.LogLevel
 import org.gradle.api.logging.Logger
-import org.gradle.testfixtures.ProjectBuilder
 import spock.lang.Specification
 
 class JpiDeveloperSpec extends Specification {
@@ -27,22 +25,26 @@ class JpiDeveloperSpec extends Specification {
         JpiDeveloper developer = new JpiDeveloper(logger)
 
         when:
-        developer.id('test')
-        developer.name('me')
-        developer.email('me@example.org')
-        developer.url('https://example.org/me')
-        developer.organization('Example Inc.')
-        developer.organizationUrl('https://example.org')
-        developer.timezone('UTC')
+        developer.with {
+            id('test')
+            name('me')
+            email('me@example.org')
+            url('https://example.org/me')
+            organization('Example Inc.')
+            organizationUrl('https://example.org')
+            timezone('UTC')
+        }
 
         then:
-        developer.id == 'test'
-        developer.name == 'me'
-        developer.email == 'me@example.org'
-        developer.url == 'https://example.org/me'
-        developer.organization == 'Example Inc.'
-        developer.organizationUrl == 'https://example.org'
-        developer.timezone == 'UTC'
+        with(developer) {
+            id == 'test'
+            name == 'me'
+            email == 'me@example.org'
+            url == 'https://example.org/me'
+            organization == 'Example Inc.'
+            organizationUrl == 'https://example.org'
+            timezone == 'UTC'
+        }
     }
 
     def 'unsupported methods'() {
