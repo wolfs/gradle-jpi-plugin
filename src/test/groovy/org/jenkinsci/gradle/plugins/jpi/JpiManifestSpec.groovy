@@ -206,8 +206,62 @@ class JpiManifestSpec extends Specification {
         file.text == readManifest('plugin-first-class-loader.mf')
     }
 
+    def 'plugin developer'() {
+        setup:
+        project.with {
+            apply plugin: 'jpi'
+            group = 'org.example'
+            version = '1.2'
+            jenkinsPlugin {
+                coreVersion = '1.509.3'
+                developers {
+                    developer {
+                        id 'abayer'
+                        name 'Andrew Bayer'
+                        email 'andrew.bayer@gmail.com'
+                    }
+                }
+            }
+        }
+
+        when:
+        File file = temporaryFolder.newFile()
+        new JpiManifest(project).writeTo(file)
+
+        then:
+        file.text == readManifest('plugin-developer.mf')
+    }
+
+    def 'plugin developers'() {
+        setup:
+        project.with {
+            apply plugin: 'jpi'
+            group = 'org.example'
+            version = '1.2'
+            jenkinsPlugin {
+                coreVersion = '1.509.3'
+                developers {
+                    developer {
+                        id 'abayer'
+                        email 'andrew.bayer@gmail.com'
+                    }
+                    developer {
+                        id 'kohsuke'
+                        name 'Kohsuke Kawaguchi'
+                    }
+                }
+            }
+        }
+
+        when:
+        File file = temporaryFolder.newFile()
+        new JpiManifest(project).writeTo(file)
+
+        then:
+        file.text == readManifest('plugin-developers.mf')
+    }
+
     private static String readManifest(String fileName) {
         JpiManifestSpec.getResourceAsStream(fileName).text.replace(System.getProperty('line.separator'), '\r\n')
     }
-
 }

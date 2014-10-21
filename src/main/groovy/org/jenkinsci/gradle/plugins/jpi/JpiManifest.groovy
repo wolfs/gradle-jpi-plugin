@@ -79,22 +79,20 @@ class JpiManifest extends HashMap<String, Object> {
             this['PluginFirstClassLoader'] = true
         }
 
-        // more TODO
-/*
-        if (project.getDevelopers() != null) {
-            mainSection.addAttributeAndCheck(new Attribute("Plugin-Developers",getDevelopersForManifest()))
+        if (conv.developers) {
+            this['Plugin-Developers'] = conv.developers.collect {
+                "${it.name ?: ''}:${it.id ?: ''}:${it.email ?: ''}"
+            }.join(',')
         }
 
+        // more TODO
+/*
         Boolean b = isSupportDynamicLoading()
         if (b!=null)
             mainSection.addAttributeAndCheck(new Attribute("Support-Dynamic-Loading",b.toString()))
 */
-        // remove null values
-        for (Iterator itr = this.entrySet().iterator(); itr.hasNext();) {
-            if (itr.next().value == null) {
-                itr.remove()
-            }
-        }
+        // remove empty values
+        this.entrySet().removeAll { it.value == null || it.value.toString().empty }
     }
 
     private static String findDependencyProjects(Project project) {
