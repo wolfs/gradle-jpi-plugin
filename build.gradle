@@ -100,6 +100,10 @@ codenarcTest {
     configFile = file('config/codenarc/rules-test.groovy')
 }
 
+test {
+    jvmArgs += ['-XX:MaxPermSize=256m']
+}
+
 group = 'org.jenkins-ci.tools'
 archivesBaseName = 'gradle-jpi-plugin'
 description = 'Gradle plugin for building and packaging Jenkins plugins'

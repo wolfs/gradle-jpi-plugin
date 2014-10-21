@@ -31,6 +31,28 @@ class JpiManifestSpec extends Specification {
         file.text == readManifest('basics.mf')
     }
 
+    def 'plugin class'() {
+        setup:
+        project.with {
+            apply plugin: 'jpi'
+            group = 'org.example'
+            version = '1.2'
+            jenkinsPlugin {
+                coreVersion = '1.509.3'
+            }
+        }
+        File directory = new File(project.tasks.compileJava.destinationDir as File, 'META-INF/services')
+        directory.mkdirs()
+        new File(directory, 'hudson.Plugin').write('org.example.PluginImpl')
+
+        when:
+        File file = temporaryFolder.newFile()
+        new JpiManifest(project).writeTo(file)
+
+        then:
+        file.text == readManifest('plugin-class.mf')
+    }
+
     def 'dependency'() {
         setup:
         project.with {
@@ -204,6 +226,26 @@ class JpiManifestSpec extends Specification {
 
         then:
         file.text == readManifest('plugin-first-class-loader.mf')
+    }
+
+    def 'sandbox status'() {
+        setup:
+        project.with {
+            apply plugin: 'jpi'
+            group = 'org.example'
+            version = '1.2'
+            jenkinsPlugin {
+                coreVersion = '1.509.3'
+                sandboxStatus = true
+            }
+        }
+
+        when:
+        File file = temporaryFolder.newFile()
+        new JpiManifest(project).writeTo(file)
+
+        then:
+        file.text == readManifest('sandbox-status.mf')
     }
 
     def 'plugin developer'() {
