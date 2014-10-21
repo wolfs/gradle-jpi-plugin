@@ -280,9 +280,9 @@ class JpiExtension {
         }
 
         def developer(Closure closure) {
-            def d = new JpiDeveloper(JpiExtension.this.project.logger)
-            ConfigureUtil.configure(closure, d)
-            setProperty(d.id, d)
+            def developer = new JpiDeveloper(JpiExtension.this.project.logger)
+            developer.configure(closure)
+            setProperty(developer.id, developer)
         }
 
         def each(Closure closure) {
