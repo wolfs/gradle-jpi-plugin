@@ -54,6 +54,19 @@ class JpiManifestSpec extends Specification {
         file.text == readManifest('plugin-class.mf')
     }
 
+    def 'no version'() {
+        setup:
+        project.with {
+            apply plugin: 'jpi'
+        }
+
+        when:
+        JpiManifest manifest = new JpiManifest(project)
+
+        then:
+        manifest['Plugin-Version'] =~ /1.0-SNAPSHOT \(private-\d{2}\/\d{2}\/\d{4} \d{2}:\d{2}-.+\)/
+    }
+
     def 'dependency'() {
         setup:
         project.with {

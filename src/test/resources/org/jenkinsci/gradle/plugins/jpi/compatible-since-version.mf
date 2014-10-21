@@ -1,7 +1,6 @@
 Manifest-Version: 1.0
 Jenkins-Version: 1.509.3
 Group-Id: org.example
-v: 1.2
 Support-Dynamic-Loading: true
 Short-Name: test
 Compatible-Since-Version: 1.1

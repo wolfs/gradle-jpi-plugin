@@ -60,15 +60,15 @@ class JpiManifest extends HashMap<String, Object> {
             this['Sandbox-Status'] = conv.sandboxStatus
         }
 
-        v = project.version
-        if (v == Project.DEFAULT_VERSION) {
-            v = '1.0-SNAPSHOT'
+        def version = project.version
+        if (version == Project.DEFAULT_VERSION) {
+            version = '1.0-SNAPSHOT'
         }
-        if (v.toString().endsWith('-SNAPSHOT')) {
+        if (version.toString().endsWith('-SNAPSHOT')) {
             String dt = new SimpleDateFormat('MM/dd/yyyy HH:mm', Locale.default).format(new Date())
-            v += " (private-$dt-${System.getProperty('user.name')})"
+            version += " (private-$dt-${System.getProperty('user.name')})"
         }
-        this['Plugin-Version'] = v
+        this['Plugin-Version'] = version
 
         this['Jenkins-Version'] = conv.coreVersion
 
