@@ -5,6 +5,7 @@ import org.gradle.testfixtures.ProjectBuilder
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
 import spock.lang.Specification
+import spock.lang.Unroll
 
 class JpiManifestSpec extends Specification {
     Project project = ProjectBuilder.builder().build()
@@ -301,6 +302,33 @@ class JpiManifestSpec extends Specification {
 
         then:
         file.text == readManifest('plugin-developers.mf')
+    }
+
+    @Unroll
+    def 'support dynamic loading #value'(String value) {
+        setup:
+        project.with {
+            apply plugin: 'jpi'
+            group = 'org.example'
+            version = '1.2'
+            jenkinsPlugin {
+                coreVersion = '1.509.3'
+            }
+        }
+        byte[] index = JpiManifestSpec.getResourceAsStream("support-dynamic-loading/${value}/hudson.Extension").bytes
+        File directory = new File(project.tasks.compileJava.destinationDir as File, 'META-INF/annotations')
+        directory.mkdirs()
+        new File(directory, 'hudson.Extension').bytes = index
+
+        when:
+        File file = temporaryFolder.newFile()
+        new JpiManifest(project).writeTo(file)
+
+        then:
+        file.text == readManifest("support-dynamic-loading-${value}.mf")
+
+        where:
+        value << ['yes', 'maybe', 'no']
     }
 
     private static String readManifest(String fileName) {

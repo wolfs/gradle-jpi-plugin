@@ -3,6 +3,7 @@ Jenkins-Version: 1.509.3
 Group-Id: org.example
 Plugin-Dependencies: ant:1.2;resolution:=optional
 v: 1.0
+Support-Dynamic-Loading: true
 Short-Name: test
 Plugin-Version: 1.0
 Long-Name: test
