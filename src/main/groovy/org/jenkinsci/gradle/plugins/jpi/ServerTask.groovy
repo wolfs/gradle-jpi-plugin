@@ -40,6 +40,7 @@ class ServerTask extends DefaultTask {
         def conv = project.extensions.getByType(JpiExtension)
         System.setProperty('JENKINS_HOME', conv.workDir.absolutePath)
         System.setProperty('stapler.trace', 'true')
+        System.setProperty('stapler.jelly.noCache', 'true')
         System.setProperty('debug.YUI', 'true')
 
         def cl = new URLClassLoader([war.toURI().toURL()] as URL[])

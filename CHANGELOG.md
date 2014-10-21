@@ -3,6 +3,7 @@
   * updated Gradle to version 1.12
   * added support for `Plugin-Developers` manifest attribute
   * added support for `Support-Dynamic-Loading` manifest attribute
+  * set `stapler.jelly.noCache` system property to `true` when running `server` task
   * removed `v` attribute from manifest
   * replaced usages of deprecated `groovy` configuration by `compile` configuration
   * added `org.jenkins-ci.jpi` as alternative qualified plugin id for Gradle plugin portal inclusion
