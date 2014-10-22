@@ -11,6 +11,8 @@ ruleset {
 
     ruleset('rulesets/dry.xml') {
         // does not necessarily lead to better code
+        exclude 'DuplicateListLiteral'
+        // does not necessarily lead to better code
         exclude 'DuplicateMapLiteral'
         // does not necessarily lead to better code
         exclude 'DuplicateStringLiteral'

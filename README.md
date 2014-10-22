@@ -49,6 +49,15 @@ jenkinsPlugin {
 
     // optional version number from which this plugin release is configuration-compatible
     compatibleSinceVersion = '1.1.0'
+    
+    // set the directory from which the development server will run, defaults to 'work'
+    workDir = file('/tmp/jenkins')
+    
+    // URL used to deploy the plugin, defaults to the value shown
+    repoUrl = 'http://maven.jenkins-ci.org:8081/content/repositories/releases'
+
+    // URL used to deploy snapshots of the plugin, defaults to the value shown
+    snapshotRepoUrl = 'http://maven.jenkins-ci.org:8081/content/repositories/snapshots'
 
     // the developers section is optional, and corresponds to the POM developers section
     developers {

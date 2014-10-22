@@ -219,7 +219,7 @@ class JpiExtension {
      * The URL for the Maven snapshot repository to deploy the built plugin to.
      */
     String getSnapshotRepoUrl() {
-        repoUrl ?: 'http://maven.jenkins-ci.org:8081/content/repositories/snapshots'
+        snapshotRepoUrl ?: 'http://maven.jenkins-ci.org:8081/content/repositories/snapshots'
     }
 
     void setSnapshotRepoUrl(String snapshotRepoUrl) {
