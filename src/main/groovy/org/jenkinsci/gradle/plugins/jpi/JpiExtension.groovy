@@ -236,20 +236,6 @@ class JpiExtension {
      */
     String gitHubUrl
 
-    String getGitHubSCMConnection() {
-        if (gitHubUrl != null && gitHubUrl =~ /^https:\/\/github\.com/) {
-            return gitHubUrl.replaceFirst(~/https:/, 'scm:git:git:') + '.git'
-        }
-        ''
-    }
-
-    String getGitHubSCMDevConnection() {
-        if (gitHubUrl != null && gitHubUrl =~ /^https:\/\/github\.com/) {
-            return gitHubUrl.replaceFirst(~/https:\/\//, 'scm:git:ssh://git@') + '.git'
-        }
-        ''
-    }
-
     Developers developers = new Developers()
 
     def developers(Closure closure) {

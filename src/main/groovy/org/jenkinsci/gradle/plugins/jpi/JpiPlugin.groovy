@@ -173,8 +173,6 @@ class JpiPlugin implements Plugin<Project> {
                 artifactId ext.shortName
                 if (ext.gitHubUrl != null && ext.gitHubUrl =~ /^https:\/\/github\.com/) {
                     scm {
-                        connection ext.gitHubSCMConnection
-                        developerConnection ext.gitHubSCMDevConnection
                         url ext.gitHubUrl
                     }
                 }
