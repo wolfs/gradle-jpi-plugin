@@ -10,6 +10,8 @@
   * ignore non-existing source directories in `localizer` task
   * ignore non-existing library paths in `server` task
   * the value set for the `snapshotRepoUrl` option is no longer ignored
+  * added `findbugs:annotations:1.0.0` to `jenkinsCore` configuration to avoid compiler warnings
+    [JENKINS-14400](https://issues.jenkins-ci.org/browse/JENKINS-14400)
   * replaced usages of deprecated `groovy` configuration by `compile` configuration
   * added `org.jenkins-ci.jpi` as alternative qualified plugin id for Gradle plugin portal inclusion
   * `jpiDeployUser` and `jpiDeployPassword` properties from `org.jenkinsci.gradle.plugins.jpi.JpiExtension` were not
