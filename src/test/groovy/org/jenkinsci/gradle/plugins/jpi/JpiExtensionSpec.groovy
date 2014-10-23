@@ -199,4 +199,88 @@ class JpiExtensionSpec extends Specification {
         where:
         version << ['1.419.99', '1.390', '1.1']
     }
+
+    def 'jenkinsCore dependencies'() {
+        setup:
+        Project project = ProjectBuilder.builder().build()
+
+        when:
+        project.with {
+            apply plugin: 'jpi'
+            jenkinsPlugin {
+                coreVersion = '1.509.3'
+            }
+        }
+
+        then:
+        def dependencies = collectDependencies(project, 'jenkinsCore')
+        'org.jenkins-ci.main:jenkins-core:1.509.3' in dependencies
+        'javax.servlet:servlet-api:2.4' in dependencies
+        'findbugs:annotations:1.0.0' in dependencies
+    }
+
+    def 'jenkinsWar dependencies'() {
+        setup:
+        Project project = ProjectBuilder.builder().build()
+
+        when:
+        project.with {
+            apply plugin: 'jpi'
+            jenkinsPlugin {
+                coreVersion = '1.509.3'
+            }
+        }
+
+        then:
+        def dependencies = collectDependencies(project, 'jenkinsWar')
+        'org.jenkins-ci.main:jenkins-war:1.509.3' in dependencies
+    }
+
+    def 'jenkinsTest dependencies before 1.533'() {
+        setup:
+        Project project = ProjectBuilder.builder().build()
+
+        when:
+        project.with {
+            apply plugin: 'jpi'
+            jenkinsPlugin {
+                coreVersion = '1.532'
+            }
+        }
+
+        then:
+        def dependencies = collectDependencies(project, 'jenkinsTest')
+        'org.jenkins-ci.main:jenkins-test-harness:1.532' in dependencies
+        'org.jenkins-ci.main:ui-samples-plugin:1.532' in dependencies
+        'org.jenkins-ci.main:maven-plugin:1.532' in dependencies
+        'org.jenkins-ci.main:jenkins-war:1.532' in dependencies
+        'junit:junit-dep:4.10' in dependencies
+    }
+
+    def 'jenkinsTest dependencies for 1.533 or later'() {
+        setup:
+        Project project = ProjectBuilder.builder().build()
+
+        when:
+        project.with {
+            apply plugin: 'jpi'
+            jenkinsPlugin {
+                coreVersion = '1.533'
+            }
+        }
+
+        then:
+        def dependencies = collectDependencies(project, 'jenkinsTest')
+        'org.jenkins-ci.main:jenkins-test-harness:1.533' in dependencies
+        'org.jenkins-ci.main:ui-samples-plugin:2.0' in dependencies
+        'org.jenkins-ci.main:maven-plugin:1.533' in dependencies
+        'org.jenkins-ci.main:jenkins-war:1.533' in dependencies
+        'junit:junit-dep:4.10' in dependencies
+    }
+
+    private static collectDependencies(Project project, String configuration) {
+        project.configurations.getByName(configuration).dependencies.collect {
+            "${it.group}:${it.name}:${it.version}".toString()
+        }
+    }
 }

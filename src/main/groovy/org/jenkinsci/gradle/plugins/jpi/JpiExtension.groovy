@@ -139,6 +139,7 @@ class JpiExtension {
             project.dependencies {
                 jenkinsCore(
                         [group: 'org.jenkins-ci.main', name: 'jenkins-core', version: v, ext: 'jar', transitive: true],
+                        [group: 'findbugs', name: 'annotations', version: '1.0.0'],
                         [group: 'javax.servlet', name: 'servlet-api', version: '2.4']
                 )
 
