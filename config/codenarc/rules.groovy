@@ -5,7 +5,10 @@ ruleset {
 
     ruleset('rulesets/concurrency.xml')
 
-    ruleset('rulesets/convention.xml')
+    ruleset('rulesets/convention.xml') {
+        // we don't care for now
+        exclude 'NoDef'
+    }
 
     ruleset('rulesets/design.xml')
 
