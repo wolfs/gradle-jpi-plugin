@@ -264,7 +264,7 @@ class JpiPlugin implements Plugin<Project> {
         props
     }
 
-    void configureConfigurations(ConfigurationContainer cc) {
+    private static configureConfigurations(ConfigurationContainer cc) {
         Configuration jenkinsCoreConfiguration = cc.create(CORE_DEPENDENCY_CONFIGURATION_NAME).
                 setVisible(false).
                 setDescription('Jenkins core that your plugin is built against')
