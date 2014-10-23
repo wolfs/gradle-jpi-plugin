@@ -12,6 +12,8 @@
   * the value set for the `snapshotRepoUrl` option is no longer ignored
   * added `findbugs:annotations:1.0.0` to `jenkinsCore` configuration to avoid compiler warnings
     [JENKINS-14400](https://issues.jenkins-ci.org/browse/JENKINS-14400)
+  * the Maven `connection` and `developerConnection` SCM information is no longer generated into the POM
+  * removed `gitHubSCMConnection` and `gitHubSCMDevConnection` read-only options 
   * replaced usages of deprecated `groovy` configuration by `compile` configuration
   * added a missing setter for `shortName`
   * added `org.jenkins-ci.jpi` as alternative qualified plugin id for Gradle plugin portal inclusion
