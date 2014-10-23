@@ -5,6 +5,8 @@
   * added support for `Support-Dynamic-Loading` manifest attribute
   * set `stapler.jelly.noCache` system property to `true` when running `server` task
   * removed `v` attribute from manifest
+  * copy plugin dependencies from `jenkinsPlugins` configuration into working directory when running `server` task
+    [JENKINS-25219](https://issues.jenkins-ci.org/browse/JENKINS-25219)
   * ignore non-existing source directories in `localizer` task
   * ignore non-existing library paths in `server` task
   * the value set for the `snapshotRepoUrl` option is no longer ignored

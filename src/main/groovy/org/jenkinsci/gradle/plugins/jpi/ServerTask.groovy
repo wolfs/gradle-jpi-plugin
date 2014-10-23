@@ -15,9 +15,12 @@
  */
 package org.jenkinsci.gradle.plugins.jpi
 
+import org.gradle.util.GFileUtils
+
 import java.util.jar.JarFile
 import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
+import org.gradle.api.artifacts.Configuration
 import org.gradle.api.tasks.TaskAction
 
 /**
@@ -36,6 +39,7 @@ class ServerTask extends DefaultTask {
         File war = files.toArray()[0]
 
         generateHpl()
+        copyPluginDependencies()
 
         def conv = project.extensions.getByType(JpiExtension)
         System.setProperty('JENKINS_HOME', conv.workDir.absolutePath)
@@ -58,6 +62,20 @@ class ServerTask extends DefaultTask {
         def hpl = new File(conv.workDir, "plugins/${conv.shortName}.hpl")
         hpl.parentFile.mkdirs()
         m.writeTo(hpl)
+    }
+
+    private copyPluginDependencies() {
+        // create new configuration with plugin dependencies, ignoring the (jar) extension to get the HPI/JPI files
+        Configuration plugins = project.configurations.create('plugins')
+        project.configurations.getByName(JpiPlugin.PLUGINS_DEPENDENCY_CONFIGURATION_NAME).dependencies.each {
+            project.dependencies.add(plugins.name, "${it.group}:${it.name}:${it.version}")
+        }
+
+        // copy the resolved HPI/JPI files to the plugins directory
+        def workDir = project.extensions.getByType(JpiExtension).workDir
+        plugins.resolvedConfiguration.resolvedArtifacts.findAll { it.extension in ['hpi', 'jpi'] }.each {
+            GFileUtils.copyFile(it.file, new File(workDir, "plugins/${it.name}.${it.extension}"))
+        }
     }
 
     public static final String TASK_NAME = 'server'
