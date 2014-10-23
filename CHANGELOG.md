@@ -15,6 +15,7 @@
   * replaced usages of deprecated `groovy` configuration by `compile` configuration
   * added a missing setter for `shortName`
   * added `org.jenkins-ci.jpi` as alternative qualified plugin id for Gradle plugin portal inclusion
+  * removed `WEB_APP_GROUP` constant from `org.jenkinsci.gradle.plugins.jpi.JpiPlugin`
   * `jpiDeployUser` and `jpiDeployPassword` properties from `org.jenkinsci.gradle.plugins.jpi.JpiExtension` were not
     used and have been removed
   * `org.jenkinsci.gradle.plugins.jpi.JpiPluginConvention` was not used and has been removed

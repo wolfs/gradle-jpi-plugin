@@ -66,8 +66,6 @@ class JpiPlugin implements Plugin<Project> {
      */
     public static final String JENKINS_TEST_DEPENDENCY_CONFIGURATION_NAME = 'jenkinsTest'
 
-    public static final String WEB_APP_GROUP = 'web application'
-
     void apply(final Project gradleProject) {
         gradleProject.plugins.apply(JavaPlugin)
         gradleProject.plugins.apply(WarPlugin)
