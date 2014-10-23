@@ -13,6 +13,7 @@
   * added `findbugs:annotations:1.0.0` to `jenkinsCore` configuration to avoid compiler warnings
     [JENKINS-14400](https://issues.jenkins-ci.org/browse/JENKINS-14400)
   * replaced usages of deprecated `groovy` configuration by `compile` configuration
+  * added a missing setter for `shortName`
   * added `org.jenkins-ci.jpi` as alternative qualified plugin id for Gradle plugin portal inclusion
   * `jpiDeployUser` and `jpiDeployPassword` properties from `org.jenkinsci.gradle.plugins.jpi.JpiExtension` were not
     used and have been removed

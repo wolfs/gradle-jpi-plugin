@@ -48,6 +48,10 @@ class JpiExtension {
         shortName ?: trimOffPluginSuffix(project.name)
     }
 
+    void setShortName(String shortName) {
+        this.shortName = shortName
+    }
+
     private static String trimOffPluginSuffix(String s) {
         if (s.endsWith('-plugin')) {
             return s[0..-8]

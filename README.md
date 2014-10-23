@@ -32,6 +32,9 @@ jenkinsPlugin {
     // version of Jenkins core this plugin depends on, must be 1.420 or later
     coreVersion = '1.420'
 
+    // short name of the plugin, defaults to the project name without trailing '-plugin'
+    shortName = 'hello-world'
+
     // human-readable name of plugin                                               
     displayName = 'Hello World plugin built with Gradle'
 
