@@ -17,7 +17,6 @@ package org.jenkinsci.gradle.plugins.jpi
 
 import org.gradle.api.Project
 import org.gradle.api.file.FileCollection
-import org.gradle.api.plugins.JavaPlugin
 import org.gradle.api.plugins.JavaPluginConvention
 import org.gradle.api.plugins.WarPlugin
 import org.gradle.api.tasks.SourceSet
@@ -247,8 +246,7 @@ class JpiExtension {
      */
     FileCollection getRuntimeClasspath() {
         def providedRuntime = project.configurations.getByName(WarPlugin.PROVIDED_RUNTIME_CONFIGURATION_NAME)
-        def groovyRuntime = project.configurations.getByName(JavaPlugin.COMPILE_CONFIGURATION_NAME)
-        mainSourceTree().runtimeClasspath - providedRuntime - groovyRuntime
+        mainSourceTree().runtimeClasspath - providedRuntime
     }
 
     SourceSet mainSourceTree() {
