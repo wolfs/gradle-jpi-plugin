@@ -1,3 +1,5 @@
+## 0.7.1 (unreleased)
+
 ## 0.7.0 (2014-10-23)
 
   * updated Gradle to version 1.12
