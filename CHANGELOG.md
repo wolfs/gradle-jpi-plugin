@@ -2,6 +2,8 @@
 
   * fixed regression that caused libraries not to be included in the JPI file
     [JENKINS-25401](https://issues.jenkins-ci.org/browse/JENKINS-25401)
+  * dependencies from the `groovy` configuration are no longer excluded from the JPI archive, use the `providedCompile`
+    configuration or the transitive dependencies from Jenkins core instead
 
 ## 0.7.0 (2014-10-23)
 
