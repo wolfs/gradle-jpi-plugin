@@ -1,3 +1,5 @@
+## 0.7.2 (unreleased)
+
 ## 0.7.1 (2014-11-04)
 
   * fixed regression that caused libraries not to be included in the JPI file
