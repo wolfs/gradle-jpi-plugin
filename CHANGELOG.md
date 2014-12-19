@@ -2,6 +2,11 @@
 
   * updated Gradle to version 2.1
 
+## 0.7.2 (2014-12-19)
+
+  * re-added the SCM `connection` element in the generated POM to fix a regression with Jenkins Update Center showing
+    the wrong SCM URL
+
 ## 0.7.1 (2014-11-04)
 
   * fixed regression that caused libraries not to be included in the JPI file
