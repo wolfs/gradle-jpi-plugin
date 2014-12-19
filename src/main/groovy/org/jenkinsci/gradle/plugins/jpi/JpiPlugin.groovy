@@ -171,6 +171,7 @@ class JpiPlugin implements Plugin<Project> {
                 artifactId ext.shortName
                 if (ext.gitHubUrl != null && ext.gitHubUrl =~ /^https:\/\/github\.com/) {
                     scm {
+                        connection getGitHubSCMConnection(ext.gitHubUrl)
                         url ext.gitHubUrl
                     }
                 }
@@ -285,5 +286,13 @@ class JpiPlugin implements Plugin<Project> {
         cc.create(WAR_DEPENDENCY_CONFIGURATION_NAME).
                 setVisible(false).
                 setDescription('Jenkins war that corresponds to the Jenkins core')
+    }
+
+    private static String getGitHubSCMConnection(String gitHubUrl) {
+        if (gitHubUrl != null && gitHubUrl =~ /^https:\/\/github\.com/) {
+            gitHubUrl.replaceFirst(~/https:/, 'scm:git:git:') + '.git'
+        } else {
+            ''
+        }
     }
 }
