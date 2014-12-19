@@ -1,3 +1,5 @@
+## 0.7.3 (unreleased)
+
 ## 0.7.2 (2014-12-19)
 
   * re-added the SCM `connection` element in the generated POM to fix a regression with Jenkins Update Center showing
