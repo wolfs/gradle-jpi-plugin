@@ -39,14 +39,10 @@ class LocalizerTask extends DefaultTask {
     def generateLocalized() {
         def p = project
 
-        def isolatedAnt = services.get(IsolatedAntBuilder)
+        def isolatedAnt = services.get(IsolatedAntBuilder).withClasspath(p.buildscript.configurations.classpath)
         isolatedAnt.execute {
             mkdir(dir: destinationDir.canonicalPath)
-            taskdef(name: 'generator', classname: 'org.jvnet.localizer.GeneratorTask') {
-                classpath {
-                    pathelement(path: p.buildscript.configurations.classpath.asPath)
-                }
-            }
+            taskdef(name: 'generator', classname: 'org.jvnet.localizer.GeneratorTask')
             sourceDirs.findAll { it.exists() }.each { rsrcDir ->
                 generator(todir: destinationDir.canonicalPath, dir: rsrcDir)
             }
