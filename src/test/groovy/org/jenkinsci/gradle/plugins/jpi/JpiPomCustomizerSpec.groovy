@@ -1,0 +1,119 @@
+package org.jenkinsci.gradle.plugins.jpi
+
+import org.custommonkey.xmlunit.XMLUnit
+import org.gradle.api.Project
+import org.gradle.testfixtures.ProjectBuilder
+import spock.lang.Specification
+
+class JpiPomCustomizerSpec extends Specification {
+    Project project = ProjectBuilder.builder().build()
+    Node pom = new Node(null, 'project')
+
+    def setup() {
+        XMLUnit.ignoreWhitespace = true
+    }
+
+    def 'minimal POM'() {
+        setup:
+        project.apply plugin: 'jpi'
+
+        when:
+        new JpiPomCustomizer(project).customizePom(pom)
+
+        then:
+        compareXml('minimal-pom.xml', pom)
+    }
+
+    def 'POM with all metadata'() {
+        setup:
+        project.with {
+            apply plugin: 'jpi'
+            description = 'lorem ipsum'
+            jenkinsPlugin {
+                url = 'https://lorem-ipsum.org'
+                gitHubUrl = 'https://github.com/lorem/ipsum'
+                developers {
+                    developer {
+                        id 'abayer'
+                        name 'Andrew Bayer'
+                        email 'andrew.bayer@gmail.com'
+                    }
+                }
+            }
+            repositories {
+                maven {
+                    name 'lorem-ipsum'
+                    url 'https://repo.lorem-ipsum.org/'
+                }
+            }
+        }
+
+        when:
+        new JpiPomCustomizer(project).customizePom(pom)
+
+        then:
+        compareXml('complex-pom.xml', pom)
+    }
+
+    def 'gitHubUrl not pointing to GitHub'() {
+        setup:
+        project.with {
+            apply plugin: 'jpi'
+            jenkinsPlugin {
+                gitHubUrl = 'https://bitbucket.org/lorem/ipsum'
+            }
+        }
+
+        when:
+        new JpiPomCustomizer(project).customizePom(pom)
+
+        then:
+        compareXml('bitbucket-pom.xml', pom)
+    }
+
+    def 'mavenLocal is ignored'() {
+        setup:
+        project.with {
+            apply plugin: 'jpi'
+            repositories {
+                mavenLocal()
+            }
+        }
+
+        when:
+        new JpiPomCustomizer(project).customizePom(pom)
+
+        then:
+        compareXml('minimal-pom.xml', pom)
+    }
+
+    def 'mavenCentral is ignored'() {
+        setup:
+        project.with {
+            apply plugin: 'jpi'
+            repositories {
+                mavenCentral()
+            }
+        }
+
+        when:
+        new JpiPomCustomizer(project).customizePom(pom)
+
+        then:
+        compareXml('minimal-pom.xml', pom)
+    }
+
+    private static boolean compareXml(String fileName, Node node) {
+        XMLUnit.compareXML(readXml(fileName), toXml(node)).similar()
+    }
+
+    private static String readXml(String fileName) {
+        JpiPomCustomizerSpec.getResourceAsStream(fileName).text
+    }
+
+    private static String toXml(Node node) {
+        Writer buffer = new StringWriter()
+        new XmlNodePrinter(new PrintWriter(buffer)).print(node)
+        buffer.toString()
+    }
+}

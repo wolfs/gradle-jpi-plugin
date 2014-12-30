@@ -18,17 +18,21 @@ package org.jenkinsci.gradle.plugins.jpi
 import org.gradle.api.GradleException
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.Task
+import org.gradle.api.XmlProvider
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.ConfigurationContainer
+import org.gradle.api.component.SoftwareComponent
 import org.gradle.api.internal.artifacts.publish.ArchivePublishArtifact
 import org.gradle.api.internal.plugins.DefaultArtifactPublicationSet
 import org.gradle.api.plugins.BasePlugin
 import org.gradle.api.plugins.JavaPlugin
 import org.gradle.api.plugins.WarPlugin
 import org.gradle.api.plugins.GroovyPlugin
-import org.gradle.api.plugins.MavenPlugin
-import org.gradle.api.plugins.MavenPluginConvention
-import org.gradle.api.artifacts.maven.Conf2ScopeMappingContainer
+import org.gradle.api.publish.PublishingExtension
+import org.gradle.api.publish.maven.MavenPublication
+import org.gradle.api.publish.maven.plugins.MavenPublishPlugin
+import org.gradle.api.tasks.bundling.AbstractArchiveTask
 import org.gradle.api.tasks.bundling.Jar
 
 /**
@@ -66,10 +70,13 @@ class JpiPlugin implements Plugin<Project> {
      */
     public static final String JENKINS_TEST_DEPENDENCY_CONFIGURATION_NAME = 'jenkinsTest'
 
+    public static final String SOURCES_JAR_TASK_NAME = 'sourcesJar'
+    public static final String JAVADOC_JAR_TASK_NAME = 'javadocJar'
+
     void apply(final Project gradleProject) {
         gradleProject.plugins.apply(JavaPlugin)
         gradleProject.plugins.apply(WarPlugin)
-        gradleProject.plugins.apply(MavenPlugin)
+        gradleProject.plugins.apply(MavenPublishPlugin)
         gradleProject.plugins.apply(GroovyPlugin)
 
         // never run war as it's useless
@@ -123,11 +130,11 @@ class JpiPlugin implements Plugin<Project> {
 
         gradleProject.tasks.compileJava.dependsOn(LocalizerTask.TASK_NAME)
 
-        def sourcesJar = gradleProject.task('sourcesJar', type: Jar, dependsOn: 'classes') {
+        def sourcesJar = gradleProject.task(SOURCES_JAR_TASK_NAME, type: Jar, dependsOn: 'classes') {
             classifier = 'sources'
             from gradleProject.sourceSets.main.allSource
         }
-        def javadocJar = gradleProject.task('javadocJar', type: Jar, dependsOn: 'javadoc') {
+        def javadocJar = gradleProject.task(JAVADOC_JAR_TASK_NAME, type: Jar, dependsOn: 'javadoc') {
             classifier = 'javadoc'
             from gradleProject.javadoc.destinationDir
         }
@@ -136,110 +143,7 @@ class JpiPlugin implements Plugin<Project> {
         }
 
         configureConfigurations(gradleProject.configurations)
-
-        def mvnConvention = gradleProject.convention.getPlugin(MavenPluginConvention)
-        mvnConvention.conf2ScopeMappings.addMapping(
-                MavenPlugin.PROVIDED_COMPILE_PRIORITY,
-                gradleProject.configurations[CORE_DEPENDENCY_CONFIGURATION_NAME],
-                Conf2ScopeMappingContainer.PROVIDED
-        )
-
-        mvnConvention.conf2ScopeMappings.addMapping(
-                MavenPlugin.PROVIDED_COMPILE_PRIORITY,
-                gradleProject.configurations[PLUGINS_DEPENDENCY_CONFIGURATION_NAME],
-                Conf2ScopeMappingContainer.PROVIDED
-        )
-
-        mvnConvention.conf2ScopeMappings.addMapping(
-                MavenPlugin.PROVIDED_COMPILE_PRIORITY,
-                gradleProject.configurations[OPTIONAL_PLUGINS_DEPENDENCY_CONFIGURATION_NAME],
-                Conf2ScopeMappingContainer.PROVIDED
-        )
-
-        def installer = gradleProject.tasks.getByName('install')
-
-        installer.repositories.mavenInstaller.pom.whenConfigured { p ->
-            p.project {
-                parent {
-                    groupId 'org.jenkins-ci.plugins'
-                    artifactId 'plugin'
-                    version ext.coreVersion
-                }
-                url ext.url
-                description gradleProject.description
-                name ext.displayName
-                artifactId ext.shortName
-                if (ext.gitHubUrl != null && ext.gitHubUrl =~ /^https:\/\/github\.com/) {
-                    scm {
-                        connection getGitHubSCMConnection(ext.gitHubUrl)
-                        url ext.gitHubUrl
-                    }
-                }
-                repositories {
-                    gradleProject.repositories.each { repo ->
-                        if (repo.name == 'MavenRepo' || repo.name == 'MavenLocal') {
-                            // do not include the Maven Central repository or the local cache.
-                            return
-                        }
-                        repository {
-                            id = repo.name
-                            url = repo.url
-                        }
-                    }
-                }
-                developers {
-                    ext.developers.each { dev ->
-                        developer {
-                            id dev.id
-                            if (dev.name != null) {
-                                name dev.name
-                            }
-                            if (dev.email != null) {
-                                email dev.email
-                            }
-                            if (dev.url != null) {
-                                url dev.url
-                            }
-                            if (dev.organization != null) {
-                                organization dev.organization
-                            }
-                            if (dev.organizationUrl != null) {
-                                organizationUrl dev.organizationUrl
-                            }
-                            if (dev.timezone != null) {
-                                timezone dev.timezone
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        // default configuration of uploadArchives Maven task
-        def uploadArchives = gradleProject.tasks.getByName('uploadArchives')
-        uploadArchives.doFirst {
-            repositories {
-                mavenDeployer {
-                    // configure this only when the user didn't give any explicit configuration
-                    // whatever in build.gradle should win what we have here
-                    if (repository == null && snapshotRepository == null) {
-                        gradleProject.logger.warn('Deploying to the Jenkins community repository')
-                        def props = loadDotJenkinsOrg()
-
-                        repository(url: ext.repoUrl) {
-                            authentication(userName: props['userName'], password: props['password'])
-                        }
-                        snapshotRepository(url: ext.snapshotRepoUrl) {
-                            authentication(userName: props['userName'], password: props['password'])
-                        }
-                    }
-                    pom = installer.repositories.mavenInstaller.pom
-                }
-            }
-        }
-
-        // creating alias for making migration from Maven easy.
-        gradleProject.tasks.create('deploy').dependsOn(uploadArchives)
+        configurePublishing(gradleProject)
 
         // generate test hpl manifest for the current plugin, to be used during unit test
         def generateTestHpl = gradleProject.tasks.create('generate-test-hpl') << {
@@ -288,11 +192,65 @@ class JpiPlugin implements Plugin<Project> {
                 setDescription('Jenkins war that corresponds to the Jenkins core')
     }
 
-    private static String getGitHubSCMConnection(String gitHubUrl) {
-        if (gitHubUrl != null && gitHubUrl =~ /^https:\/\/github\.com/) {
-            gitHubUrl.replaceFirst(~/https:/, 'scm:git:git:') + '.git'
-        } else {
-            ''
+    private static configurePublishing(Project project) {
+        PublishingExtension publishingExtension = project.extensions.getByType(PublishingExtension)
+        JpiExtension jpiExtension = project.extensions.getByType(JpiExtension)
+
+        AbstractArchiveTask jpi = project.tasks.getByName(Jpi.TASK_NAME) as AbstractArchiveTask
+        Task sourcesJar = project.tasks.getByName(SOURCES_JAR_TASK_NAME)
+        Task javadocJar = project.tasks.getByName(JAVADOC_JAR_TASK_NAME)
+
+        ArchivePublishArtifact jpiArtifact = new ArchivePublishArtifact(jpi)
+        project.extensions.getByType(DefaultArtifactPublicationSet).addCandidate(jpiArtifact)
+
+        SoftwareComponent jpiComponent = new JpiComponent(
+                jpiArtifact,
+                [
+                        project.configurations[JavaPlugin.RUNTIME_CONFIGURATION_NAME].allDependencies,
+                        project.configurations[CORE_DEPENDENCY_CONFIGURATION_NAME].allDependencies,
+                        project.configurations[PLUGINS_DEPENDENCY_CONFIGURATION_NAME].allDependencies,
+                        project.configurations[OPTIONAL_PLUGINS_DEPENDENCY_CONFIGURATION_NAME].allDependencies,
+                ]
+        )
+        project.components.add(jpiComponent)
+
+        // delay configuration until all settings are available (groupId, shortName, ...)
+        project.afterEvaluate {
+            publishingExtension.publications {
+                mavenJpi(MavenPublication) {
+                    artifactId jpiExtension.shortName
+
+                    from jpiComponent
+
+                    artifact sourcesJar
+                    artifact javadocJar
+
+                    pom.withXml { XmlProvider xmlProvider ->
+                        new JpiPomCustomizer(project).customizePom(xmlProvider.asNode())
+                    }
+                }
+            }
+            publishingExtension.repositories {
+                maven {
+                    name 'jenkins'
+                    if (project.version.toString().endsWith('-SNAPSHOT')) {
+                        url jpiExtension.snapshotRepoUrl
+                    } else {
+                        url jpiExtension.repoUrl
+                    }
+                }
+            }
+        }
+
+        // load credentials only when publishing
+        project.gradle.taskGraph.whenReady { taskGraph ->
+            if (taskGraph.hasTask('publish')) {
+                def credentials = loadDotJenkinsOrg()
+                publishingExtension.repositories.getByName('jenkins').credentials {
+                    username credentials.userName
+                    password credentials.password
+                }
+            }
         }
     }
 }

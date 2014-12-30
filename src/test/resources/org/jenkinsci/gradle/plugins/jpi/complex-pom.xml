@@ -1,0 +1,22 @@
+<project>
+    <name>test</name>
+    <url>https://lorem-ipsum.org</url>
+    <description>lorem ipsum</description>
+    <scm>
+        <url>https://github.com/lorem/ipsum</url>
+        <connection>scm:git:git://github.com/lorem/ipsum.git</connection>
+    </scm>
+    <developers>
+        <developer>
+            <id>abayer</id>
+            <name>Andrew Bayer</name>
+            <email>andrew.bayer@gmail.com</email>
+        </developer>
+    </developers>
+    <repositories>
+        <repository>
+            <id>lorem-ipsum</id>
+            <url>https://repo.lorem-ipsum.org/</url>
+        </repository>
+    </repositories>
+</project>

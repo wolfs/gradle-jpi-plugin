@@ -1,0 +1,6 @@
+<project>
+    <name>test</name>
+    <scm>
+        <url>https://bitbucket.org/lorem/ipsum</url>
+    </scm>
+</project>
