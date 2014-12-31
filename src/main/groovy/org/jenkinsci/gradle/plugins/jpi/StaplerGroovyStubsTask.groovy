@@ -32,14 +32,10 @@ class StaplerGroovyStubsTask extends DefaultTask {
     @TaskAction
     def generateStubs() {
         def p = project
-        def isolatedAnt = services.get(IsolatedAntBuilder)
+        def isolatedAnt = services.get(IsolatedAntBuilder).withClasspath(p.sourceSets.main.compileClasspath)
         isolatedAnt.execute {
             mkdir(dir: destinationDir.canonicalPath)
-            taskdef(name: 'generatestubs', classname: 'org.codehaus.groovy.ant.GenerateStubsTask') {
-                classpath {
-                    pathelement path: p.sourceSets.main.compileClasspath.asPath
-                }
-            }
+            taskdef(name: 'generatestubs', classname: 'org.codehaus.groovy.ant.GenerateStubsTask')
 
             generatestubs(destdir: destinationDir.canonicalPath) {
                 configuration(targetByteCode: '1.6')
