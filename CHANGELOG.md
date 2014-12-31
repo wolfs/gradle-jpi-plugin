@@ -1,6 +1,11 @@
 ## 0.8.0 (unreleased)
 
   * updated Gradle to version 2.1
+  * migrated to the maven-publish plugin
+    * use the `publish` and `publishToMavenLocal` tasks for publishing, the `install`, `deploy` and `uploadArchives`
+      tasks are no longer available
+    * the generated POM no longer contains a reference to the Jenkins plugin parent POM and all dependencies have the
+      runtime scope
 
 ## 0.7.2 (2014-12-19)
 
