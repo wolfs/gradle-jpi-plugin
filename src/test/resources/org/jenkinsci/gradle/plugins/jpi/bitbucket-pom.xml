@@ -1,6 +1,17 @@
 <project>
+    <parent>
+        <groupId>org.jenkins-ci.plugins</groupId>
+        <artifactId>plugin</artifactId>
+        <version>1.580.1</version>
+    </parent>
     <name>test</name>
     <scm>
         <url>https://bitbucket.org/lorem/ipsum</url>
     </scm>
+    <repositories>
+        <repository>
+            <id>jenkins</id>
+            <url>http://repo.jenkins-ci.org/public/</url>
+        </repository>
+    </repositories>
 </project>

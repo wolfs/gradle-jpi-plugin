@@ -25,6 +25,7 @@ class JpiPomCustomizer {
     }
 
     void customizePom(Node pom) {
+        pom.append(makeParentNode())
         pom.appendNode('name', jpiExtension.displayName)
         if (jpiExtension.url) {
             pom.appendNode('url', jpiExtension.url)
@@ -43,6 +44,14 @@ class JpiPomCustomizer {
         }
     }
 
+    private Node makeParentNode() {
+        Node parentNode = new Node(null, 'parent')
+        parentNode.appendNode('groupId', 'org.jenkins-ci.plugins')
+        parentNode.appendNode('artifactId', 'plugin')
+        parentNode.appendNode('version', jpiExtension.coreVersion)
+        parentNode
+    }
+
     private Node makeScmNode() {
         Node scmNode = new Node(null, 'scm')
         scmNode.appendNode('url', jpiExtension.gitHubUrl)
@@ -54,7 +63,7 @@ class JpiPomCustomizer {
 
     private List<MavenArtifactRepository> getRepositories() {
         project.repositories.withType(MavenArtifactRepository).findAll {
-            it.name != 'MavenRepo' && it.name != 'MavenLocal'
+            !(it.name =~ /MavenRepo\d*/ || it.name =~ /MavenLocal\d*/)
         }
     }
 

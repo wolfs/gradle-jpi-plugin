@@ -15,7 +15,12 @@ class JpiPomCustomizerSpec extends Specification {
 
     def 'minimal POM'() {
         setup:
-        project.apply plugin: 'jpi'
+        project.with {
+            apply plugin: 'jpi'
+            jenkinsPlugin {
+                coreVersion = '1.580.1'
+            }
+        }
 
         when:
         new JpiPomCustomizer(project).customizePom(pom)
@@ -30,6 +35,7 @@ class JpiPomCustomizerSpec extends Specification {
             apply plugin: 'jpi'
             description = 'lorem ipsum'
             jenkinsPlugin {
+                coreVersion = '1.580.1'
                 url = 'https://lorem-ipsum.org'
                 gitHubUrl = 'https://github.com/lorem/ipsum'
                 developers {
@@ -60,6 +66,7 @@ class JpiPomCustomizerSpec extends Specification {
         project.with {
             apply plugin: 'jpi'
             jenkinsPlugin {
+                coreVersion = '1.580.1'
                 gitHubUrl = 'https://bitbucket.org/lorem/ipsum'
             }
         }
@@ -75,6 +82,9 @@ class JpiPomCustomizerSpec extends Specification {
         setup:
         project.with {
             apply plugin: 'jpi'
+            jenkinsPlugin {
+                coreVersion = '1.580.1'
+            }
             repositories {
                 mavenLocal()
             }
@@ -91,6 +101,9 @@ class JpiPomCustomizerSpec extends Specification {
         setup:
         project.with {
             apply plugin: 'jpi'
+            jenkinsPlugin {
+                coreVersion = '1.580.1'
+            }
             repositories {
                 mavenCentral()
             }
