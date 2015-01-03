@@ -3,6 +3,9 @@ package org.jenkinsci.gradle.plugins.jpi
 import org.gradle.api.Project
 import org.gradle.api.artifacts.repositories.MavenArtifactRepository
 
+import static org.gradle.api.artifacts.ArtifactRepositoryContainer.DEFAULT_MAVEN_CENTRAL_REPO_NAME
+import static org.gradle.api.artifacts.ArtifactRepositoryContainer.DEFAULT_MAVEN_LOCAL_REPO_NAME
+
 /**
  * Adds metadata to the JPI's POM.
  *
@@ -63,7 +66,7 @@ class JpiPomCustomizer {
 
     private List<MavenArtifactRepository> getRepositories() {
         project.repositories.withType(MavenArtifactRepository).findAll {
-            !(it.name =~ /MavenRepo\d*/ || it.name =~ /MavenLocal\d*/)
+            !(it.name =~ "${DEFAULT_MAVEN_CENTRAL_REPO_NAME}\\d*" || it.name =~ "${DEFAULT_MAVEN_LOCAL_REPO_NAME}\\d*")
         }
     }
 
