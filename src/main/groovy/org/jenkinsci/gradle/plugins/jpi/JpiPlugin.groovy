@@ -108,7 +108,6 @@ class JpiPlugin implements Plugin<Project> {
         def jpi = gradleProject.tasks.create(Jpi.TASK_NAME, Jpi)
         jpi.description = 'Generates the JPI package'
         jpi.group = BasePlugin.BUILD_GROUP
-        gradleProject.extensions.getByType(DefaultArtifactPublicationSet).addCandidate(new ArchivePublishArtifact(jpi))
 
         def server = gradleProject.tasks.create(ServerTask.TASK_NAME, ServerTask)
         server.description = 'Run Jenkins in place with the plugin being developed'
