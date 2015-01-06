@@ -34,6 +34,7 @@ import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.api.publish.maven.plugins.MavenPublishPlugin
 import org.gradle.api.tasks.bundling.AbstractArchiveTask
 import org.gradle.api.tasks.bundling.Jar
+import org.gradle.execution.TaskGraphExecuter
 
 /**
  * Loads HPI related tasks into the current project.
@@ -242,8 +243,8 @@ class JpiPlugin implements Plugin<Project> {
         }
 
         // load credentials only when publishing
-        project.gradle.taskGraph.whenReady { taskGraph ->
-            if (taskGraph.hasTask('publish')) {
+        project.gradle.taskGraph.whenReady { TaskGraphExecuter taskGraph ->
+            if (taskGraph.hasTask(project.tasks.publish)) {
                 def credentials = loadDotJenkinsOrg()
                 publishingExtension.repositories.getByName('jenkins').credentials {
                     username credentials.userName
