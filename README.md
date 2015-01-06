@@ -18,7 +18,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'org.jenkins-ci.tools:gradle-jpi-plugin:0.7.2'
+        classpath 'org.jenkins-ci.tools:gradle-jpi-plugin:0.8.0'
     }
 }
 
@@ -98,9 +98,9 @@ example or specify `ext: 'jar'` if you're using the map-style notation).
 
 * `gradle jpi` - Build the Jenkins plugin file, which can then be
   found in the build directory. The file will currently end in ".hpi".
-* `gradle install` - Build the Jenkins plugin and install it into your
+* `gradle publishToMavenLocal` - Build the Jenkins plugin and install it into your
   local Maven repository.
-* `gradle uploadArchives` (or `gradle deploy`) - Deploy your plugin to
+* `gradle publish` - Deploy your plugin to
   the Jenkins Maven repository to be included in the Update Center.
 
 ## Examples
