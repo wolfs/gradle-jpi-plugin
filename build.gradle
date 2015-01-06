@@ -26,6 +26,7 @@ dependencies {
     testCompile('org.spockframework:spock-core:0.7-groovy-2.0') {
         exclude module: 'groovy-all' // use the version that is distributed with Gradle
     }
+    testCompile 'xmlunit:xmlunit:1.5'
 }
 
 artifacts {

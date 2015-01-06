@@ -25,7 +25,7 @@ import org.gradle.util.ConfigureUtil
  * @author Andrew Bayer
  */
 class JpiDeveloper {
-    private final static LEGAL_FIELDS = ['id', 'name', 'email', 'url', 'organization', 'organizationUrl', 'timezone']
+    final static LEGAL_FIELDS = ['id', 'name', 'email', 'url', 'organization', 'organizationUrl', 'timezone']
 
     private final fields = [:]
 

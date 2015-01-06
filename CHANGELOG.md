@@ -1,6 +1,10 @@
 ## 0.8.0 (unreleased)
 
   * updated Gradle to version 2.1
+  * migrated to the maven-publish plugin
+    * use the `publish` and `publishToMavenLocal` tasks for publishing, the `install`, `deploy` and `uploadArchives`
+      tasks are no longer available
+    * all dependencies in the generated POM have the runtime scope
 
 ## 0.7.2 (2014-12-19)
 

@@ -1,0 +1,31 @@
+<project>
+    <parent>
+        <groupId>org.jenkins-ci.plugins</groupId>
+        <artifactId>plugin</artifactId>
+        <version>1.580.1</version>
+    </parent>
+    <name>test</name>
+    <url>https://lorem-ipsum.org</url>
+    <description>lorem ipsum</description>
+    <scm>
+        <url>https://github.com/lorem/ipsum</url>
+        <connection>scm:git:git://github.com/lorem/ipsum.git</connection>
+    </scm>
+    <developers>
+        <developer>
+            <id>abayer</id>
+            <name>Andrew Bayer</name>
+            <email>andrew.bayer@gmail.com</email>
+        </developer>
+    </developers>
+    <repositories>
+        <repository>
+            <id>jenkins</id>
+            <url>http://repo.jenkins-ci.org/public/</url>
+        </repository>
+        <repository>
+            <id>lorem-ipsum</id>
+            <url>https://repo.lorem-ipsum.org/</url>
+        </repository>
+    </repositories>
+</project>

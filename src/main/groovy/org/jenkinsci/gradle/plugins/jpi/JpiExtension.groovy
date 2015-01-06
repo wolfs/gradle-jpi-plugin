@@ -285,5 +285,9 @@ class JpiExtension {
         def getProperties() {
             developerMap
         }
+
+        boolean isEmpty() {
+            developerMap.isEmpty()
+        }
     }
 }
