@@ -1,3 +1,5 @@
+## 0.8.1 (unreleased)
+
 ## 0.8.0 (2015-01-06)
 
   * support Java 8
