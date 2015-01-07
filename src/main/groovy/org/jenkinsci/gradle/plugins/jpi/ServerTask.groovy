@@ -61,7 +61,7 @@ class ServerTask extends DefaultTask {
 
         def hpl = new File(conv.workDir, "plugins/${conv.shortName}.hpl")
         hpl.parentFile.mkdirs()
-        m.writeTo(hpl)
+        hpl.withOutputStream { m.write(it) }
     }
 
     private copyPluginDependencies() {

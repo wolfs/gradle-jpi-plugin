@@ -149,7 +149,7 @@ class JpiPlugin implements Plugin<Project> {
         def generateTestHpl = gradleProject.tasks.create('generate-test-hpl') << {
             def hpl = new File(ext.testSourceTree().output.classesDir, 'the.hpl')
             hpl.parentFile.mkdirs()
-            new JpiHplManifest(gradleProject).writeTo(hpl)
+            hpl.withOutputStream { new JpiHplManifest(gradleProject).write(it) }
         }
         gradleProject.tasks.getByName('test').dependsOn(generateTestHpl)
     }
