@@ -1,5 +1,7 @@
 ## 0.8.0 (unreleased)
 
+  * support Java 8
+    [JENKINS-25643](https://issues.jenkins-ci.org/browse/JENKINS-25643)
   * updated Gradle to version 2.1
   * migrated to the maven-publish plugin
     * use the `publish` and `publishToMavenLocal` tasks for publishing, the `install`, `deploy` and `uploadArchives`

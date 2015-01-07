@@ -7,6 +7,8 @@ import org.junit.rules.TemporaryFolder
 import spock.lang.Specification
 import spock.lang.Unroll
 
+import java.util.jar.Manifest
+
 class JpiManifestSpec extends Specification {
     Project project = ProjectBuilder.builder().build()
 
@@ -25,11 +27,10 @@ class JpiManifestSpec extends Specification {
         }
 
         when:
-        File file = temporaryFolder.newFile()
-        new JpiManifest(project).writeTo(file)
+        Manifest manifest = new JpiManifest(project)
 
         then:
-        file.text == readManifest('basics.mf')
+        manifest == readManifest('basics.mf')
     }
 
     def 'plugin class'() {
@@ -47,11 +48,10 @@ class JpiManifestSpec extends Specification {
         new File(directory, 'hudson.Plugin').write('org.example.PluginImpl')
 
         when:
-        File file = temporaryFolder.newFile()
-        new JpiManifest(project).writeTo(file)
+        Manifest manifest = new JpiManifest(project)
 
         then:
-        file.text == readManifest('plugin-class.mf')
+        manifest == readManifest('plugin-class.mf')
     }
 
     def 'no version'() {
@@ -64,7 +64,8 @@ class JpiManifestSpec extends Specification {
         JpiManifest manifest = new JpiManifest(project)
 
         then:
-        manifest['Plugin-Version'] =~ /1.0-SNAPSHOT \(private-\d{2}\/\d{2}\/\d{4} \d{2}:\d{2}-.+\)/
+        manifest.mainAttributes.getValue('Plugin-Version') =~
+                /1.0-SNAPSHOT \(private-\d{2}\/\d{2}\/\d{4} \d{2}:\d{2}-.+\)/
     }
 
     def 'dependency'() {
@@ -82,11 +83,10 @@ class JpiManifestSpec extends Specification {
         }
 
         when:
-        File file = temporaryFolder.newFile()
-        new JpiManifest(project).writeTo(file)
+        Manifest manifest = new JpiManifest(project)
 
         then:
-        file.text == readManifest('dependency.mf')
+        manifest == readManifest('dependency.mf')
     }
 
     def 'dependencies'() {
@@ -105,11 +105,10 @@ class JpiManifestSpec extends Specification {
         }
 
         when:
-        File file = temporaryFolder.newFile()
-        new JpiManifest(project).writeTo(file)
+        Manifest manifest = new JpiManifest(project)
 
         then:
-        file.text == readManifest('dependencies.mf')
+        manifest == readManifest('dependencies.mf')
     }
 
     def 'optional dependency'() {
@@ -127,11 +126,10 @@ class JpiManifestSpec extends Specification {
         }
 
         when:
-        File file = temporaryFolder.newFile()
-        new JpiManifest(project).writeTo(file)
+        Manifest manifest = new JpiManifest(project)
 
         then:
-        file.text == readManifest('optional-dependency.mf')
+        manifest == readManifest('optional-dependency.mf')
     }
 
     def 'optional dependencies'() {
@@ -150,11 +148,10 @@ class JpiManifestSpec extends Specification {
         }
 
         when:
-        File file = temporaryFolder.newFile()
-        new JpiManifest(project).writeTo(file)
+        Manifest manifest = new JpiManifest(project)
 
         then:
-        file.text == readManifest('optional-dependencies.mf')
+        manifest == readManifest('optional-dependencies.mf')
     }
 
     def 'complex dependencies'() {
@@ -175,11 +172,10 @@ class JpiManifestSpec extends Specification {
         }
 
         when:
-        File file = temporaryFolder.newFile()
-        new JpiManifest(project).writeTo(file)
+        Manifest manifest = new JpiManifest(project)
 
         then:
-        file.text == readManifest('complex-dependencies.mf')
+        manifest == readManifest('complex-dependencies.mf')
     }
 
     def 'compatible since version'() {
@@ -195,11 +191,10 @@ class JpiManifestSpec extends Specification {
         }
 
         when:
-        File file = temporaryFolder.newFile()
-        new JpiManifest(project).writeTo(file)
+        Manifest manifest = new JpiManifest(project)
 
         then:
-        file.text == readManifest('compatible-since-version.mf')
+        manifest == readManifest('compatible-since-version.mf')
     }
 
     def 'mask classes'() {
@@ -215,11 +210,10 @@ class JpiManifestSpec extends Specification {
         }
 
         when:
-        File file = temporaryFolder.newFile()
-        new JpiManifest(project).writeTo(file)
+        Manifest manifest = new JpiManifest(project)
 
         then:
-        file.text == readManifest('mask-classes.mf')
+        manifest == readManifest('mask-classes.mf')
     }
 
     def 'plugin first class loader'() {
@@ -235,11 +229,10 @@ class JpiManifestSpec extends Specification {
         }
 
         when:
-        File file = temporaryFolder.newFile()
-        new JpiManifest(project).writeTo(file)
+        Manifest manifest = new JpiManifest(project)
 
         then:
-        file.text == readManifest('plugin-first-class-loader.mf')
+        manifest == readManifest('plugin-first-class-loader.mf')
     }
 
     def 'sandbox status'() {
@@ -255,11 +248,10 @@ class JpiManifestSpec extends Specification {
         }
 
         when:
-        File file = temporaryFolder.newFile()
-        new JpiManifest(project).writeTo(file)
+        Manifest manifest = new JpiManifest(project)
 
         then:
-        file.text == readManifest('sandbox-status.mf')
+        manifest == readManifest('sandbox-status.mf')
     }
 
     def 'plugin developer'() {
@@ -281,11 +273,10 @@ class JpiManifestSpec extends Specification {
         }
 
         when:
-        File file = temporaryFolder.newFile()
-        new JpiManifest(project).writeTo(file)
+        Manifest manifest = new JpiManifest(project)
 
         then:
-        file.text == readManifest('plugin-developer.mf')
+        manifest == readManifest('plugin-developer.mf')
     }
 
     def 'plugin developers'() {
@@ -310,11 +301,10 @@ class JpiManifestSpec extends Specification {
         }
 
         when:
-        File file = temporaryFolder.newFile()
-        new JpiManifest(project).writeTo(file)
+        Manifest manifest = new JpiManifest(project)
 
         then:
-        file.text == readManifest('plugin-developers.mf')
+        manifest == readManifest('plugin-developers.mf')
     }
 
     @Unroll
@@ -334,17 +324,16 @@ class JpiManifestSpec extends Specification {
         new File(directory, 'hudson.Extension').bytes = index
 
         when:
-        File file = temporaryFolder.newFile()
-        new JpiManifest(project).writeTo(file)
+        Manifest manifest = new JpiManifest(project)
 
         then:
-        file.text == readManifest("support-dynamic-loading-${value}.mf")
+        manifest == readManifest("support-dynamic-loading-${value}.mf")
 
         where:
         value << ['yes', 'maybe', 'no']
     }
 
-    private static String readManifest(String fileName) {
-        JpiManifestSpec.getResourceAsStream(fileName).text.replace(System.getProperty('line.separator'), '\r\n')
+    private static Manifest readManifest(String fileName) {
+        new Manifest(JpiManifestSpec.getResourceAsStream(fileName))
     }
 }

@@ -18,15 +18,15 @@ package org.jenkinsci.gradle.plugins.jpi
 import hudson.Extension
 import jenkins.YesNoMaybe
 import net.java.sezpoz.Index
+import org.gradle.api.Project
+import org.gradle.api.artifacts.Configuration
+import org.gradle.api.artifacts.ResolvedArtifact
+import org.gradle.api.plugins.JavaPluginConvention
 
 import java.text.SimpleDateFormat
-import org.gradle.api.Project
-import org.gradle.api.plugins.JavaPluginConvention
-import org.gradle.api.artifacts.ResolvedArtifact
-import org.gradle.api.artifacts.Configuration
-
 import java.util.jar.Manifest
 
+import static java.util.jar.Attributes.Name.MANIFEST_VERSION
 import static org.gradle.api.tasks.SourceSet.MAIN_SOURCE_SET_NAME
 import static org.jenkinsci.gradle.plugins.jpi.JpiPlugin.OPTIONAL_PLUGINS_DEPENDENCY_CONFIGURATION_NAME
 import static org.jenkinsci.gradle.plugins.jpi.JpiPlugin.PLUGINS_DEPENDENCY_CONFIGURATION_NAME
@@ -36,28 +36,26 @@ import static org.jenkinsci.gradle.plugins.jpi.JpiPlugin.PLUGINS_DEPENDENCY_CONF
  *
  * @author Kohsuke Kawaguchi
  */
-class JpiManifest extends HashMap<String, Object> {
-    private final Project project
-
+class JpiManifest extends Manifest {
     JpiManifest(Project project) {
-        this.project = project
-
         def conv = project.extensions.getByType(JpiExtension)
         def javaPluginConvention = project.convention.getPlugin(JavaPluginConvention)
         def classDir = javaPluginConvention.sourceSets.getByName(MAIN_SOURCE_SET_NAME).output.classesDir
 
+        mainAttributes[MANIFEST_VERSION] = '1.0'
+
         File pluginImpl = new File(classDir, 'META-INF/services/hudson.Plugin')
         if (pluginImpl.exists()) {
-            this['Plugin-Class'] = pluginImpl.readLines('UTF-8')[0]
+            mainAttributes.putValue('Plugin-Class', pluginImpl.readLines('UTF-8')[0])
         }
 
-        this['Group-Id'] = project.group
-        this['Short-Name'] = conv.shortName
-        this['Long-Name'] = conv.displayName
-        this['Url'] = conv.url
-        this['Compatible-Since-Version'] = conv.compatibleSinceVersion
+        mainAttributes.putValue('Group-Id', project.group.toString())
+        mainAttributes.putValue('Short-Name', conv.shortName)
+        mainAttributes.putValue('Long-Name', conv.displayName)
+        mainAttributes.putValue('Url', conv.url)
+        mainAttributes.putValue('Compatible-Since-Version', conv.compatibleSinceVersion)
         if (conv.sandboxStatus) {
-            this['Sandbox-Status'] = conv.sandboxStatus
+            mainAttributes.putValue('Sandbox-Status', conv.sandboxStatus.toString())
         }
 
         def version = project.version
@@ -68,34 +66,35 @@ class JpiManifest extends HashMap<String, Object> {
             String dt = new SimpleDateFormat('MM/dd/yyyy HH:mm', Locale.default).format(new Date())
             version += " (private-$dt-${System.getProperty('user.name')})"
         }
-        this['Plugin-Version'] = version
+        mainAttributes.putValue('Plugin-Version', version.toString())
 
-        this['Jenkins-Version'] = conv.coreVersion
+        mainAttributes.putValue('Jenkins-Version', conv.coreVersion)
 
-        this['Mask-Classes'] = conv.maskClasses
+        mainAttributes.putValue('Mask-Classes', conv.maskClasses)
 
         def dep = findDependencyProjects(project)
         if (dep.length() > 0) {
-            this['Plugin-Dependencies'] = dep
+            mainAttributes.putValue('Plugin-Dependencies', dep)
         }
 
         if (conv.pluginFirstClassLoader) {
-            this['PluginFirstClassLoader'] = true
+            mainAttributes.putValue('PluginFirstClassLoader', 'true')
         }
 
         if (conv.developers) {
-            this['Plugin-Developers'] = conv.developers.collect {
-                "${it.name ?: ''}:${it.id ?: ''}:${it.email ?: ''}"
-            }.join(',')
+            mainAttributes.putValue(
+                    'Plugin-Developers',
+                    conv.developers.collect { "${it.name ?: ''}:${it.id ?: ''}:${it.email ?: ''}" }.join(',')
+            )
         }
 
         YesNoMaybe supportDynamicLoading = isSupportDynamicLoading(classDir)
         if (supportDynamicLoading != YesNoMaybe.MAYBE) {
-            this['Support-Dynamic-Loading'] = supportDynamicLoading == YesNoMaybe.YES
+            mainAttributes.putValue('Support-Dynamic-Loading', (supportDynamicLoading == YesNoMaybe.YES).toString())
         }
 
         // remove empty values
-        this.entrySet().removeAll { it.value == null || it.value.toString().empty }
+        mainAttributes.entrySet().removeAll { it.value == null || it.value.toString().empty }
     }
 
     private static String findDependencyProjects(Project project) {
@@ -134,12 +133,5 @@ class JpiManifest extends HashMap<String, Object> {
             return YesNoMaybe.MAYBE
         }
         YesNoMaybe.YES
-    }
-
-    void writeTo(File f) {
-        def m = new Manifest()
-        m.mainAttributes.putValue('Manifest-Version', '1.0')
-        this.each { k, v -> m.mainAttributes.putValue(k, v.toString()) }
-        f.withOutputStream { o -> m.write(o) }
     }
 }
