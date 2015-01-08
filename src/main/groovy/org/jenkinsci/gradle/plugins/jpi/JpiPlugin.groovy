@@ -32,6 +32,7 @@ import org.gradle.api.plugins.GroovyPlugin
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.api.publish.maven.plugins.MavenPublishPlugin
+import org.gradle.api.tasks.Delete
 import org.gradle.api.tasks.bundling.AbstractArchiveTask
 import org.gradle.api.tasks.bundling.Jar
 import org.gradle.execution.TaskGraphExecuter
@@ -121,6 +122,10 @@ class JpiPlugin implements Plugin<Project> {
         gradleProject.sourceSets.main.java.srcDirs += ext.staplerStubDir
 
         gradleProject.tasks.compileJava.dependsOn(StaplerGroovyStubsTask.TASK_NAME)
+
+        // workaround for JENKINS-26331
+        Delete clean = gradleProject.tasks.clean as Delete
+        clean.delete('target')
 
         def localizer = gradleProject.tasks.create(LocalizerTask.TASK_NAME, LocalizerTask)
         localizer.description = 'Generates the Java source for the localizer.'

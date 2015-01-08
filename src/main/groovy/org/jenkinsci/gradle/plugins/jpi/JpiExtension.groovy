@@ -129,6 +129,14 @@ class JpiExtension {
             uiSamplesVersion = '2.0'
         }
 
+        if (new VersionNumber(this.coreVersion) >= new VersionNumber('1.545') &&
+                new VersionNumber(this.coreVersion) < new VersionNumber('1.592')) {
+            // workaround for JENKINS-26331
+            project.tasks.test.doFirst {
+                project.file('target').mkdirs()
+            }
+        }
+
         if (this.coreVersion) {
             project.repositories {
                 mavenCentral()

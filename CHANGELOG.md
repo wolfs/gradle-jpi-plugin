@@ -1,5 +1,9 @@
 ## 0.8.1 (unreleased)
 
+  * create (for coreVersions >= 1.545 and < 1.592) and clean `target` directory used by
+    `org.jvnet.hudson.test.WarExploder` as a workaround for
+    [JENKINS-26331](https://issues.jenkins-ci.org/browse/JENKINS-26331)
+
 ## 0.8.0 (2015-01-06)
 
   * support Java 8
