@@ -19,6 +19,7 @@ import org.gradle.api.Project
 import org.gradle.api.file.FileCollection
 import org.gradle.api.plugins.JavaPluginConvention
 import org.gradle.api.plugins.WarPlugin
+import org.gradle.api.tasks.Delete
 import org.gradle.api.tasks.SourceSet
 import org.gradle.api.GradleException
 import org.gradle.util.ConfigureUtil
@@ -129,12 +130,16 @@ class JpiExtension {
             uiSamplesVersion = '2.0'
         }
 
+        // workarounds for JENKINS-26331
         if (new VersionNumber(this.coreVersion) >= new VersionNumber('1.545') &&
                 new VersionNumber(this.coreVersion) < new VersionNumber('1.592')) {
-            // workaround for JENKINS-26331
             project.tasks.test.doFirst {
                 project.file('target').mkdirs()
             }
+        }
+        if (new VersionNumber(this.coreVersion) < new VersionNumber('1.598')) {
+            Delete clean = project.tasks.clean as Delete
+            clean.delete('target')
         }
 
         if (this.coreVersion) {
