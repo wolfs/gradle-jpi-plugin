@@ -1,3 +1,5 @@
+## 0.8.2 (unreleased)
+
 ## 0.8.1 (2015-01-28)
 
   * create `target` directory (for coreVersions >= 1.545 and < 1.592), clean `target` directory (for coreVersions
