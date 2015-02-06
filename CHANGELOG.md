@@ -1,5 +1,8 @@
 ## 0.8.2 (unreleased)
 
+  * added task to inject tests for checking the syntax of Jelly and other things
+    [JENKINS-12193](https://issues.jenkins-ci.org/browse/JENKINS-12193)
+
 ## 0.8.1 (2015-01-28)
 
   * create `target` directory (for coreVersions >= 1.545 and < 1.592), clean `target` directory (for coreVersions
