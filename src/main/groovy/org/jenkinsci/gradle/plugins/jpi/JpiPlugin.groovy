@@ -138,16 +138,13 @@ class JpiPlugin implements Plugin<Project> {
         Task testInsertionTask = gradleProject.tasks.create(TestInsertionTask.TASK_NAME, TestInsertionTask)
         gradleProject.tasks.compileTestJava.dependsOn(testInsertionTask)
 
-        def sourcesJar = gradleProject.task(SOURCES_JAR_TASK_NAME, type: Jar, dependsOn: 'classes') {
+        gradleProject.task(SOURCES_JAR_TASK_NAME, type: Jar, dependsOn: 'classes') {
             classifier = 'sources'
             from gradleProject.sourceSets.main.allSource
         }
-        def javadocJar = gradleProject.task(JAVADOC_JAR_TASK_NAME, type: Jar, dependsOn: 'javadoc') {
+        gradleProject.task(JAVADOC_JAR_TASK_NAME, type: Jar, dependsOn: 'javadoc') {
             classifier = 'javadoc'
             from gradleProject.javadoc.destinationDir
-        }
-        gradleProject.artifacts {
-            archives sourcesJar, javadocJar
         }
 
         configureConfigurations(gradleProject.configurations)
@@ -205,6 +202,7 @@ class JpiPlugin implements Plugin<Project> {
         JpiExtension jpiExtension = project.extensions.getByType(JpiExtension)
 
         AbstractArchiveTask jpi = project.tasks.getByName(Jpi.TASK_NAME) as AbstractArchiveTask
+        Task jar = project.tasks.getByName(JavaPlugin.JAR_TASK_NAME)
         Task sourcesJar = project.tasks.getByName(SOURCES_JAR_TASK_NAME)
         Task javadocJar = project.tasks.getByName(JAVADOC_JAR_TASK_NAME)
 
@@ -230,9 +228,11 @@ class JpiPlugin implements Plugin<Project> {
 
                     from jpiComponent
 
+                    artifact jar
                     artifact sourcesJar
                     artifact javadocJar
 
+                    pom.packaging = 'jpi'
                     pom.withXml { XmlProvider xmlProvider ->
                         new JpiPomCustomizer(project).customizePom(xmlProvider.asNode())
                     }
