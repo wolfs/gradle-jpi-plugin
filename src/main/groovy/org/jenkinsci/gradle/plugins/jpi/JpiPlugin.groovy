@@ -135,6 +135,9 @@ class JpiPlugin implements Plugin<Project> {
 
         gradleProject.tasks.compileJava.dependsOn(LocalizerTask.TASK_NAME)
 
+        Task testInsertionTask = gradleProject.tasks.create(TestInsertionTask.TASK_NAME, TestInsertionTask)
+        gradleProject.tasks.compileTestJava.dependsOn(testInsertionTask)
+
         def sourcesJar = gradleProject.task(SOURCES_JAR_TASK_NAME, type: Jar, dependsOn: 'classes') {
             classifier = 'sources'
             from gradleProject.sourceSets.main.allSource

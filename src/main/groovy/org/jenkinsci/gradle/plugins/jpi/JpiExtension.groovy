@@ -248,6 +248,23 @@ class JpiExtension {
      */
     String gitHubUrl
 
+    /**
+     * If true, the automatic test injection will be skipped.
+     *
+     * Disabled by default because of <a href="https://issues.jenkins-ci.org/browse/JENKINS-21977">JENKINS-21977</a>.
+     */
+    boolean disabledTestInjection = true
+
+    /**
+     * Name of the injected test.
+     */
+    String injectedTestName = 'InjectedTest'
+
+    /**
+     * If true, verify that all the jelly scripts have the Jelly XSS PI in them.
+     */
+    boolean requirePI = true
+
     Developers developers = new Developers()
 
     def developers(Closure closure) {

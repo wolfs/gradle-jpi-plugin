@@ -26,10 +26,11 @@ class JpiPluginSpec extends Specification {
         taskClass.isInstance(project.tasks[taskName])
 
         where:
-        taskName    | taskClass
-        'jpi'       | Jpi
-        'server'    | ServerTask
-        'localizer' | LocalizerTask
-        'stapler'   | StaplerGroovyStubsTask
+        taskName    |  taskClass
+        'jpi'        | Jpi
+        'server'     | ServerTask
+        'localizer'  | LocalizerTask
+        'stapler'    | StaplerGroovyStubsTask
+        'insertTest' | TestInsertionTask
     }
 }
