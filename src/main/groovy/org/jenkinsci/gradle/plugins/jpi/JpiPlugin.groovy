@@ -87,41 +87,28 @@ class JpiPlugin implements Plugin<Project> {
         def ext = new JpiExtension(gradleProject)
         gradleProject.extensions.jenkinsPlugin = ext
 
-        gradleProject.tasks.withType(Jpi) { Jpi task ->
-            task.dependsOn {
-                ext.mainSourceTree().runtimeClasspath
-            }
-            task.setClasspath(ext.runtimeClasspath)
-            task.archiveName = "${ext.shortName}.${ext.fileExtension}"
-        }
-        gradleProject.tasks.withType(ServerTask) { ServerTask task ->
-            task.dependsOn {
-                ext.mainSourceTree().runtimeClasspath
-            }
-        }
-        gradleProject.tasks.withType(StaplerGroovyStubsTask) { StaplerGroovyStubsTask task ->
-            task.destinationDir = ext.staplerStubDir
-        }
-        gradleProject.tasks.withType(LocalizerTask) { LocalizerTask task ->
-            task.sourceDirs = gradleProject.sourceSets.main.resources.srcDirs
-            task.destinationDir = ext.localizerDestDir
-        }
+        def providedRuntime = gradleProject.configurations.getByName(WarPlugin.PROVIDED_RUNTIME_CONFIGURATION_NAME)
 
         def jpi = gradleProject.tasks.create(Jpi.TASK_NAME, Jpi)
         jpi.description = 'Generates the JPI package'
         jpi.group = BasePlugin.BUILD_GROUP
+        jpi.dependsOn(ext.mainSourceTree().runtimeClasspath)
+        jpi.classpath = ext.mainSourceTree().runtimeClasspath - providedRuntime
+        jpi.archiveName = "${ext.shortName}.${ext.fileExtension}"
 
         def server = gradleProject.tasks.create(ServerTask.TASK_NAME, ServerTask)
         server.description = 'Run Jenkins in place with the plugin being developed'
         server.group = BasePlugin.BUILD_GROUP // TODO
+        server.dependsOn(ext.mainSourceTree().runtimeClasspath)
 
         def stubs = gradleProject.tasks.create(StaplerGroovyStubsTask.TASK_NAME, StaplerGroovyStubsTask)
         stubs.description = 'Generates the Java stubs from Groovy source to enable Stapler annotation processing.'
         stubs.group = BasePlugin.BUILD_GROUP
+        stubs.destinationDir = ext.staplerStubDir
 
         gradleProject.sourceSets.main.java.srcDirs += ext.staplerStubDir
 
-        gradleProject.tasks.compileJava.dependsOn(StaplerGroovyStubsTask.TASK_NAME)
+        gradleProject.tasks.compileJava.dependsOn(stubs)
 
         // set build directory for Jenkins test harness, JENKINS-26331
         Test test = gradleProject.tasks.test as Test
@@ -130,10 +117,12 @@ class JpiPlugin implements Plugin<Project> {
         def localizer = gradleProject.tasks.create(LocalizerTask.TASK_NAME, LocalizerTask)
         localizer.description = 'Generates the Java source for the localizer.'
         localizer.group = BasePlugin.BUILD_GROUP
+        localizer.sourceDirs = gradleProject.sourceSets.main.resources.srcDirs
+        localizer.destinationDir = ext.localizerDestDir
 
         gradleProject.sourceSets.main.java.srcDirs += ext.localizerDestDir
 
-        gradleProject.tasks.compileJava.dependsOn(LocalizerTask.TASK_NAME)
+        gradleProject.tasks.compileJava.dependsOn(localizer)
 
         Task testInsertionTask = gradleProject.tasks.create(TestInsertionTask.TASK_NAME, TestInsertionTask)
         gradleProject.tasks.compileTestJava.dependsOn(testInsertionTask)
@@ -156,7 +145,7 @@ class JpiPlugin implements Plugin<Project> {
             hpl.parentFile.mkdirs()
             hpl.withOutputStream { new JpiHplManifest(gradleProject).write(it) }
         }
-        gradleProject.tasks.getByName('test').dependsOn(generateTestHpl)
+        test.dependsOn(generateTestHpl)
     }
 
     private static Properties loadDotJenkinsOrg() {

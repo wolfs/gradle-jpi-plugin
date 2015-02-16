@@ -2,6 +2,7 @@
 
   * use classpath from jpi task to build classpath for server task to allow customization in build scripts
     [JENKINS-26377](https://issues.jenkins-ci.org/browse/JENKINS-26377)
+  * the `runtimeClasspath` read-only property in `org.jenkinsci.gradle.plugins.jpi.JpiExtension` has been removed
 
 ## 0.9.0 (2015-02-16)
 
