@@ -1,4 +1,4 @@
-## 0.8.2 (unreleased)
+## 0.9.0 (2015-02-16)
 
   * added task to inject tests for checking the syntax of Jelly and other things
     [JENKINS-12193](https://issues.jenkins-ci.org/browse/JENKINS-12193)

@@ -18,7 +18,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'org.jenkins-ci.tools:gradle-jpi-plugin:0.8.1'
+        classpath 'org.jenkins-ci.tools:gradle-jpi-plugin:0.9.0'
     }
 }
 
@@ -61,6 +61,9 @@ jenkinsPlugin {
 
     // URL used to deploy snapshots of the plugin, defaults to the value shown
     snapshotRepoUrl = 'http://maven.jenkins-ci.org:8081/content/repositories/snapshots'
+
+    // enable injection of additional tests for checking the syntax of Jelly and other things
+    disabledTestInjection = false
 
     // the developers section is optional, and corresponds to the POM developers section
     developers {
