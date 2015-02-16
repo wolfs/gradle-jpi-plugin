@@ -2,6 +2,9 @@
 
   * added task to inject tests for checking the syntax of Jelly and other things
     [JENKINS-12193](https://issues.jenkins-ci.org/browse/JENKINS-12193)
+  * updated Gradle to version 2.3
+  * publish the plugin JAR
+    [JENKINS-25007](https://issues.jenkins-ci.org/browse/JENKINS-25007)
 
 ## 0.8.1 (2015-01-28)
 
