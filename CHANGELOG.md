@@ -1,5 +1,8 @@
 ## 0.9.1 (unreleased)
 
+  * use classpath from jpi task to build classpath for server task to allow customization in build scripts
+    [JENKINS-26377](https://issues.jenkins-ci.org/browse/JENKINS-26377)
+
 ## 0.9.0 (2015-02-16)
 
   * added task to inject tests for checking the syntax of Jelly and other things
