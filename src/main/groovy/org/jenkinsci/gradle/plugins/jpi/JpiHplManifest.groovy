@@ -26,13 +26,14 @@ class JpiHplManifest extends JpiManifest {
         super(project)
 
         def conv = project.extensions.getByType(JpiExtension)
+        def jpi = project.tasks.getByName(Jpi.TASK_NAME)
 
         // src/main/webApp
         def warconv = project.convention.getPlugin(WarPluginConvention)
         mainAttributes.putValue('Resource-Path', warconv.webAppDir.absolutePath)
 
         // add resource directories directly so that we can pick up the source, then add all the jars and class path
-        Set<File> libraries = conv.mainSourceTree().resources.srcDirs + conv.runtimeClasspath.files
+        Set<File> libraries = conv.mainSourceTree().resources.srcDirs + jpi.classpath.files
         mainAttributes.putValue('Libraries', libraries.findAll { it.exists() }.join(','))
     }
 }
