@@ -1,3 +1,5 @@
+## 0.9.2 (unreleased)
+
 ## 0.9.1 (2015-02-17)
 
   * use classpath from jpi task to build classpath for server task to allow customization in build scripts
