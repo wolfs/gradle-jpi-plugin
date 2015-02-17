@@ -3,27 +3,27 @@
 ## 0.9.1 (2015-02-17)
 
   * use classpath from jpi task to build classpath for server task to allow customization in build scripts
-    [JENKINS-26377](https://issues.jenkins-ci.org/browse/JENKINS-26377)
+    ([JENKINS-26377](https://issues.jenkins-ci.org/browse/JENKINS-26377))
   * the `runtimeClasspath` read-only property in `org.jenkinsci.gradle.plugins.jpi.JpiExtension` has been removed
 
 ## 0.9.0 (2015-02-16)
 
   * added task to inject tests for checking the syntax of Jelly and other things
-    [JENKINS-12193](https://issues.jenkins-ci.org/browse/JENKINS-12193)
+    ([JENKINS-12193](https://issues.jenkins-ci.org/browse/JENKINS-12193))
   * updated Gradle to version 2.3
   * publish the plugin JAR
-    [JENKINS-25007](https://issues.jenkins-ci.org/browse/JENKINS-25007)
+    ([JENKINS-25007](https://issues.jenkins-ci.org/browse/JENKINS-25007))
 
 ## 0.8.1 (2015-01-28)
 
   * create `target` directory (for coreVersions >= 1.545 and < 1.592), clean `target` directory (for coreVersions
     < 1.598) and set `buildDirectory` system property for Jenkins test harness
-    [JENKINS-26331](https://issues.jenkins-ci.org/browse/JENKINS-26331)
+    ([JENKINS-26331](https://issues.jenkins-ci.org/browse/JENKINS-26331))
 
 ## 0.8.0 (2015-01-06)
 
   * support Java 8
-    [JENKINS-25643](https://issues.jenkins-ci.org/browse/JENKINS-25643)
+    ([JENKINS-25643](https://issues.jenkins-ci.org/browse/JENKINS-25643))
   * updated Gradle to version 2.2.1
   * migrated to the maven-publish plugin
     * use the `publish` and `publishToMavenLocal` tasks for publishing, the `install`, `deploy` and `uploadArchives`
@@ -38,7 +38,7 @@
 ## 0.7.1 (2014-11-04)
 
   * fixed regression that caused libraries not to be included in the JPI file
-    [JENKINS-25401](https://issues.jenkins-ci.org/browse/JENKINS-25401)
+    ([JENKINS-25401](https://issues.jenkins-ci.org/browse/JENKINS-25401))
   * dependencies from the `groovy` configuration are no longer excluded from the JPI archive, use the `providedCompile`
     configuration or the transitive dependencies from Jenkins core instead
 
@@ -50,12 +50,12 @@
   * set `stapler.jelly.noCache` system property to `true` when running `server` task
   * removed `v` attribute from manifest
   * copy plugin dependencies from `jenkinsPlugins` configuration into working directory when running `server` task
-    [JENKINS-25219](https://issues.jenkins-ci.org/browse/JENKINS-25219)
+    ([JENKINS-25219](https://issues.jenkins-ci.org/browse/JENKINS-25219))
   * ignore non-existing source directories in `localizer` task
   * ignore non-existing library paths in `server` task
   * the value set for the `snapshotRepoUrl` option is no longer ignored
   * added `findbugs:annotations:1.0.0` to `jenkinsCore` configuration to avoid compiler warnings
-    [JENKINS-14400](https://issues.jenkins-ci.org/browse/JENKINS-14400)
+    ([JENKINS-14400](https://issues.jenkins-ci.org/browse/JENKINS-14400))
   * the Maven `connection` and `developerConnection` SCM information is no longer generated into the POM
   * removed `gitHubSCMConnection` and `gitHubSCMDevConnection` read-only options 
   * replaced usages of deprecated `groovy` configuration by `compile` configuration
@@ -70,16 +70,16 @@
 ## 0.6.0 (2014-10-01)
 
   * do not exclude org.jenkins-ci.modules:instance-identity from jenkinsTest configuration
-    [JENKINS-23603](https://issues.jenkins-ci.org/browse/JENKINS-23603)
+    ([JENKINS-23603](https://issues.jenkins-ci.org/browse/JENKINS-23603))
   * set up the build to use http://repo.jenkins-ci.org/public/ similar to the Maven POMs
-    [JENKINS-19942](https://issues.jenkins-ci.org/browse/JENKINS-19942)
+    ([JENKINS-19942](https://issues.jenkins-ci.org/browse/JENKINS-19942))
   * register input files for the localizer task to avoid that the task is skipped when the inputs change
-    [JENKINS-24298](https://issues.jenkins-ci.org/browse/JENKINS-24298)
+    ([JENKINS-24298](https://issues.jenkins-ci.org/browse/JENKINS-24298))
   * added pluginFirstClassLoader attribute
-    [JENKINS-24808](https://issues.jenkins-ci.org/browse/JENKINS-24808)
+    ([JENKINS-24808](https://issues.jenkins-ci.org/browse/JENKINS-24808))
   * removed deprecation warnings by using newer API which has been introduced in Gradle 1.6 
 
 ## 0.5.2 (unreleased)
 
   * use ui-samples-plugin version 2.0 in jenkinsTests configuration when using Jenkins core 1.533 or later
-    [JENKINS-21431](https://issues.jenkins-ci.org/browse/JENKINS-21431)
+    ([JENKINS-21431](https://issues.jenkins-ci.org/browse/JENKINS-21431))
