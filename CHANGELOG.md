@@ -1,4 +1,4 @@
-## 0.9.1 (unreleased)
+## 0.9.1 (2015-02-17)
 
   * use classpath from jpi task to build classpath for server task to allow customization in build scripts
     [JENKINS-26377](https://issues.jenkins-ci.org/browse/JENKINS-26377)
