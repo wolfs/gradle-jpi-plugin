@@ -15,15 +15,13 @@
  */
 package org.jenkinsci.gradle.plugins.jpi
 
+import hudson.util.VersionNumber
+import org.gradle.api.GradleException
 import org.gradle.api.Project
-import org.gradle.api.file.FileCollection
 import org.gradle.api.plugins.JavaPluginConvention
-import org.gradle.api.plugins.WarPlugin
 import org.gradle.api.tasks.Delete
 import org.gradle.api.tasks.SourceSet
-import org.gradle.api.GradleException
 import org.gradle.util.ConfigureUtil
-import hudson.util.VersionNumber
 
 /**
  * This gets exposed to the project as 'jpi' to offer additional convenience methods.
@@ -269,14 +267,6 @@ class JpiExtension {
 
     def developers(Closure closure) {
         ConfigureUtil.configure(closure, developers)
-    }
-
-    /**
-     * Runtime dependencies
-     */
-    FileCollection getRuntimeClasspath() {
-        def providedRuntime = project.configurations.getByName(WarPlugin.PROVIDED_RUNTIME_CONFIGURATION_NAME)
-        mainSourceTree().runtimeClasspath - providedRuntime
     }
 
     SourceSet mainSourceTree() {
