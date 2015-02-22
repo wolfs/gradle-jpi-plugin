@@ -1,5 +1,8 @@
 ## 0.9.2 (unreleased)
 
+  * renamed the `localizerDestDir` option to `localizerOutputDir`, changed its type to `Object` and fixed the
+    configuration to recognize a non-default value
+
 ## 0.9.1 (2015-02-17)
 
   * use classpath from jpi task to build classpath for server task to allow customization in build scripts

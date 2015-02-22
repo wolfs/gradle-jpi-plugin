@@ -107,27 +107,27 @@ class JpiExtensionSpec extends Specification {
         jpiExtension.staplerStubDir == new File(project.buildDir, 'foo')
     }
 
-    def 'localizer destination directory defaults to generated-src/localizer if not set'(String value) {
+    def 'localizer output directory defaults to generated-src/localizer if not set'(Object value) {
         when:
         Project project = ProjectBuilder.builder().build()
         JpiExtension jpiExtension = new JpiExtension(project)
-        jpiExtension.localizerDestDir = value
+        jpiExtension.localizerOutputDir = value
 
         then:
-        jpiExtension.localizerDestDir == new File(project.buildDir, 'generated-src/localizer')
+        jpiExtension.localizerOutputDir == new File(project.buildDir, 'generated-src/localizer')
 
         where:
         value << [null, '']
     }
 
-    def 'localizer destination directory is used when set'() {
+    def 'localizer output directory is used when set'() {
         when:
         Project project = ProjectBuilder.builder().build()
         JpiExtension jpiExtension = new JpiExtension(project)
-        jpiExtension.localizerDestDir = 'foo'
+        jpiExtension.localizerOutputDir = 'foo'
 
         then:
-        jpiExtension.localizerDestDir == new File(project.buildDir, 'foo')
+        jpiExtension.localizerOutputDir == new File(project.rootDir, 'foo')
     }
 
     def 'work directory defaults to work if not set'() {

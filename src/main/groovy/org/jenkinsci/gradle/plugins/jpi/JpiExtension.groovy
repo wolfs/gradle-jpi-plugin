@@ -185,21 +185,20 @@ class JpiExtension {
         project.file("${project.buildDir}/${stubDir}")
     }
 
-    private String localizerDestDir
+    private Object localizerOutputDir
 
     /**
      * Sets the localizer output directory
      */
-    void setLocalizerDestDir(String localizerDestDir) {
-        this.localizerDestDir = localizerDestDir
+    void setLocalizerOutputDir(Object localizerOutputDir) {
+        this.localizerOutputDir = localizerOutputDir
     }
 
     /**
-     * Returns the localizer dest directory.
+     * Returns the localizer output directory.
      */
-    File getLocalizerDestDir() {
-        def destDir = localizerDestDir ?: 'generated-src/localizer'
-        project.file("${project.buildDir}/${destDir}")
+    File getLocalizerOutputDir() {
+        project.file(localizerOutputDir ?: "${project.buildDir}/generated-src/localizer")
     }
 
     private File workDir

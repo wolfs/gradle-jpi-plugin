@@ -27,6 +27,7 @@ import org.gradle.api.internal.artifacts.publish.ArchivePublishArtifact
 import org.gradle.api.internal.plugins.DefaultArtifactPublicationSet
 import org.gradle.api.plugins.BasePlugin
 import org.gradle.api.plugins.JavaPlugin
+import org.gradle.api.plugins.JavaPluginConvention
 import org.gradle.api.plugins.WarPlugin
 import org.gradle.api.plugins.GroovyPlugin
 import org.gradle.api.publish.PublishingExtension
@@ -114,15 +115,7 @@ class JpiPlugin implements Plugin<Project> {
         Test test = gradleProject.tasks.test as Test
         test.systemProperty('buildDirectory', gradleProject.buildDir.absolutePath)
 
-        def localizer = gradleProject.tasks.create(LocalizerTask.TASK_NAME, LocalizerTask)
-        localizer.description = 'Generates the Java source for the localizer.'
-        localizer.group = BasePlugin.BUILD_GROUP
-        localizer.sourceDirs = gradleProject.sourceSets.main.resources.srcDirs
-        localizer.destinationDir = ext.localizerDestDir
-
-        gradleProject.sourceSets.main.java.srcDirs += ext.localizerDestDir
-
-        gradleProject.tasks.compileJava.dependsOn(localizer)
+        configureLocalizer(gradleProject)
 
         Task testInsertionTask = gradleProject.tasks.create(TestInsertionTask.TASK_NAME, TestInsertionTask)
         gradleProject.tasks.compileTestJava.dependsOn(testInsertionTask)
@@ -159,6 +152,23 @@ class JpiPlugin implements Plugin<Project> {
         }
         dot.withInputStream { i -> props.load(i) }
         props
+    }
+
+    private static configureLocalizer(Project project) {
+        JavaPluginConvention javaConvention = project.convention.getPlugin(JavaPluginConvention)
+        JpiExtension jpiExtension = project.extensions.getByType(JpiExtension)
+
+        LocalizerTask localizer = project.tasks.create(LocalizerTask.TASK_NAME, LocalizerTask)
+        localizer.description = 'Generates the Java source for the localizer.'
+        localizer.group = BasePlugin.BUILD_GROUP
+        localizer.sourceDirs = javaConvention.sourceSets.main.resources.srcDirs
+        localizer.conventionMapping.map('destinationDir') {
+            jpiExtension.localizerOutputDir
+        }
+        project.afterEvaluate {
+            javaConvention.sourceSets.main.java.srcDir(localizer.destinationDir)
+        }
+        project.tasks[javaConvention.sourceSets.main.compileJavaTaskName].dependsOn(localizer)
     }
 
     private static configureConfigurations(ConfigurationContainer cc) {

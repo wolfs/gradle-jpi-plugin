@@ -15,7 +15,7 @@
  */
 package org.jenkinsci.gradle.plugins.jpi
 
-import org.gradle.api.DefaultTask
+import org.gradle.api.internal.ConventionTask
 import org.gradle.api.internal.project.IsolatedAntBuilder
 import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.TaskAction
@@ -26,7 +26,7 @@ import org.gradle.api.tasks.OutputDirectory
  *
  * @author Andrew Bayer
  */
-class LocalizerTask extends DefaultTask {
+class LocalizerTask extends ConventionTask {
     public static final String TASK_NAME = 'localizer'
 
     @OutputDirectory
