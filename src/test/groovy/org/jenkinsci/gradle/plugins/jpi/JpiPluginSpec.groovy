@@ -59,4 +59,33 @@ class JpiPluginSpec extends Specification {
         'foo'           | 'foo'
         new File('bar') | 'bar'
     }
+
+    def 'testCompile configuration contains plugin JAR dependencies'() {
+        setup:
+        Project project = ProjectBuilder.builder().build()
+
+        when:
+        project.with {
+            apply plugin: 'jpi'
+            jenkinsPlugin {
+                coreVersion = '1.554.2'
+            }
+        }
+
+        then:
+        def dependencies = collectDependencies(project, 'testCompile')
+        'org.jenkins-ci.main:maven-plugin:2.1@jar' in dependencies
+        'org.jenkins-ci.plugins:ant:1.2@jar' in dependencies
+        'org.jenkins-ci.plugins:antisamy-markup-formatter:1.0@jar' in dependencies
+        'org.jenkins-ci.plugins:javadoc:1.0@jar' in dependencies
+        'org.jenkins-ci.plugins:mailer:1.8@jar' in dependencies
+        'org.jenkins-ci.plugins:matrix-auth:1.0.2@jar' in dependencies
+        'org.jenkins-ci.plugins:subversion:1.45@jar' in dependencies
+    }
+
+    private static List<String> collectDependencies(Project project, String configuration) {
+        project.configurations.getByName(configuration).resolvedConfiguration.resolvedArtifacts.collect {
+            "${it.moduleVersion.id}@${it.extension}".toString()
+        }
+    }
 }
