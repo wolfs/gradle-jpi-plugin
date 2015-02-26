@@ -165,9 +165,7 @@ class JpiPlugin implements Plugin<Project> {
         localizer.conventionMapping.map('destinationDir') {
             jpiExtension.localizerOutputDir
         }
-        project.afterEvaluate {
-            javaConvention.sourceSets.main.java.srcDir(localizer.destinationDir)
-        }
+        javaConvention.sourceSets.main.java.srcDir { localizer.destinationDir }
         project.tasks[javaConvention.sourceSets.main.compileJavaTaskName].dependsOn(localizer)
     }
 
