@@ -141,15 +141,6 @@ class JpiExtension {
         }
 
         if (this.coreVersion) {
-            project.repositories {
-                mavenCentral()
-                mavenLocal()
-                maven {
-                    name 'jenkins'
-                    delegate.url('http://repo.jenkins-ci.org/public/')
-                }
-            }
-
             project.dependencies {
                 jenkinsCore(
                         [group: 'org.jenkins-ci.main', name: 'jenkins-core', version: v, ext: 'jar', transitive: true],
@@ -260,6 +251,11 @@ class JpiExtension {
      * If true, verify that all the jelly scripts have the Jelly XSS PI in them.
      */
     boolean requirePI = true
+
+    /**
+     * Set to false to disable configuration of Maven Central, the local Maven cache and the Jenkins Maven repository.
+     */
+    boolean configureRepositories = true
 
     Developers developers = new Developers()
 

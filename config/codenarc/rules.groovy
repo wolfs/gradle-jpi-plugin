@@ -18,6 +18,8 @@ ruleset {
         // does not necessarily lead to better code
         exclude 'DuplicateMapLiteral'
         // does not necessarily lead to better code
+        exclude 'DuplicateNumberLiteral'
+        // does not necessarily lead to better code
         exclude 'DuplicateStringLiteral'
     }
 

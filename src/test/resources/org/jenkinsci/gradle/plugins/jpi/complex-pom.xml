@@ -20,12 +20,12 @@
     </developers>
     <repositories>
         <repository>
-            <id>jenkins</id>
-            <url>http://repo.jenkins-ci.org/public/</url>
-        </repository>
-        <repository>
             <id>lorem-ipsum</id>
             <url>https://repo.lorem-ipsum.org/</url>
+        </repository>
+        <repository>
+            <id>jenkins</id>
+            <url>http://repo.jenkins-ci.org/public/</url>
         </repository>
     </repositories>
 </project>
