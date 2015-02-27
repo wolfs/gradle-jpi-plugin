@@ -1,6 +1,7 @@
 package org.jenkinsci.gradle.plugins.jpi
 
 import org.gradle.api.Project
+import org.gradle.api.internal.project.ProjectInternal
 import org.gradle.testfixtures.ProjectBuilder
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
@@ -81,6 +82,7 @@ class JpiManifestSpec extends Specification {
                 jenkinsPlugins 'org.jenkins-ci.plugins:ant:1.2@jar'
             }
         }
+        (project as ProjectInternal).evaluate()
 
         when:
         Manifest manifest = new JpiManifest(project)
@@ -103,6 +105,7 @@ class JpiManifestSpec extends Specification {
                 jenkinsPlugins 'org.jenkins-ci.plugins:ant:1.2@jar'
             }
         }
+        (project as ProjectInternal).evaluate()
 
         when:
         Manifest manifest = new JpiManifest(project)
@@ -124,6 +127,7 @@ class JpiManifestSpec extends Specification {
                 optionalJenkinsPlugins 'org.jenkins-ci.plugins:ant:1.2@jar'
             }
         }
+        (project as ProjectInternal).evaluate()
 
         when:
         Manifest manifest = new JpiManifest(project)
@@ -146,6 +150,7 @@ class JpiManifestSpec extends Specification {
                 optionalJenkinsPlugins 'org.jenkins-ci.plugins:ant:1.2@jar'
             }
         }
+        (project as ProjectInternal).evaluate()
 
         when:
         Manifest manifest = new JpiManifest(project)
@@ -170,6 +175,7 @@ class JpiManifestSpec extends Specification {
                 optionalJenkinsPlugins 'org.jenkins-ci.plugins:credentials:1.9.4@jar'
             }
         }
+        (project as ProjectInternal).evaluate()
 
         when:
         Manifest manifest = new JpiManifest(project)

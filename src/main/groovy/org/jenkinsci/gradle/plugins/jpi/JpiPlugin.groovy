@@ -130,6 +130,7 @@ class JpiPlugin implements Plugin<Project> {
             from gradleProject.javadoc.destinationDir
         }
 
+        configureRepositories(gradleProject)
         configureConfigurations(gradleProject)
         configurePublishing(gradleProject)
 
@@ -168,6 +169,21 @@ class JpiPlugin implements Plugin<Project> {
         }
         javaConvention.sourceSets.main.java.srcDir { localizer.destinationDir }
         project.tasks[javaConvention.sourceSets.main.compileJavaTaskName].dependsOn(localizer)
+    }
+
+    private static configureRepositories(Project project) {
+        project.afterEvaluate {
+            if (project.extensions.getByType(JpiExtension).configureRepositories) {
+                project.repositories {
+                    mavenCentral()
+                    mavenLocal()
+                    maven {
+                        name 'jenkins'
+                        url('http://repo.jenkins-ci.org/public/')
+                    }
+                }
+            }
+        }
     }
 
     private static configureConfigurations(Project project) {

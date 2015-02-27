@@ -1,6 +1,8 @@
 package org.jenkinsci.gradle.plugins.jpi
 
 import org.gradle.api.Project
+import org.gradle.api.artifacts.repositories.MavenArtifactRepository
+import org.gradle.api.internal.project.ProjectInternal
 import org.gradle.api.plugins.JavaPluginConvention
 import org.gradle.testfixtures.ProjectBuilder
 import spock.lang.Specification
@@ -60,6 +62,38 @@ class JpiPluginSpec extends Specification {
         new File('bar') | 'bar'
     }
 
+    def 'repositories have been setup'() {
+        when:
+        project.with {
+            apply plugin: 'jpi'
+        }
+        (project as ProjectInternal).evaluate()
+
+        then:
+        project.repositories.size() == 3
+        project.repositories.get(0) instanceof MavenArtifactRepository
+        project.repositories.get(0).name == 'MavenRepo'
+        project.repositories.get(1) instanceof MavenArtifactRepository
+        project.repositories.get(1).name == 'MavenLocal'
+        project.repositories.get(2) instanceof MavenArtifactRepository
+        project.repositories.get(2).name == 'jenkins'
+        (project.repositories.get(2) as MavenArtifactRepository).url == URI.create('http://repo.jenkins-ci.org/public/')
+    }
+
+    def 'repositories have not been setup'() {
+        when:
+        project.with {
+            apply plugin: 'jpi'
+            jenkinsPlugin {
+                configureRepositories = false
+            }
+        }
+        (project as ProjectInternal).evaluate()
+
+        then:
+        project.repositories.size() == 0
+    }
+
     def 'testCompile configuration contains plugin JAR dependencies'() {
         setup:
         Project project = ProjectBuilder.builder().build()
@@ -71,6 +105,7 @@ class JpiPluginSpec extends Specification {
                 coreVersion = '1.554.2'
             }
         }
+        (project as ProjectInternal).evaluate()
 
         then:
         def dependencies = collectDependencies(project, 'testCompile')
