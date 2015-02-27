@@ -2,8 +2,8 @@
 
   * renamed the `localizerDestDir` option to `localizerOutputDir`, changed its type to `Object` and fixed the
     configuration to recognize a non-default value
-  * add `org.jenkins-ci.main:maven-plugin:2.0@jar` to the `jenkinsTest` configuration for Jenkins core versions 1.535 or
-    later
+  * add a JAR dependency for each HPI/JPI dependency to the `testCompile` configuration
+    ([JENKINS-17129](https://issues.jenkins-ci.org/browse/JENKINS-17129))
 
 ## 0.9.1 (2015-02-17)
 

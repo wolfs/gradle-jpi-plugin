@@ -252,7 +252,6 @@ class JpiExtensionSpec extends Specification {
         def dependencies = collectDependencies(project, 'jenkinsTest')
         'org.jenkins-ci.main:jenkins-test-harness:1.532' in dependencies
         'org.jenkins-ci.main:ui-samples-plugin:1.532' in dependencies
-        'org.jenkins-ci.main:maven-plugin:1.532' in dependencies
         'org.jenkins-ci.main:jenkins-war:1.532' in dependencies
         'junit:junit-dep:4.10' in dependencies
     }
@@ -273,7 +272,6 @@ class JpiExtensionSpec extends Specification {
         def dependencies = collectDependencies(project, 'jenkinsTest')
         'org.jenkins-ci.main:jenkins-test-harness:1.533' in dependencies
         'org.jenkins-ci.main:ui-samples-plugin:2.0' in dependencies
-        'org.jenkins-ci.main:maven-plugin:1.533' in dependencies
         'org.jenkins-ci.main:jenkins-war:1.533' in dependencies
         'junit:junit-dep:4.10' in dependencies
     }

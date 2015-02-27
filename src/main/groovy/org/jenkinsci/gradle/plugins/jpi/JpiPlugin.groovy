@@ -22,6 +22,7 @@ import org.gradle.api.Task
 import org.gradle.api.XmlProvider
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.ConfigurationContainer
+import org.gradle.api.artifacts.ResolvedArtifact
 import org.gradle.api.component.SoftwareComponent
 import org.gradle.api.internal.artifacts.publish.ArchivePublishArtifact
 import org.gradle.api.internal.plugins.DefaultArtifactPublicationSet
@@ -129,7 +130,7 @@ class JpiPlugin implements Plugin<Project> {
             from gradleProject.javadoc.destinationDir
         }
 
-        configureConfigurations(gradleProject.configurations)
+        configureConfigurations(gradleProject)
         configurePublishing(gradleProject)
 
         // generate test hpl manifest for the current plugin, to be used during unit test
@@ -169,7 +170,8 @@ class JpiPlugin implements Plugin<Project> {
         project.tasks[javaConvention.sourceSets.main.compileJavaTaskName].dependsOn(localizer)
     }
 
-    private static configureConfigurations(ConfigurationContainer cc) {
+    private static configureConfigurations(Project project) {
+        ConfigurationContainer cc = project.configurations
         Configuration jenkinsCoreConfiguration = cc.create(CORE_DEPENDENCY_CONFIGURATION_NAME).
                 setVisible(false).
                 setDescription('Jenkins core that your plugin is built against')
@@ -192,6 +194,14 @@ class JpiPlugin implements Plugin<Project> {
         cc.create(WAR_DEPENDENCY_CONFIGURATION_NAME).
                 setVisible(false).
                 setDescription('Jenkins war that corresponds to the Jenkins core')
+
+        cc.getByName(JavaPlugin.TEST_COMPILE_CONFIGURATION_NAME).incoming.beforeResolve {
+            jenkinsTestConfiguration.resolvedConfiguration.resolvedArtifacts.each { ResolvedArtifact ra ->
+                if (ra.extension == 'hpi' || ra.extension == 'jpi') {
+                    project.dependencies.add(JavaPlugin.TEST_COMPILE_CONFIGURATION_NAME, "${ra.moduleVersion.id}@jar")
+                }
+            }
+        }
     }
 
     private static configurePublishing(Project project) {
