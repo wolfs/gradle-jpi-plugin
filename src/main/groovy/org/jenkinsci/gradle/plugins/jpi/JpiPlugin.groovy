@@ -245,29 +245,31 @@ class JpiPlugin implements Plugin<Project> {
 
         // delay configuration until all settings are available (groupId, shortName, ...)
         project.afterEvaluate {
-            publishingExtension.publications {
-                mavenJpi(MavenPublication) {
-                    artifactId jpiExtension.shortName
+            if (jpiExtension.configurePublishing) {
+                publishingExtension.publications {
+                    mavenJpi(MavenPublication) {
+                        artifactId jpiExtension.shortName
 
-                    from jpiComponent
+                        from jpiComponent
 
-                    artifact jar
-                    artifact sourcesJar
-                    artifact javadocJar
+                        artifact jar
+                        artifact sourcesJar
+                        artifact javadocJar
 
-                    pom.packaging = 'jpi'
-                    pom.withXml { XmlProvider xmlProvider ->
-                        new JpiPomCustomizer(project).customizePom(xmlProvider.asNode())
+                        pom.packaging = 'jpi'
+                        pom.withXml { XmlProvider xmlProvider ->
+                            new JpiPomCustomizer(project).customizePom(xmlProvider.asNode())
+                        }
                     }
                 }
-            }
-            publishingExtension.repositories {
-                maven {
-                    name 'jenkins'
-                    if (project.version.toString().endsWith('-SNAPSHOT')) {
-                        url jpiExtension.snapshotRepoUrl
-                    } else {
-                        url jpiExtension.repoUrl
+                publishingExtension.repositories {
+                    maven {
+                        name 'jenkins'
+                        if (project.version.toString().endsWith('-SNAPSHOT')) {
+                            url jpiExtension.snapshotRepoUrl
+                        } else {
+                            url jpiExtension.repoUrl
+                        }
                     }
                 }
             }
@@ -275,7 +277,7 @@ class JpiPlugin implements Plugin<Project> {
 
         // load credentials only when publishing
         project.gradle.taskGraph.whenReady { TaskGraphExecuter taskGraph ->
-            if (taskGraph.hasTask(project.tasks.publish)) {
+            if (jpiExtension.configurePublishing && taskGraph.hasTask(project.tasks.publish)) {
                 def credentials = loadDotJenkinsOrg()
                 publishingExtension.repositories.getByName('jenkins').credentials {
                     username credentials.userName

@@ -4,6 +4,8 @@ import org.gradle.api.Project
 import org.gradle.api.artifacts.repositories.MavenArtifactRepository
 import org.gradle.api.internal.project.ProjectInternal
 import org.gradle.api.plugins.JavaPluginConvention
+import org.gradle.api.publish.PublishingExtension
+import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.testfixtures.ProjectBuilder
 import spock.lang.Specification
 
@@ -35,6 +37,57 @@ class JpiPluginSpec extends Specification {
         'localizer'  | LocalizerTask
         'stapler'    | StaplerGroovyStubsTask
         'insertTest' | TestInsertionTask
+    }
+
+    def 'publishing has been setup'(String projectVersion, String repositoryUrl) {
+        when:
+        project.with {
+            apply plugin: 'jpi'
+            group = 'org.example'
+            version = projectVersion
+            jenkinsPlugin {
+                shortName = 'foo'
+            }
+        }
+        (project as ProjectInternal).evaluate()
+
+        then:
+        PublishingExtension publishingExtension = project.extensions.getByType(PublishingExtension)
+        publishingExtension.publications.size() == 1
+        publishingExtension.publications.getByName('mavenJpi') instanceof MavenPublication
+        MavenPublication mavenPublication = publishingExtension.publications.getByName('mavenJpi') as MavenPublication
+        mavenPublication.groupId == 'org.example'
+        mavenPublication.artifactId == 'foo'
+        mavenPublication.version == projectVersion
+        mavenPublication.pom.packaging == 'jpi'
+        mavenPublication.artifacts.size() == 4
+        publishingExtension.repositories.size() == 1
+        publishingExtension.repositories.get(0).name == 'jenkins'
+        publishingExtension.repositories.get(0) instanceof MavenArtifactRepository
+        (publishingExtension.repositories.get(0) as MavenArtifactRepository).url == URI.create(repositoryUrl)
+        project.components.size() == 3
+
+        where:
+        projectVersion   | repositoryUrl
+        '1.0.0'          | 'http://maven.jenkins-ci.org:8081/content/repositories/releases'
+        '1.0.0-SNAPSHOT' | 'http://maven.jenkins-ci.org:8081/content/repositories/snapshots'
+    }
+
+    def 'publishing configuration has been skipped'() {
+        when:
+        project.with {
+            apply plugin: 'jpi'
+            jenkinsPlugin {
+                configurePublishing = false
+            }
+        }
+        (project as ProjectInternal).evaluate()
+
+        then:
+        PublishingExtension publishingExtension = project.extensions.getByType(PublishingExtension)
+        publishingExtension.publications.size() == 0
+        publishingExtension.repositories.size() == 0
+        project.components.size() == 3
     }
 
     def 'localizer task has been setup'(Object outputDir, String expectedOutputDir) {

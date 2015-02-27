@@ -6,6 +6,8 @@
     ([JENKINS-17129](https://issues.jenkins-ci.org/browse/JENKINS-17129))
   * added `configureRepositories` option to be able to skip configuration of repositories
     ([JENKINS-17130](https://issues.jenkins-ci.org/browse/JENKINS-17130))
+  * added `configurePublishing` option to be able to skip configuration of publications or repositories for the Maven
+    Publishing plugin
 
 ## 0.9.1 (2015-02-17)
 

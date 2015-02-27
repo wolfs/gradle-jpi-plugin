@@ -257,6 +257,11 @@ class JpiExtension {
      */
     boolean configureRepositories = true
 
+    /**
+     * If false, no publications or repositories for the Maven Publishing plugin will be configured.
+     */
+    boolean configurePublishing = true
+
     Developers developers = new Developers()
 
     def developers(Closure closure) {
