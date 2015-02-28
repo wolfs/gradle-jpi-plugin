@@ -18,7 +18,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'org.jenkins-ci.tools:gradle-jpi-plugin:0.9.1'
+        classpath 'org.jenkins-ci.tools:gradle-jpi-plugin:0.10.0'
     }
 }
 
@@ -64,6 +64,15 @@ jenkinsPlugin {
 
     // enable injection of additional tests for checking the syntax of Jelly and other things
     disabledTestInjection = false
+
+    // the output directory for the localizer task relative to the project root, defaults to the value shown
+    localizerOutputDir = "${project.buildDir}/generated-src/localizer"
+
+    // disable configuration of Maven Central, the local Maven cache and the Jenkins Maven repository, defaults to true
+    configureRepositories = false
+
+    // skip configuration of publications and repositories for the Maven Publishing plugin, defaults to true
+    configurePublishing = false
 
     // the developers section is optional, and corresponds to the POM developers section
     developers {
