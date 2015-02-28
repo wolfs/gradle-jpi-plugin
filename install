@@ -20,3 +20,6 @@ buildscript {
     }
 }
 apply plugin: 'org.jenkins-ci.jpi'
+
+println 'Using the install script from https://raw.github.com/jenkinsci/gradle-jpi-plugin/master/install is ' +
+        'deprecated. Include the content of the script in your build file instead. The script will be removed soon.'
