@@ -1,5 +1,8 @@
 ## 0.10.1 (unreleased)
 
+  * localize only `Message.properties` files
+    ([JENKINS-27451](https://issues.jenkins-ci.org/browse/JENKINS-27451))
+
 ## 0.10.0 (2015-02-28)
 
   * renamed the `localizerDestDir` option to `localizerOutputDir`, changed its type to `Object` and fixed the

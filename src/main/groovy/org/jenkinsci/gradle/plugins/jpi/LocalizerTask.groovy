@@ -44,7 +44,7 @@ class LocalizerTask extends ConventionTask {
             mkdir(dir: destinationDir.canonicalPath)
             taskdef(name: 'generator', classname: 'org.jvnet.localizer.GeneratorTask')
             sourceDirs.findAll { it.exists() }.each { rsrcDir ->
-                generator(todir: destinationDir.canonicalPath, dir: rsrcDir)
+                generator(todir: destinationDir.canonicalPath, dir: rsrcDir, includes: '**/Messages.properties')
             }
         }
     }
