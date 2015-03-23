@@ -1,3 +1,5 @@
+## 0.10.2 (unreleased)
+
 ## 0.10.1 (2015-03-23)
 
   * localize only `Message.properties` files
