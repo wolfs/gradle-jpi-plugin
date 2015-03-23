@@ -1,4 +1,4 @@
-## 0.10.1 (unreleased)
+## 0.10.1 (2015-03-23)
 
   * localize only `Message.properties` files
     ([JENKINS-27451](https://issues.jenkins-ci.org/browse/JENKINS-27451))
