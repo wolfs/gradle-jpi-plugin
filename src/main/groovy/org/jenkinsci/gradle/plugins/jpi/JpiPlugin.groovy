@@ -39,6 +39,8 @@ import org.gradle.api.tasks.bundling.Jar
 import org.gradle.api.tasks.testing.Test
 import org.gradle.execution.TaskGraphExecuter
 
+import static org.gradle.util.GFileUtils.copyFile
+
 /**
  * Loads HPI related tasks into the current project.
  *
@@ -132,6 +134,7 @@ class JpiPlugin implements Plugin<Project> {
 
         configureRepositories(gradleProject)
         configureConfigurations(gradleProject)
+        configureTestResources(gradleProject)
         configurePublishing(gradleProject)
 
         // generate test hpl manifest for the current plugin, to be used during unit test
@@ -154,6 +157,28 @@ class JpiPlugin implements Plugin<Project> {
         }
         dot.withInputStream { i -> props.load(i) }
         props
+    }
+
+    private static configureTestResources(Project project) {
+        JavaPluginConvention javaConvention = project.convention.getPlugin(JavaPluginConvention)
+        Task processTestResources = project.tasks.getByName(javaConvention.sourceSets.test.processResourcesTaskName)
+        Configuration plugins = project.configurations.create('pluginResources')
+
+        project.afterEvaluate {
+            [PLUGINS_DEPENDENCY_CONFIGURATION_NAME, OPTIONAL_PLUGINS_DEPENDENCY_CONFIGURATION_NAME].each {
+                project.configurations.getByName(it).dependencies.each {
+                    project.dependencies.add(plugins.name, "${it.group}:${it.name}:${it.version}")
+                }
+            }
+            processTestResources.inputs.files(plugins.resolve())
+        }
+
+        processTestResources.doLast {
+            File targetDir = javaConvention.sourceSets.test.output.resourcesDir
+            plugins.resolvedConfiguration.resolvedArtifacts.findAll { it.extension in ['hpi', 'jpi'] }.each {
+                copyFile(it.file, new File(targetDir, "plugins/${it.name}.${it.extension}"))
+            }
+        }
     }
 
     private static configureLocalizer(Project project) {
