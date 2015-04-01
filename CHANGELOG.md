@@ -1,5 +1,7 @@
 ## 0.10.2 (unreleased)
 
+  * copy plugin dependencies to test resources output directory to be able to use `@WithPlugin` in tests
+
 ## 0.10.1 (2015-03-23)
 
   * localize only `Message.properties` files
