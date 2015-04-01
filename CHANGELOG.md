@@ -1,4 +1,4 @@
-## 0.10.2 (unreleased)
+## 0.10.2 (2015-04-01)
 
   * copy plugin dependencies to test resources output directory to be able to use `@WithPlugin` in tests
 
