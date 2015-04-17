@@ -17,7 +17,7 @@ package org.jenkinsci.gradle.plugins.jpi
 
 import org.gradle.api.tasks.bundling.War
 
-import java.util.jar.Attributes
+import static org.jenkinsci.gradle.plugins.jpi.JpiManifest.attributesToMap
 
 /**
  * Assembles an hpi archive.
@@ -39,8 +39,4 @@ class Jpi extends War {
     }
 
     public static final String TASK_NAME = 'jpi'
-
-    private static Map<String, ?> attributesToMap(Attributes attributes) {
-        attributes.collectEntries { k, v -> [k.toString(), v] }
-    }
 }

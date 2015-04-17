@@ -24,6 +24,7 @@ import org.gradle.api.artifacts.ResolvedArtifact
 import org.gradle.api.plugins.JavaPluginConvention
 
 import java.text.SimpleDateFormat
+import java.util.jar.Attributes
 import java.util.jar.Manifest
 
 import static java.util.jar.Attributes.Name.MANIFEST_VERSION
@@ -133,5 +134,9 @@ class JpiManifest extends Manifest {
             return YesNoMaybe.MAYBE
         }
         YesNoMaybe.YES
+    }
+
+    static Map<String, ?> attributesToMap(Attributes attributes) {
+        attributes.collectEntries { k, v -> [k.toString(), v] }
     }
 }

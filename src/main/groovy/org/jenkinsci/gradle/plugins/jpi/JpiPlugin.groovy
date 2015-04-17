@@ -40,6 +40,7 @@ import org.gradle.api.tasks.testing.Test
 import org.gradle.execution.TaskGraphExecuter
 
 import static org.gradle.util.GFileUtils.copyFile
+import static org.jenkinsci.gradle.plugins.jpi.JpiManifest.attributesToMap
 
 /**
  * Loads HPI related tasks into the current project.
@@ -134,6 +135,15 @@ class JpiPlugin implements Plugin<Project> {
 
         configureRepositories(gradleProject)
         configureConfigurations(gradleProject)
+
+        // manifest in the JAR file
+        gradleProject.afterEvaluate {
+            Jar jar = gradleProject.tasks.getByName(JavaPlugin.JAR_TASK_NAME) as Jar
+            jar.manifest {
+                attributes(attributesToMap(new JpiManifest(gradleProject).mainAttributes))
+            }
+        }
+
         configureTestResources(gradleProject)
         configurePublishing(gradleProject)
 

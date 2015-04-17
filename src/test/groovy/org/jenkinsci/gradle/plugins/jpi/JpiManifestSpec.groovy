@@ -2,6 +2,7 @@ package org.jenkinsci.gradle.plugins.jpi
 
 import org.gradle.api.Project
 import org.gradle.api.internal.project.ProjectInternal
+import org.gradle.jvm.tasks.Jar
 import org.gradle.testfixtures.ProjectBuilder
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
@@ -32,6 +33,28 @@ class JpiManifestSpec extends Specification {
 
         then:
         manifest == readManifest('basics.mf')
+    }
+
+    def 'basics for JAR'() {
+        setup:
+        project.with {
+            apply plugin: 'jpi'
+            group = 'org.example'
+            version = '1.2'
+            jenkinsPlugin {
+                coreVersion = '1.509.3'
+            }
+        }
+        (project as ProjectInternal).evaluate()
+
+        when:
+        Jar jar = project.tasks.jar as Jar
+        def manifest = jar.manifest
+
+        then:
+        manifest.attributes.collectEntries { k, v -> [k.toString(), v] } == JpiManifest.attributesToMap(
+                readManifest('basics.mf').mainAttributes
+        )
     }
 
     def 'plugin class'() {
