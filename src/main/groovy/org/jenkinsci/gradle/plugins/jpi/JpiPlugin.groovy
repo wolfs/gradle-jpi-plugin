@@ -135,15 +135,7 @@ class JpiPlugin implements Plugin<Project> {
 
         configureRepositories(gradleProject)
         configureConfigurations(gradleProject)
-
-        // manifest in the JAR file
-        gradleProject.afterEvaluate {
-            Jar jar = gradleProject.tasks.getByName(JavaPlugin.JAR_TASK_NAME) as Jar
-            jar.manifest {
-                attributes(attributesToMap(new JpiManifest(gradleProject).mainAttributes))
-            }
-        }
-
+        configureJar(gradleProject)
         configureTestResources(gradleProject)
         configurePublishing(gradleProject)
 
@@ -167,6 +159,14 @@ class JpiPlugin implements Plugin<Project> {
         }
         dot.withInputStream { i -> props.load(i) }
         props
+    }
+
+    private static configureJar(Project project) {
+        // add manifest to the JAR file
+        project.afterEvaluate {
+            Jar jarTask = project.tasks.getByName(JavaPlugin.JAR_TASK_NAME) as Jar
+            jarTask.manifest.attributes(attributesToMap(new JpiManifest(project).mainAttributes))
+        }
     }
 
     private static configureTestResources(Project project) {

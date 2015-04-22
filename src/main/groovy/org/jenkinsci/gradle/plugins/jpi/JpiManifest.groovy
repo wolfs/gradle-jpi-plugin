@@ -137,6 +137,6 @@ class JpiManifest extends Manifest {
     }
 
     static Map<String, ?> attributesToMap(Attributes attributes) {
-        attributes.collectEntries { k, v -> [k.toString(), v] }
+        attributes.collectEntries { k, v -> [k.toString(), v] } as Map<String, ?>
     }
 }

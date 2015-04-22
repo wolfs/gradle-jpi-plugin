@@ -1,5 +1,8 @@
 ## 0.10.3 (unreleased)
 
+  * add manifest to the plugin JAR file
+    ([JENKINS-27994](https://issues.jenkins-ci.org/browse/JENKINS-27994))
+
 ## 0.10.2 (2015-04-01)
 
   * copy plugin dependencies to test resources output directory to be able to use `@WithPlugin` in tests
