@@ -1,6 +1,6 @@
 package org.jenkinsci.gradle.plugins.jpi
 
-import org.gradle.api.artifacts.DependencySet
+import org.gradle.api.DomainObjectSet
 import org.gradle.api.artifacts.ModuleDependency
 import org.gradle.api.artifacts.PublishArtifact
 import org.gradle.api.internal.component.SoftwareComponentInternal
@@ -9,12 +9,12 @@ import org.gradle.api.internal.component.Usage
 class JpiComponent implements SoftwareComponentInternal {
     private final Usage jpiUsage = new JpiUsage()
     private final Set<PublishArtifact> jpiArtifacts
-    private final Iterable<DependencySet> jpiDependencies
+    private final DomainObjectSet jpiDependencies
 
     final String name = 'jpi'
     final Set<Usage> usages = [jpiUsage]
 
-    JpiComponent(PublishArtifact jpiArtifact, Iterable<DependencySet> jpiDependencies) {
+    JpiComponent(PublishArtifact jpiArtifact, DomainObjectSet jpiDependencies) {
         this.jpiArtifacts = [jpiArtifact]
         this.jpiDependencies = jpiDependencies
     }
@@ -27,7 +27,8 @@ class JpiComponent implements SoftwareComponentInternal {
         }
 
         Set<ModuleDependency> getDependencies() {
-            jpiDependencies*.withType(ModuleDependency).flatten()
+            // copy to new set, otherwise the result will contain duplicates
+            new HashSet<ModuleDependency>(jpiDependencies.withType(ModuleDependency))
         }
     }
 }

@@ -15,6 +15,7 @@
  */
 package org.jenkinsci.gradle.plugins.jpi
 
+import org.gradle.api.DomainObjectSet
 import org.gradle.api.GradleException
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -22,6 +23,8 @@ import org.gradle.api.Task
 import org.gradle.api.XmlProvider
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.ConfigurationContainer
+import org.gradle.api.artifacts.Dependency
+import org.gradle.api.artifacts.DependencySet
 import org.gradle.api.artifacts.ResolvedArtifact
 import org.gradle.api.component.SoftwareComponent
 import org.gradle.api.internal.artifacts.publish.ArchivePublishArtifact
@@ -39,6 +42,7 @@ import org.gradle.api.tasks.bundling.Jar
 import org.gradle.api.tasks.testing.Test
 import org.gradle.execution.TaskGraphExecuter
 
+import static org.gradle.api.plugins.JavaPlugin.RUNTIME_CONFIGURATION_NAME
 import static org.gradle.util.GFileUtils.copyFile
 import static org.jenkinsci.gradle.plugins.jpi.JpiManifest.attributesToMap
 
@@ -263,19 +267,16 @@ class JpiPlugin implements Plugin<Project> {
         Task jar = project.tasks.getByName(JavaPlugin.JAR_TASK_NAME)
         Task sourcesJar = project.tasks.getByName(SOURCES_JAR_TASK_NAME)
         Task javadocJar = project.tasks.getByName(JAVADOC_JAR_TASK_NAME)
+        DependencySet runtimeDependencies = project.configurations[RUNTIME_CONFIGURATION_NAME].allDependencies
+        DependencySet coreDependencies = project.configurations[CORE_DEPENDENCY_CONFIGURATION_NAME].allDependencies
 
         ArchivePublishArtifact jpiArtifact = new ArchivePublishArtifact(jpi)
         project.extensions.getByType(DefaultArtifactPublicationSet).addCandidate(jpiArtifact)
 
-        SoftwareComponent jpiComponent = new JpiComponent(
-                jpiArtifact,
-                [
-                        project.configurations[JavaPlugin.RUNTIME_CONFIGURATION_NAME].allDependencies,
-                        project.configurations[CORE_DEPENDENCY_CONFIGURATION_NAME].allDependencies,
-                        project.configurations[PLUGINS_DEPENDENCY_CONFIGURATION_NAME].allDependencies,
-                        project.configurations[OPTIONAL_PLUGINS_DEPENDENCY_CONFIGURATION_NAME].allDependencies,
-                ]
-        )
+        // exclude core dependencies which are inherited from the parent POM
+        DomainObjectSet<Dependency> jpiDependencies = runtimeDependencies.matching { !coreDependencies.contains(it) }
+
+        SoftwareComponent jpiComponent = new JpiComponent(jpiArtifact, jpiDependencies)
         project.components.add(jpiComponent)
 
         // delay configuration until all settings are available (groupId, shortName, ...)
@@ -291,7 +292,7 @@ class JpiPlugin implements Plugin<Project> {
                         artifact sourcesJar
                         artifact javadocJar
 
-                        pom.packaging = 'jpi'
+                        pom.packaging = 'hpi'
                         pom.withXml { XmlProvider xmlProvider ->
                             new JpiPomCustomizer(project).customizePom(xmlProvider.asNode())
                         }

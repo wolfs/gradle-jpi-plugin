@@ -2,6 +2,10 @@
 
   * add manifest to the plugin JAR file
     ([JENKINS-27994](https://issues.jenkins-ci.org/browse/JENKINS-27994))
+  * removed `jenkinsCore` dependencies from generated POM because those are inherited from the parent POM
+  * removed runtime scope from plugin and compile dependencies in generated POM
+  * mark optional plugins in generated POM
+  * changed packaging in generated POM to hpi for compatibility with maven-hpi-plugin
 
 ## 0.10.2 (2015-04-01)
 

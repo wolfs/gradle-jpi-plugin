@@ -1,10 +1,15 @@
 package org.jenkinsci.gradle.plugins.jpi
 
 import org.gradle.api.Project
+import org.gradle.api.artifacts.Dependency
+import org.gradle.api.artifacts.DependencySet
 import org.gradle.api.artifacts.repositories.MavenArtifactRepository
+import org.gradle.api.plugins.JavaPlugin
 
 import static org.gradle.api.artifacts.ArtifactRepositoryContainer.DEFAULT_MAVEN_CENTRAL_REPO_NAME
 import static org.gradle.api.artifacts.ArtifactRepositoryContainer.DEFAULT_MAVEN_LOCAL_REPO_NAME
+import static org.jenkinsci.gradle.plugins.jpi.JpiPlugin.OPTIONAL_PLUGINS_DEPENDENCY_CONFIGURATION_NAME
+import static org.jenkinsci.gradle.plugins.jpi.JpiPlugin.PLUGINS_DEPENDENCY_CONFIGURATION_NAME
 
 /**
  * Adds metadata to the JPI's POM.
@@ -44,6 +49,33 @@ class JpiPomCustomizer {
         }
         if (repositories) {
             pom.appendNode('repositories', repositories.collect { makeRepositoryNode(it) })
+        }
+        fixDependencies(pom)
+    }
+
+    private void fixDependencies(Node pom) {
+        DependencySet pluginDependencies = project.configurations.
+                getByName(PLUGINS_DEPENDENCY_CONFIGURATION_NAME).dependencies
+        DependencySet optionalPluginDependencies = project.configurations.
+                getByName(OPTIONAL_PLUGINS_DEPENDENCY_CONFIGURATION_NAME).dependencies
+        DependencySet compileDependencies = project.configurations.
+                getByName(JavaPlugin.COMPILE_CONFIGURATION_NAME).dependencies
+        Set<Dependency> allPluginDependencies = pluginDependencies + optionalPluginDependencies
+
+        pom.dependencies[0].each { Node dependency ->
+            String groupId = dependency.groupId.text()
+            String artifactId = dependency.artifactId.text()
+            Node scope = dependency.scope[0] as Node
+
+            // add the optional element for all optional plugin dependencies
+            if (optionalPluginDependencies.any { it.group == groupId && it.name == artifactId }) {
+                dependency.appendNode('optional', true)
+            }
+
+            // remove the scope for all plugin and compile dependencies
+            if ((allPluginDependencies + compileDependencies).any { it.group == groupId && it.name == artifactId }) {
+                dependency.remove(scope)
+            }
         }
     }
 

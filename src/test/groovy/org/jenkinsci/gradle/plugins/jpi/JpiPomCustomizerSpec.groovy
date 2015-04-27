@@ -3,12 +3,20 @@ package org.jenkinsci.gradle.plugins.jpi
 import org.custommonkey.xmlunit.XMLUnit
 import org.gradle.api.Project
 import org.gradle.api.internal.project.ProjectInternal
+import org.gradle.api.publish.PublishingExtension
+import org.gradle.api.publish.maven.MavenPublication
+import org.gradle.api.publish.maven.internal.publication.MavenPomInternal
+import org.gradle.api.publish.maven.internal.tasks.MavenPomFileGenerator
 import org.gradle.testfixtures.ProjectBuilder
+import org.junit.Rule
+import org.junit.rules.TemporaryFolder
 import spock.lang.Specification
 
 class JpiPomCustomizerSpec extends Specification {
+    @Rule
+    TemporaryFolder temporaryFolder = new TemporaryFolder()
+
     Project project = ProjectBuilder.builder().build()
-    Node pom = new Node(null, 'project')
 
     def setup() {
         XMLUnit.ignoreWhitespace = true
@@ -25,7 +33,7 @@ class JpiPomCustomizerSpec extends Specification {
         (project as ProjectInternal).evaluate()
 
         when:
-        new JpiPomCustomizer(project).customizePom(pom)
+        Node pom = generatePom()
 
         then:
         compareXml('minimal-pom.xml', pom)
@@ -58,7 +66,7 @@ class JpiPomCustomizerSpec extends Specification {
         (project as ProjectInternal).evaluate()
 
         when:
-        new JpiPomCustomizer(project).customizePom(pom)
+        Node pom = generatePom()
 
         then:
         compareXml('complex-pom.xml', pom)
@@ -76,7 +84,7 @@ class JpiPomCustomizerSpec extends Specification {
         (project as ProjectInternal).evaluate()
 
         when:
-        new JpiPomCustomizer(project).customizePom(pom)
+        Node pom = generatePom()
 
         then:
         compareXml('bitbucket-pom.xml', pom)
@@ -96,7 +104,7 @@ class JpiPomCustomizerSpec extends Specification {
         (project as ProjectInternal).evaluate()
 
         when:
-        new JpiPomCustomizer(project).customizePom(pom)
+        Node pom = generatePom()
 
         then:
         compareXml('minimal-pom.xml', pom)
@@ -116,10 +124,85 @@ class JpiPomCustomizerSpec extends Specification {
         (project as ProjectInternal).evaluate()
 
         when:
-        new JpiPomCustomizer(project).customizePom(pom)
+        Node pom = generatePom()
 
         then:
         compareXml('minimal-pom.xml', pom)
+    }
+
+    def 'plugin dependencies'() {
+        setup:
+        project.with {
+            apply plugin: 'jpi'
+            jenkinsPlugin {
+                coreVersion = '1.580.1'
+            }
+            dependencies {
+                jenkinsPlugins 'org.jenkins-ci.plugins:credentials:1.9.4@jar'
+            }
+        }
+        (project as ProjectInternal).evaluate()
+
+        when:
+        Node pom = generatePom()
+
+        then:
+        compareXml('plugin-dependencies-pom.xml', pom)
+    }
+
+    def 'optional plugin dependencies'() {
+        setup:
+        project.with {
+            apply plugin: 'jpi'
+            jenkinsPlugin {
+                coreVersion = '1.580.1'
+            }
+            dependencies {
+                optionalJenkinsPlugins 'org.jenkins-ci.plugins:credentials:1.9.4@jar'
+            }
+        }
+        (project as ProjectInternal).evaluate()
+
+        when:
+        Node pom = generatePom()
+
+        then:
+        compareXml('optional-plugin-dependencies-pom.xml', pom)
+    }
+
+    def 'compile dependencies'() {
+        setup:
+        project.with {
+            apply plugin: 'jpi'
+            jenkinsPlugin {
+                coreVersion = '1.580.1'
+            }
+            dependencies {
+                compile 'javax.ejb:ejb:2.1'
+            }
+        }
+        (project as ProjectInternal).evaluate()
+
+        when:
+        Node pom = generatePom()
+
+        then:
+        compareXml('compile-dependencies-pom.xml', pom)
+    }
+
+    private Node generatePom() {
+        PublishingExtension publishingExtension = project.extensions.getByType(PublishingExtension)
+        MavenPublication publication = publishingExtension.publications.getByName('mavenJpi') as MavenPublication
+        MavenPomInternal pomInternal = (MavenPomInternal) publication.pom
+
+        MavenPomFileGenerator pomGenerator = new MavenPomFileGenerator(pomInternal.projectIdentity)
+        pomGenerator.packaging = pomInternal.packaging
+        pomInternal.runtimeDependencies.each { pomGenerator.addRuntimeDependency(it) }
+        pomGenerator.withXml(pomInternal.xmlAction)
+
+        File pomFile = temporaryFolder.newFile()
+        pomGenerator.writeTo(pomFile)
+        new XmlParser().parse(pomFile)
     }
 
     private static boolean compareXml(String fileName, Node node) {
