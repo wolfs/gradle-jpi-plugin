@@ -1,3 +1,5 @@
+## 0.11.1 (unreleased)
+
 ## 0.11.0 (2015-04-28)
 
   * add manifest to the plugin JAR file
