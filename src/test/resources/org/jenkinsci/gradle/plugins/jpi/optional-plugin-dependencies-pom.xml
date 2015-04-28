@@ -7,15 +7,20 @@
     <artifactId>test</artifactId>
     <version>unspecified</version>
     <packaging>hpi</packaging>
+    <dependencies>
+        <dependency>
+            <groupId>org.jenkins-ci.plugins</groupId>
+            <artifactId>credentials</artifactId>
+            <version>1.9.4</version>
+            <optional>true</optional>
+        </dependency>
+    </dependencies>
     <parent>
         <groupId>org.jenkins-ci.plugins</groupId>
         <artifactId>plugin</artifactId>
         <version>1.580.1</version>
     </parent>
     <name>test</name>
-    <scm>
-        <url>https://bitbucket.org/lorem/ipsum</url>
-    </scm>
     <repositories>
         <repository>
             <id>jenkins</id>
