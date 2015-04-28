@@ -1,4 +1,4 @@
-## 0.10.3 (unreleased)
+## 0.11.0 (2015-04-28)
 
   * add manifest to the plugin JAR file
     ([JENKINS-27994](https://issues.jenkins-ci.org/browse/JENKINS-27994))
