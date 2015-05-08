@@ -1,4 +1,4 @@
-## 0.11.1 (unreleased)
+## 0.11.1 (2015-05-08)
 
   * changed packaging in generated POM back to jpi to fix a regression bug
     ([JENKINS-28305](https://issues.jenkins-ci.org/browse/JENKINS-28305))
