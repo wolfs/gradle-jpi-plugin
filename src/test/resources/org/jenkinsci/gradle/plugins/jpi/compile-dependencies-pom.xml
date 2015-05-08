@@ -6,7 +6,7 @@
     <groupId/>
     <artifactId>test</artifactId>
     <version>unspecified</version>
-    <packaging>hpi</packaging>
+    <packaging>jpi</packaging>
     <dependencies>
         <dependency>
             <groupId>javax.ejb</groupId>

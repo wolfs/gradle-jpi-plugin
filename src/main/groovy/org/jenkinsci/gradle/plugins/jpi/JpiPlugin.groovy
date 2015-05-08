@@ -292,7 +292,7 @@ class JpiPlugin implements Plugin<Project> {
                         artifact sourcesJar
                         artifact javadocJar
 
-                        pom.packaging = 'hpi'
+                        pom.packaging = 'jpi'
                         pom.withXml { XmlProvider xmlProvider ->
                             new JpiPomCustomizer(project).customizePom(xmlProvider.asNode())
                         }
