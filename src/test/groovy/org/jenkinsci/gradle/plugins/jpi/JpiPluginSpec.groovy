@@ -59,7 +59,7 @@ class JpiPluginSpec extends Specification {
         mavenPublication.groupId == 'org.example'
         mavenPublication.artifactId == 'foo'
         mavenPublication.version == projectVersion
-        mavenPublication.pom.packaging == 'hpi'
+        mavenPublication.pom.packaging == 'jpi'
         mavenPublication.artifacts.size() == 4
         publishingExtension.repositories.size() == 1
         publishingExtension.repositories.get(0).name == 'jenkins'

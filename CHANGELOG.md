@@ -1,5 +1,8 @@
 ## 0.11.1 (unreleased)
 
+  * changed packaging in generated POM back to jpi to fix a regression bug
+    ([JENKINS-28305](https://issues.jenkins-ci.org/browse/JENKINS-28305))
+
 ## 0.11.0 (2015-04-28)
 
   * add manifest to the plugin JAR file
