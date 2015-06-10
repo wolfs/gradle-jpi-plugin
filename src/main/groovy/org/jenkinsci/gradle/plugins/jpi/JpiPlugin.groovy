@@ -103,7 +103,6 @@ class JpiPlugin implements Plugin<Project> {
         jpi.group = BasePlugin.BUILD_GROUP
         jpi.dependsOn(ext.mainSourceTree().runtimeClasspath)
         jpi.classpath = ext.mainSourceTree().runtimeClasspath - providedRuntime
-        jpi.archiveName = "${ext.shortName}.${ext.fileExtension}"
 
         def server = gradleProject.tasks.create(ServerTask.TASK_NAME, ServerTask)
         server.description = 'Run Jenkins in place with the plugin being developed'
@@ -139,6 +138,7 @@ class JpiPlugin implements Plugin<Project> {
 
         configureRepositories(gradleProject)
         configureConfigurations(gradleProject)
+        configureJpi(gradleProject)
         configureJar(gradleProject)
         configureTestResources(gradleProject)
         configurePublishing(gradleProject)
@@ -163,6 +163,15 @@ class JpiPlugin implements Plugin<Project> {
         }
         dot.withInputStream { i -> props.load(i) }
         props
+    }
+
+    private static configureJpi(Project project) {
+        project.afterEvaluate {
+            JpiExtension jpiExtension = project.extensions.getByType(JpiExtension)
+            Jar jpiTask = project.tasks.getByName(Jpi.TASK_NAME) as Jpi
+            jpiTask.archiveName = "${jpiExtension.shortName}.${jpiExtension.fileExtension}"
+            jpiTask.extension = jpiExtension.fileExtension
+        }
     }
 
     private static configureJar(Project project) {
@@ -292,7 +301,7 @@ class JpiPlugin implements Plugin<Project> {
                         artifact sourcesJar
                         artifact javadocJar
 
-                        pom.packaging = 'jpi'
+                        pom.packaging = jpiExtension.fileExtension
                         pom.withXml { XmlProvider xmlProvider ->
                             new JpiPomCustomizer(project).customizePom(xmlProvider.asNode())
                         }
