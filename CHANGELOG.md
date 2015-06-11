@@ -1,3 +1,5 @@
+## 0.12.1 (unreleased)
+
 ## 0.12.0 (2015-06-11)
 
   * allow JPI/HPI file extension and packaging type to be configured by the `fileExtension` property, which will default
