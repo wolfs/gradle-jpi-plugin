@@ -3,6 +3,7 @@ package org.jenkinsci.gradle.plugins.jpi
 import org.gradle.api.Project
 import org.gradle.api.artifacts.repositories.MavenArtifactRepository
 import org.gradle.api.internal.project.ProjectInternal
+import org.gradle.api.plugins.BasePlugin
 import org.gradle.api.plugins.JavaPluginConvention
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
@@ -39,7 +40,7 @@ class JpiPluginSpec extends Specification {
         'insertTest' | TestInsertionTask
     }
 
-    def 'publishing has been setup'(String projectVersion, String repositoryUrl) {
+    def 'publishing has been setup'(String projectVersion, String repositoryUrl, String extension) {
         when:
         project.with {
             apply plugin: 'jpi'
@@ -47,6 +48,7 @@ class JpiPluginSpec extends Specification {
             version = projectVersion
             jenkinsPlugin {
                 shortName = 'foo'
+                fileExtension = extension
             }
         }
         (project as ProjectInternal).evaluate()
@@ -59,7 +61,7 @@ class JpiPluginSpec extends Specification {
         mavenPublication.groupId == 'org.example'
         mavenPublication.artifactId == 'foo'
         mavenPublication.version == projectVersion
-        mavenPublication.pom.packaging == 'jpi'
+        mavenPublication.pom.packaging == extension
         mavenPublication.artifacts.size() == 4
         publishingExtension.repositories.size() == 1
         publishingExtension.repositories.get(0).name == 'jenkins'
@@ -68,9 +70,40 @@ class JpiPluginSpec extends Specification {
         project.components.size() == 3
 
         where:
-        projectVersion   | repositoryUrl
-        '1.0.0'          | 'http://maven.jenkins-ci.org:8081/content/repositories/releases'
-        '1.0.0-SNAPSHOT' | 'http://maven.jenkins-ci.org:8081/content/repositories/snapshots'
+        projectVersion   | repositoryUrl                                                     | extension
+        '1.0.0'          | 'http://maven.jenkins-ci.org:8081/content/repositories/releases'  | 'jpi'
+        '1.0.0-SNAPSHOT' | 'http://maven.jenkins-ci.org:8081/content/repositories/snapshots' | 'jpi'
+        '1.0.0'          | 'http://maven.jenkins-ci.org:8081/content/repositories/releases'  | 'hpi'
+        '1.0.0-SNAPSHOT' | 'http://maven.jenkins-ci.org:8081/content/repositories/snapshots' | 'hpi'
+    }
+
+    def 'jpi task has been setup'() {
+        when:
+        project.with {
+            apply plugin: 'jpi'
+            jenkinsPlugin {
+                shortName = name
+                fileExtension = extension
+            }
+        }
+        (project as ProjectInternal).evaluate()
+
+        then:
+        Jpi task = project.tasks[Jpi.TASK_NAME] as Jpi
+        task != null
+        task.description != null
+        task.group == BasePlugin.BUILD_GROUP
+        task.archiveName == archiveName
+        task.extension == extension
+
+        where:
+        name  | extension || archiveName
+        ''    | 'jpi'     || 'test.jpi'
+        null  | 'jpi'     || 'test.jpi'
+        'foo' | 'jpi'     || 'foo.jpi'
+        ''    | 'hpi'     || 'test.hpi'
+        null  | 'hpi'     || 'test.hpi'
+        'foo' | 'hpi'     || 'foo.hpi'
     }
 
     def 'publishing configuration has been skipped'() {

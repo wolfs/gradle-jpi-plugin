@@ -9,5 +9,7 @@ ruleset {
         exclude 'MethodName'
         // OK for tests
         exclude 'Instanceof'
+        // Spock ...
+        exclude 'UnnecessaryBooleanExpression'
     }
 }
