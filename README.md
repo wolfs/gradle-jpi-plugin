@@ -18,7 +18,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'org.jenkins-ci.tools:gradle-jpi-plugin:0.11.1'
+        classpath 'org.jenkins-ci.tools:gradle-jpi-plugin:0.12.0'
     }
 }
 
@@ -73,6 +73,9 @@ jenkinsPlugin {
 
     // skip configuration of publications and repositories for the Maven Publishing plugin, defaults to true
     configurePublishing = false
+
+    // plugin file extension, either 'jpi' or 'hpi', defaults to 'hpi'
+    fileExtension = 'hpi'
 
     // the developers section is optional, and corresponds to the POM developers section
     developers {
