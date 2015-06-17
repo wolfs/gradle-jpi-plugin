@@ -1,3 +1,5 @@
+## 0.12.1 (unreleased)
+
 ## 0.12.1 (2015-06-17)
 
   * added a dependency from the `assemble` to the `jpi` task to hook into the standard lifecycle
