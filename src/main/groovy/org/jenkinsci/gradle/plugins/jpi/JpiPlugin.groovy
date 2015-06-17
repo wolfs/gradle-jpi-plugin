@@ -41,6 +41,7 @@ import org.gradle.api.tasks.bundling.AbstractArchiveTask
 import org.gradle.api.tasks.bundling.Jar
 import org.gradle.api.tasks.testing.Test
 import org.gradle.execution.TaskGraphExecuter
+import org.gradle.language.base.plugins.LifecycleBasePlugin
 
 import static org.gradle.api.plugins.JavaPlugin.RUNTIME_CONFIGURATION_NAME
 import static org.gradle.util.GFileUtils.copyFile
@@ -103,6 +104,8 @@ class JpiPlugin implements Plugin<Project> {
         jpi.group = BasePlugin.BUILD_GROUP
         jpi.dependsOn(ext.mainSourceTree().runtimeClasspath)
         jpi.classpath = ext.mainSourceTree().runtimeClasspath - providedRuntime
+
+        gradleProject.tasks.findByName(LifecycleBasePlugin.ASSEMBLE_TASK_NAME).dependsOn(jpi)
 
         def server = gradleProject.tasks.create(ServerTask.TASK_NAME, ServerTask)
         server.description = 'Run Jenkins in place with the plugin being developed'
