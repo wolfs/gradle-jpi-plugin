@@ -204,6 +204,20 @@ class JpiPluginSpec extends Specification {
         'org.jenkins-ci.plugins:subversion:1.45@jar' in dependencies
     }
 
+    def 'tasks are wired to lifecycle'() {
+        setup:
+        Project project = ProjectBuilder.builder().build()
+
+        when:
+        project.with {
+            apply plugin: 'jpi'
+        }
+        (project as ProjectInternal).evaluate()
+
+        then:
+        project.tasks.assemble.dependsOn.contains(project.tasks.jpi)
+    }
+
     private static List<String> collectDependencies(Project project, String configuration) {
         project.configurations.getByName(configuration).resolvedConfiguration.resolvedArtifacts.collect {
             "${it.moduleVersion.id}@${it.extension}".toString()
