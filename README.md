@@ -128,6 +128,12 @@ environment variable must be used to configure the JVM debug options.
     $ export GRADLE_OPTS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005
     $ ./gradlew server
 
+The `server` task enables several debug options: `stapler.trace`, `stapler.jelly.noCache` and `debug.YUI`. This
+increases the page load time. All option can be changed and new options can be added by passing them as system
+properties to the Gradle command line.
+
+    $ ./gradlew -Dstapler.jelly.noCache=false server
+
 ## Examples
 
 Here are some real world examples of Jenkins plugins using the Gradle JPI plugin:

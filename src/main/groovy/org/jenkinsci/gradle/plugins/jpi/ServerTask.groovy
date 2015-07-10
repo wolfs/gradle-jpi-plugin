@@ -43,9 +43,9 @@ class ServerTask extends DefaultTask {
 
         def conv = project.extensions.getByType(JpiExtension)
         System.setProperty('JENKINS_HOME', conv.workDir.absolutePath)
-        System.setProperty('stapler.trace', 'true')
-        System.setProperty('stapler.jelly.noCache', 'true')
-        System.setProperty('debug.YUI', 'true')
+        setSystemPropertyIfEmpty('stapler.trace', 'true')
+        setSystemPropertyIfEmpty('stapler.jelly.noCache', 'true')
+        setSystemPropertyIfEmpty('debug.YUI', 'true')
 
         def cl = new URLClassLoader([war.toURI().toURL()] as URL[])
         def mainClass = new JarFile(war).manifest.mainAttributes.getValue('Main-Class')
@@ -75,6 +75,12 @@ class ServerTask extends DefaultTask {
         def workDir = project.extensions.getByType(JpiExtension).workDir
         plugins.resolvedConfiguration.resolvedArtifacts.findAll { it.extension in ['hpi', 'jpi'] }.each {
             GFileUtils.copyFile(it.file, new File(workDir, "plugins/${it.name}.${it.extension}"))
+        }
+    }
+
+    private static void setSystemPropertyIfEmpty(String name, String value) {
+        if (!System.getProperty(name)) {
+            System.setProperty(name, value)
         }
     }
 
