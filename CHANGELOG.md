@@ -1,5 +1,8 @@
 ## 0.12.2 (unreleased)
 
+  * allow to override system properties for the embedded Jenkins instance which is started by the `server` task
+    ([JENKINS-29297](https://issues.jenkins-ci.org/browse/JENKINS-29297))
+
 ## 0.12.1 (2015-06-17)
 
   * added a dependency from the `assemble` to the `jpi` task to hook into the standard lifecycle
