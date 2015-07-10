@@ -117,6 +117,16 @@ example or specify `ext: 'jar'` if you're using the map-style notation).
   local Maven repository.
 * `gradle publish` - Deploy your plugin to
   the Jenkins Maven repository to be included in the Update Center.
+* `gradle server` - Start a local instance of Jenkins (http://localhost:8080) with the plugin pre-installed for testing
+  and debugging.
+
+## Debugging
+
+It is possible to attach a remote debugger to the Jenkins instance started by `gradle server`. The `GRADLE_OPTS`
+environment variable must be used to configure the JVM debug options.
+
+    $ export GRADLE_OPTS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005
+    $ ./gradlew server
 
 ## Examples
 
