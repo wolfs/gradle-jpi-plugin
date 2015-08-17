@@ -1,3 +1,5 @@
+## 0.13.0 (unreleased)
+
 ## 0.12.2 (2015-08-17)
 
   * allow to override system properties for the embedded Jenkins instance which is started by the `server` task
