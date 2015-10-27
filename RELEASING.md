@@ -29,7 +29,7 @@ Steps
 * Ensure you have the latest code: `git checkout master && git pull`
 * Edit `gradle.properties` to strip `-SNAPSHOT` from version
 * Update `CHANGELOG.md`, set the release date
-* Update `README.md` and `install`, update the version
+* Update the version in `README.md`
 * Ensure everything is checked in: `git commit -am "releasing 0.6.0"`
 * Tag the source as it is: `git tag -a 0.6.0 -m "Gradle JPI Plugin 0.6.0"`
 * Build the code: `gradlew clean check install`
