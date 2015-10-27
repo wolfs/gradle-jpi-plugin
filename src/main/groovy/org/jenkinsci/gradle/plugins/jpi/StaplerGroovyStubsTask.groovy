@@ -16,7 +16,9 @@
 package org.jenkinsci.gradle.plugins.jpi
 
 import org.gradle.api.DefaultTask
+import org.gradle.api.file.FileCollection
 import org.gradle.api.internal.project.IsolatedAntBuilder
+import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.OutputDirectory
 
@@ -29,10 +31,15 @@ class StaplerGroovyStubsTask extends DefaultTask {
     @OutputDirectory
     File destinationDir
 
+    @InputFiles
+    Set<File> inputDirs
+
+    @InputFiles
+    FileCollection toolClasspath
+
     @TaskAction
     def generateStubs() {
-        def p = project
-        def isolatedAnt = services.get(IsolatedAntBuilder).withClasspath(p.sourceSets.main.compileClasspath)
+        def isolatedAnt = services.get(IsolatedAntBuilder).withClasspath(toolClasspath)
         isolatedAnt.execute {
             mkdir(dir: destinationDir.canonicalPath)
             taskdef(name: 'generatestubs', classname: 'org.codehaus.groovy.ant.GenerateStubsTask')
@@ -40,10 +47,10 @@ class StaplerGroovyStubsTask extends DefaultTask {
             generatestubs(destdir: destinationDir.canonicalPath) {
                 configuration(targetByteCode: '1.6')
                 classpath {
-                    pathelement path: p.sourceSets.main.compileClasspath.asPath
+                    pathelement path: toolClasspath.asPath
                 }
                 src {
-                    p.sourceSets.main.groovy.srcDirs.each { srcDir ->
+                    inputDirs.each { srcDir ->
                         if (srcDir.exists()) {
                             dirset(dir: srcDir) {
                                 exclude name: '**/*.properties'

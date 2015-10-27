@@ -1,5 +1,8 @@
 ## 0.13.0 (unreleased)
 
+  * fixed a problem with incremental builds
+    ([JENKINS-31186](https://issues.jenkins-ci.org/browse/JENKINS-31186))
+
 ## 0.12.2 (2015-08-17)
 
   * allow to override system properties for the embedded Jenkins instance which is started by the `server` task
