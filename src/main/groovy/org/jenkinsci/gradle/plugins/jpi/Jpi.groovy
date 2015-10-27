@@ -26,10 +26,10 @@ import static org.jenkinsci.gradle.plugins.jpi.JpiManifest.attributesToMap
  * @author Andrew Bayer
  */
 class Jpi extends War {
-    @Override
-    protected void copy() {
-        manifest.attributes(attributesToMap(new JpiManifest(project).mainAttributes))
-        super.copy()
+    Jpi() {
+        doFirst {
+            manifest.attributes(attributesToMap(new JpiManifest(project).mainAttributes))
+        }
     }
 
     public static final String TASK_NAME = 'jpi'

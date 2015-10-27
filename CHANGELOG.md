@@ -2,6 +2,8 @@
 
   * fixed a problem with incremental builds
     ([JENKINS-31186](https://issues.jenkins-ci.org/browse/JENKINS-31186))
+  * fixed StackOverflowError when using Gradle 2.8
+    ([JENKINS-31188](https://issues.jenkins-ci.org/browse/JENKINS-31188))
 
 ## 0.12.2 (2015-08-17)
 
