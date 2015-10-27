@@ -115,6 +115,8 @@ class JpiPlugin implements Plugin<Project> {
         def stubs = gradleProject.tasks.create(StaplerGroovyStubsTask.TASK_NAME, StaplerGroovyStubsTask)
         stubs.description = 'Generates the Java stubs from Groovy source to enable Stapler annotation processing.'
         stubs.group = BasePlugin.BUILD_GROUP
+        stubs.toolClasspath = gradleProject.sourceSets.main.compileClasspath
+        stubs.inputDirs = gradleProject.sourceSets.main.groovy.srcDirs
         stubs.destinationDir = ext.staplerStubDir
 
         gradleProject.sourceSets.main.java.srcDirs += ext.staplerStubDir
