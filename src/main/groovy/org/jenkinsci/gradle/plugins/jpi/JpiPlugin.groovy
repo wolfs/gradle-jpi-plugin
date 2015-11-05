@@ -97,16 +97,6 @@ class JpiPlugin implements Plugin<Project> {
         def ext = new JpiExtension(gradleProject)
         gradleProject.extensions.jenkinsPlugin = ext
 
-        def providedRuntime = gradleProject.configurations.getByName(WarPlugin.PROVIDED_RUNTIME_CONFIGURATION_NAME)
-
-        def jpi = gradleProject.tasks.create(Jpi.TASK_NAME, Jpi)
-        jpi.description = 'Generates the JPI package'
-        jpi.group = BasePlugin.BUILD_GROUP
-        jpi.dependsOn(ext.mainSourceTree().runtimeClasspath)
-        jpi.classpath = ext.mainSourceTree().runtimeClasspath - providedRuntime
-
-        gradleProject.tasks.findByName(LifecycleBasePlugin.ASSEMBLE_TASK_NAME).dependsOn(jpi)
-
         def server = gradleProject.tasks.create(ServerTask.TASK_NAME, ServerTask)
         server.description = 'Run Jenkins in place with the plugin being developed'
         server.group = BasePlugin.BUILD_GROUP // TODO
@@ -171,11 +161,20 @@ class JpiPlugin implements Plugin<Project> {
     }
 
     private static configureJpi(Project project) {
+        Configuration providedRuntime = project.configurations.getByName(WarPlugin.PROVIDED_RUNTIME_CONFIGURATION_NAME)
+        JpiExtension jpiExtension = project.extensions.getByType(JpiExtension)
+
+        Jpi jpi = project.tasks.create(Jpi.TASK_NAME, Jpi)
+        jpi.description = 'Generates the JPI package'
+        jpi.group = BasePlugin.BUILD_GROUP
+        jpi.dependsOn(jpiExtension.mainSourceTree().runtimeClasspath)
+        jpi.classpath = jpiExtension.mainSourceTree().runtimeClasspath - providedRuntime
+
+        project.tasks.findByName(LifecycleBasePlugin.ASSEMBLE_TASK_NAME).dependsOn(jpi)
         project.afterEvaluate {
-            JpiExtension jpiExtension = project.extensions.getByType(JpiExtension)
-            Jar jpiTask = project.tasks.getByName(Jpi.TASK_NAME) as Jpi
-            jpiTask.archiveName = "${jpiExtension.shortName}.${jpiExtension.fileExtension}"
-            jpiTask.extension = jpiExtension.fileExtension
+            jpi.archiveName = "${jpiExtension.shortName}.${jpiExtension.fileExtension}"
+            jpi.extension = jpiExtension.fileExtension
+            jpi.manifest.attributes(attributesToMap(new JpiManifest(project).mainAttributes))
         }
     }
 

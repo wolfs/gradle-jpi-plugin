@@ -17,8 +17,6 @@ package org.jenkinsci.gradle.plugins.jpi
 
 import org.gradle.api.tasks.bundling.War
 
-import static org.jenkinsci.gradle.plugins.jpi.JpiManifest.attributesToMap
-
 /**
  * Assembles an hpi archive.
  *
@@ -26,11 +24,5 @@ import static org.jenkinsci.gradle.plugins.jpi.JpiManifest.attributesToMap
  * @author Andrew Bayer
  */
 class Jpi extends War {
-    Jpi() {
-        doFirst {
-            manifest.attributes(attributesToMap(new JpiManifest(project).mainAttributes))
-        }
-    }
-
     public static final String TASK_NAME = 'jpi'
 }
