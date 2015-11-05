@@ -1,6 +1,8 @@
 ## 0.13.1 (unreleased)
 
   * removed install script
+  * fixed a regression introduced in 0.13.0 which causes the manifest to be empty
+    ([JENKINS-31426](https://issues.jenkins-ci.org/browse/JENKINS-31426))
 
 ## 0.13.0 (2015-10-27)
 
