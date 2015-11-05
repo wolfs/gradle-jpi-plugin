@@ -1,4 +1,4 @@
-## 0.13.1 (unreleased)
+## 0.13.1 (2015-11-05)
 
   * removed install script
   * fixed a regression introduced in 0.13.0 which causes the manifest to be empty
