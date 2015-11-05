@@ -1,5 +1,7 @@
 ## 0.13.1 (unreleased)
 
+  * removed install script
+
 ## 0.13.0 (2015-10-27)
 
   * fixed a problem with incremental builds
