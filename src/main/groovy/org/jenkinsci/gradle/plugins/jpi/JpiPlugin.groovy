@@ -192,7 +192,11 @@ class JpiPlugin implements Plugin<Project> {
         Configuration plugins = project.configurations.create('pluginResources')
 
         project.afterEvaluate {
-            [PLUGINS_DEPENDENCY_CONFIGURATION_NAME, OPTIONAL_PLUGINS_DEPENDENCY_CONFIGURATION_NAME].each {
+            [
+                    PLUGINS_DEPENDENCY_CONFIGURATION_NAME,
+                    OPTIONAL_PLUGINS_DEPENDENCY_CONFIGURATION_NAME,
+                    JENKINS_TEST_DEPENDENCY_CONFIGURATION_NAME,
+            ].each {
                 project.configurations.getByName(it).dependencies.each {
                     project.dependencies.add(plugins.name, "${it.group}:${it.name}:${it.version}")
                 }
