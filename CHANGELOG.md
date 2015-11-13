@@ -1,4 +1,4 @@
-## 0.13.2 (unreleased)
+## 0.14.0 (2015-11-13)
 
   * copy HPI/JPI dependencies from {{jenkinsTest}} configuration to {{plugin}} folder on test classpath
     ([JENKINS-31451](https://issues.jenkins-ci.org/browse/JENKINS-31451))
