@@ -201,7 +201,7 @@ class JpiPlugin implements Plugin<Project> {
                     project.dependencies.add(plugins.name, "${it.group}:${it.name}:${it.version}")
                 }
             }
-            processTestResources.inputs.files(plugins.resolve())
+            processTestResources.inputs.files(plugins)
         }
 
         processTestResources.doLast {
