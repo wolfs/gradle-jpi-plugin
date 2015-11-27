@@ -1,3 +1,5 @@
+## 0.14.2 (unreleased)
+
 ## 0.14.1 (2015-11-27)
 
   * added `Extension-Name` entry to `MANIFEST.MF`
