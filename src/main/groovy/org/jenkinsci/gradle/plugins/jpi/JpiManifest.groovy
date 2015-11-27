@@ -58,6 +58,7 @@ class JpiManifest extends Manifest {
         if (conv.sandboxStatus) {
             mainAttributes.putValue('Sandbox-Status', conv.sandboxStatus.toString())
         }
+        mainAttributes.putValue('Extension-Name', conv.shortName)
 
         def version = project.version
         if (version == Project.DEFAULT_VERSION) {
