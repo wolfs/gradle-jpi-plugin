@@ -6,4 +6,5 @@ Short-Name: test
 Plugin-Version: 1.2
 Mask-Classes: org.example.test
 Long-Name: test
+Extension-Name: test
 
