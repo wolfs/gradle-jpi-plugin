@@ -1,4 +1,4 @@
-## 0.14.1 (unreleased)
+## 0.14.1 (2015-11-27)
 
   * added `Extension-Name` entry to `MANIFEST.MF`
     ([JENKINS-31542](https://issues.jenkins-ci.org/browse/JENKINS-31542))
