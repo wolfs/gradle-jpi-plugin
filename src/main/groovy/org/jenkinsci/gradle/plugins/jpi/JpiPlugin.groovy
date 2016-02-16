@@ -39,10 +39,13 @@ import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.api.publish.maven.plugins.MavenPublishPlugin
 import org.gradle.api.tasks.bundling.AbstractArchiveTask
 import org.gradle.api.tasks.bundling.Jar
+import org.gradle.api.tasks.compile.GroovyCompile
+import org.gradle.api.tasks.compile.JavaCompile
 import org.gradle.api.tasks.testing.Test
 import org.gradle.execution.TaskGraphExecuter
 import org.gradle.language.base.plugins.LifecycleBasePlugin
 
+import static org.gradle.api.logging.LogLevel.INFO
 import static org.gradle.api.plugins.JavaPlugin.RUNTIME_CONFIGURATION_NAME
 import static org.gradle.util.GFileUtils.copyFile
 import static org.jenkinsci.gradle.plugins.jpi.JpiManifest.attributesToMap
@@ -129,6 +132,15 @@ class JpiPlugin implements Plugin<Project> {
         gradleProject.task(JAVADOC_JAR_TASK_NAME, type: Jar, dependsOn: 'javadoc') {
             classifier = 'javadoc'
             from gradleProject.javadoc.destinationDir
+        }
+
+        if (!gradleProject.logger.isEnabled(INFO)) {
+            gradleProject.tasks.withType(JavaCompile) {
+                options.compilerArgs << '-Asezpoz.quiet=true'
+            }
+            gradleProject.tasks.withType(GroovyCompile) {
+                options.compilerArgs << '-Asezpoz.quiet=true'
+            }
         }
 
         configureRepositories(gradleProject)
