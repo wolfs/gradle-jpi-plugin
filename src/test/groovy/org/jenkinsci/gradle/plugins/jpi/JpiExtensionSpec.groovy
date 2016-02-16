@@ -276,6 +276,26 @@ class JpiExtensionSpec extends Specification {
         'junit:junit-dep:4.10' in dependencies
     }
 
+    def 'jenkinsTest dependencies for 1.645 or later'() {
+        setup:
+        Project project = ProjectBuilder.builder().build()
+
+        when:
+        project.with {
+            apply plugin: 'jpi'
+            jenkinsPlugin {
+                coreVersion = '1.645'
+            }
+        }
+
+        then:
+        def dependencies = collectDependencies(project, 'jenkinsTest')
+        'org.jenkins-ci.main:jenkins-test-harness:2.0' in dependencies
+        'org.jenkins-ci.main:ui-samples-plugin:2.0' in dependencies
+        'org.jenkins-ci.main:jenkins-war:1.645' in dependencies
+        'junit:junit-dep:4.10' in dependencies
+    }
+
     private static collectDependencies(Project project, String configuration) {
         project.configurations.getByName(configuration).dependencies.collect {
             "${it.group}:${it.name}:${it.version}".toString()

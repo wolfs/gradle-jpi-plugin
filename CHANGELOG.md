@@ -1,5 +1,8 @@
 ## 0.14.2 (unreleased)
 
+  * use Jenkins Test Harness 2.0 for core versions greater than 1.644
+    ([JENKINS-32478](https://issues.jenkins-ci.org/browse/JENKINS-32478))
+
 ## 0.14.1 (2015-11-27)
 
   * added `Extension-Name` entry to `MANIFEST.MF`

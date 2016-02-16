@@ -119,6 +119,7 @@ class JpiExtension {
     void setCoreVersion(String v) {
         this.coreVersion = v
         def uiSamplesVersion = v
+        def testHarnessVersion = v
 
         if (new VersionNumber(this.coreVersion) <= new VersionNumber('1.419.99')) {
             throw new GradleException('The gradle-jpi-plugin requires Jenkins 1.420 or later')
@@ -126,6 +127,10 @@ class JpiExtension {
 
         if (new VersionNumber(this.coreVersion) >= new VersionNumber('1.533')) {
             uiSamplesVersion = '2.0'
+        }
+
+        if (new VersionNumber(this.coreVersion) > new VersionNumber('1.644')) {
+            testHarnessVersion = '2.0'
         }
 
         // workarounds for JENKINS-26331
@@ -150,7 +155,7 @@ class JpiExtension {
 
                 jenkinsWar(group: 'org.jenkins-ci.main', name: 'jenkins-war', version: v, ext: 'war')
 
-                jenkinsTest("org.jenkins-ci.main:jenkins-test-harness:${v}@jar") { transitive = true }
+                jenkinsTest("org.jenkins-ci.main:jenkins-test-harness:${testHarnessVersion}@jar") { transitive = true }
                 jenkinsTest("org.jenkins-ci.main:ui-samples-plugin:${uiSamplesVersion}@jar",
                         "org.jenkins-ci.main:jenkins-war:${v}:war-for-test@jar",
                         'junit:junit-dep:4.10@jar')
