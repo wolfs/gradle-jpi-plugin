@@ -105,17 +105,6 @@ class JpiPlugin implements Plugin<Project> {
         server.group = BasePlugin.BUILD_GROUP // TODO
         server.dependsOn(ext.mainSourceTree().runtimeClasspath)
 
-        def stubs = gradleProject.tasks.create(StaplerGroovyStubsTask.TASK_NAME, StaplerGroovyStubsTask)
-        stubs.description = 'Generates the Java stubs from Groovy source to enable Stapler annotation processing.'
-        stubs.group = BasePlugin.BUILD_GROUP
-        stubs.toolClasspath = gradleProject.sourceSets.main.compileClasspath
-        stubs.inputDirs = gradleProject.sourceSets.main.groovy.srcDirs
-        stubs.destinationDir = ext.staplerStubDir
-
-        gradleProject.sourceSets.main.java.srcDirs += ext.staplerStubDir
-
-        gradleProject.tasks.compileJava.dependsOn(stubs)
-
         // set build directory for Jenkins test harness, JENKINS-26331
         Test test = gradleProject.tasks.test as Test
         test.systemProperty('buildDirectory', gradleProject.buildDir.absolutePath)
@@ -141,6 +130,10 @@ class JpiPlugin implements Plugin<Project> {
             gradleProject.tasks.withType(GroovyCompile) {
                 options.compilerArgs << '-Asezpoz.quiet=true'
             }
+        }
+
+        gradleProject.tasks.withType(GroovyCompile) {
+            groovyOptions.javaAnnotationProcessing = true
         }
 
         configureRepositories(gradleProject)

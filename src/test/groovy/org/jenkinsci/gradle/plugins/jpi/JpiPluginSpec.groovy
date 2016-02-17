@@ -36,7 +36,6 @@ class JpiPluginSpec extends Specification {
         'jpi'        | Jpi
         'server'     | ServerTask
         'localizer'  | LocalizerTask
-        'stapler'    | StaplerGroovyStubsTask
         'insertTest' | TestInsertionTask
     }
 
