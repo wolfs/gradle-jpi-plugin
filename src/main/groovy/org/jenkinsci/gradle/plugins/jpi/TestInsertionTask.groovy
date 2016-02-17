@@ -28,7 +28,7 @@ class TestInsertionTask extends DefaultTask {
  */
 public class ${jpiExtension.injectedTestName} extends junit.framework.TestCase {
     public static junit.framework.Test suite() throws Exception {
-        Map parameters = new HashMap();
+        Map<String, String> parameters = new HashMap<String, String>();
         parameters.put("basedir", ${quote(project.projectDir.absolutePath)});
         parameters.put("artifactId", ${quote(jpiExtension.shortName)});
         parameters.put("outputDirectory", ${quote(mainSourceSet.output.resourcesDir.absolutePath)});
