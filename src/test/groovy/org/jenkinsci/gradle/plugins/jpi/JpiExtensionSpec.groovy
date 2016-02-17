@@ -84,29 +84,6 @@ class JpiExtensionSpec extends Specification {
         jpiExtension.fileExtension == 'jpi'
     }
 
-    def 'stapler stub directory defaults to generated-src/stubs if not set'(String value) {
-        when:
-        Project project = ProjectBuilder.builder().build()
-        JpiExtension jpiExtension = new JpiExtension(project)
-        jpiExtension.staplerStubDir = value
-
-        then:
-        jpiExtension.staplerStubDir == new File(project.buildDir, 'generated-src/stubs')
-
-        where:
-        value << [null, '']
-    }
-
-    def 'stapler stub directory is used when set'() {
-        when:
-        Project project = ProjectBuilder.builder().build()
-        JpiExtension jpiExtension = new JpiExtension(project)
-        jpiExtension.staplerStubDir = 'foo'
-
-        then:
-        jpiExtension.staplerStubDir == new File(project.buildDir, 'foo')
-    }
-
     def 'localizer output directory defaults to generated-src/localizer if not set'(Object value) {
         when:
         Project project = ProjectBuilder.builder().build()

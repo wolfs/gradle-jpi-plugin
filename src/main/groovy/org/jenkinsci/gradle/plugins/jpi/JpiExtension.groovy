@@ -163,23 +163,6 @@ class JpiExtension {
         }
     }
 
-    private String staplerStubDir
-
-    /**
-     * Sets the stapler stubs output directory
-     */
-    void setStaplerStubDir(String staplerStubDir) {
-        this.staplerStubDir = staplerStubDir
-    }
-
-    /**
-     * Returns the Stapler stubs directory.
-     */
-    File getStaplerStubDir() {
-        def stubDir = staplerStubDir ?: 'generated-src/stubs'
-        project.file("${project.buildDir}/${stubDir}")
-    }
-
     private Object localizerOutputDir
 
     /**
