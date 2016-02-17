@@ -3,6 +3,7 @@
   * updated Gradle to version 2.5
   * removed the `stapler` task and the `staplerStubDir` property, Gradle will generate stubs for annotation processors
     (see [Support for “annotation processing” of Groovy code](https://docs.gradle.org/2.4/release-notes#support-for-%E2%80%9Cannotation-processing%E2%80%9D-of-groovy-code))
+  * set outputs for `insertTest` and `generate-test-hpl` tasks to fix problems with incremental builds
 
 ## 0.14.3 (2016-02-17)
 
