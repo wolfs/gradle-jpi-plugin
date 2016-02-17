@@ -37,6 +37,7 @@ import org.gradle.api.plugins.GroovyPlugin
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.api.publish.maven.plugins.MavenPublishPlugin
+import org.gradle.api.tasks.SourceSet
 import org.gradle.api.tasks.bundling.AbstractArchiveTask
 import org.gradle.api.tasks.bundling.Jar
 import org.gradle.api.tasks.compile.GroovyCompile
@@ -47,6 +48,7 @@ import org.gradle.language.base.plugins.LifecycleBasePlugin
 
 import static org.gradle.api.logging.LogLevel.INFO
 import static org.gradle.api.plugins.JavaPlugin.RUNTIME_CONFIGURATION_NAME
+import static org.gradle.api.tasks.SourceSet.TEST_SOURCE_SET_NAME
 import static org.gradle.util.GFileUtils.copyFile
 import static org.jenkinsci.gradle.plugins.jpi.JpiManifest.attributesToMap
 
@@ -110,9 +112,7 @@ class JpiPlugin implements Plugin<Project> {
         test.systemProperty('buildDirectory', gradleProject.buildDir.absolutePath)
 
         configureLocalizer(gradleProject)
-
-        Task testInsertionTask = gradleProject.tasks.create(TestInsertionTask.TASK_NAME, TestInsertionTask)
-        gradleProject.tasks.compileTestJava.dependsOn(testInsertionTask)
+        configureInjectedTest(gradleProject)
 
         gradleProject.task(SOURCES_JAR_TASK_NAME, type: Jar, dependsOn: 'classes') {
             classifier = 'sources'
@@ -142,14 +142,7 @@ class JpiPlugin implements Plugin<Project> {
         configureJar(gradleProject)
         configureTestResources(gradleProject)
         configurePublishing(gradleProject)
-
-        // generate test hpl manifest for the current plugin, to be used during unit test
-        def generateTestHpl = gradleProject.tasks.create('generate-test-hpl') << {
-            def hpl = new File(ext.testSourceTree().output.classesDir, 'the.hpl')
-            hpl.parentFile.mkdirs()
-            hpl.withOutputStream { new JpiHplManifest(gradleProject).write(it) }
-        }
-        test.dependsOn(generateTestHpl)
+        configureTestHpl(gradleProject)
     }
 
     private static Properties loadDotJenkinsOrg() {
@@ -230,6 +223,26 @@ class JpiPlugin implements Plugin<Project> {
         }
         javaConvention.sourceSets.main.java.srcDir { localizer.destinationDir }
         project.tasks[javaConvention.sourceSets.main.compileJavaTaskName].dependsOn(localizer)
+    }
+
+    private static configureInjectedTest(Project project) {
+        JpiExtension jpiExtension = project.extensions.getByType(JpiExtension)
+        JavaPluginConvention javaConvention = project.convention.getPlugin(JavaPluginConvention)
+        SourceSet testSourceSet = javaConvention.sourceSets.getByName(TEST_SOURCE_SET_NAME)
+
+        File root = new File(project.buildDir, 'inject-tests')
+        testSourceSet.java.srcDirs += root
+
+        TestInsertionTask testInsertionTask = project.tasks.create(TestInsertionTask.TASK_NAME, TestInsertionTask)
+        testInsertionTask.onlyIf {
+            !jpiExtension.disabledTestInjection
+        }
+
+        project.tasks.compileTestJava.dependsOn(testInsertionTask)
+
+        project.afterEvaluate {
+            testInsertionTask.testSuite = new File(root, "${jpiExtension.injectedTestName}.java")
+        }
     }
 
     private static configureRepositories(Project project) {
@@ -343,5 +356,21 @@ class JpiPlugin implements Plugin<Project> {
                 }
             }
         }
+    }
+
+    private static configureTestHpl(Project project) {
+        JavaPluginConvention javaConvention = project.convention.getPlugin(JavaPluginConvention)
+        SourceSet testSourceSet = javaConvention.sourceSets.getByName(TEST_SOURCE_SET_NAME)
+
+        // generate test hpl manifest for the current plugin, to be used during unit test
+        Task generateTestHpl = project.task('generate-test-hpl') {
+            ext.hpl = new File(testSourceSet.output.classesDir, 'the.hpl')
+            outputs.file hpl
+            doLast {
+                hpl.parentFile.mkdirs()
+                hpl.withOutputStream { new JpiHplManifest(project).write(it) }
+            }
+        }
+        project.tasks.test.dependsOn(generateTestHpl)
     }
 }
