@@ -1,5 +1,7 @@
 ## 0.14.3 (unreleased)
 
+  * make [SezPoz](https://github.com/jglick/sezpoz) quiet by default, use `--info` or `--debug` to get output
+
 ## 0.14.2 (2016-02-16)
 
   * use Jenkins Test Harness 2.0 for core versions greater than 1.644
