@@ -1,4 +1,4 @@
-## 0.14.4 (unreleased)
+## 0.15.0 (2016-02-18)
 
   * updated Gradle to version 2.5
   * removed the `stapler` task and the `staplerStubDir` property, Gradle will generate stubs for annotation processors
