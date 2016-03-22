@@ -29,6 +29,8 @@ import org.gradle.api.tasks.TaskAction
  * @author Kohsuke Kawaguchi
  */
 class ServerTask extends DefaultTask {
+    private static final String HTTP_PORT = 'jenkins.httpPort'
+
     @TaskAction
     def start() {
         def c = project.configurations.getByName(JpiPlugin.WAR_DEPENDENCY_CONFIGURATION_NAME)
@@ -47,9 +49,15 @@ class ServerTask extends DefaultTask {
         setSystemPropertyIfEmpty('stapler.jelly.noCache', 'true')
         setSystemPropertyIfEmpty('debug.YUI', 'true')
 
+        List<String> args = []
+        String port = project.properties[HTTP_PORT] ?: System.properties[HTTP_PORT]
+        if (port) {
+            args << "--httpPort=${port}"
+        }
+
         def cl = new URLClassLoader([war.toURI().toURL()] as URL[])
         def mainClass = new JarFile(war).manifest.mainAttributes.getValue('Main-Class')
-        cl.loadClass(mainClass).main()
+        cl.loadClass(mainClass).main(args as String[])
 
         // make the thread hang
         Thread.currentThread().join()

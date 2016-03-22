@@ -118,7 +118,8 @@ example or specify `ext: 'jar'` if you're using the map-style notation).
 * `gradle publish` - Deploy your plugin to
   the Jenkins Maven repository to be included in the Update Center.
 * `gradle server` - Start a local instance of Jenkins (http://localhost:8080) with the plugin pre-installed for testing
-  and debugging.
+  and debugging. The HTTP port can be changed with the `jenkins.httpPort` project or system property, e.g.
+  `gradle server -Djenkins.httpPort=8082`.
 
 ## Debugging
 
