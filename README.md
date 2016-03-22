@@ -8,21 +8,9 @@ plugins, written in Groovy or Java.
 Add the following to your build.gradle:
 
 ```groovy
-buildscript {
-    repositories {
-        // The plugin is currently only available via the Jenkins
-        // Maven repository, but has dependencies in Maven Central.
-        mavenCentral()
-        maven {
-            url 'https://repo.jenkins-ci.org/releases/'
-        }
-    }
-    dependencies {
-        classpath 'org.jenkins-ci.tools:gradle-jpi-plugin:0.16.0'
-    }
+plugins {
+  id 'org.jenkins-ci.jpi' version '0.16.0'
 }
-
-apply plugin: 'org.jenkins-ci.jpi'
 
 group = 'org.jenkins-ci.plugins'
 version = '1.2.0-SNAPSHOT'
