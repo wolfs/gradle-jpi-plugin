@@ -1,5 +1,9 @@
 ## 0.15.1 (unreleased)
 
+  * updated Gradle to version 2.8
+  * fixed a classpath problem in the `localizer` task
+    ([#71](https://github.com/jenkinsci/gradle-jpi-plugin/pull/71))
+
 ## 0.15.0 (2016-02-18)
 
   * updated Gradle to version 2.5

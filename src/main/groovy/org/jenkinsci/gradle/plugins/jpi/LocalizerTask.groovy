@@ -16,10 +16,10 @@
 package org.jenkinsci.gradle.plugins.jpi
 
 import org.gradle.api.internal.ConventionTask
-import org.gradle.api.internal.project.IsolatedAntBuilder
 import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.OutputDirectory
+import org.jvnet.localizer.GeneratorTask
 
 /**
  * Generates Java source based on localization properties files.
@@ -37,15 +37,13 @@ class LocalizerTask extends ConventionTask {
 
     @TaskAction
     def generateLocalized() {
-        def p = project
-
-        def isolatedAnt = services.get(IsolatedAntBuilder).withClasspath(p.buildscript.configurations.classpath)
-        isolatedAnt.execute {
-            mkdir(dir: destinationDir.canonicalPath)
-            taskdef(name: 'generator', classname: 'org.jvnet.localizer.GeneratorTask')
-            sourceDirs.findAll { it.exists() }.each { rsrcDir ->
-                generator(todir: destinationDir.canonicalPath, dir: rsrcDir, includes: '**/Messages.properties')
-            }
+        sourceDirs.findAll { it.exists() }.each { File sourceDirectory ->
+            GeneratorTask generator = new GeneratorTask()
+            generator.project = ant.project
+            generator.dir = sourceDirectory
+            generator.todir = destinationDir
+            generator.includes = '**/Messages.properties'
+            generator.execute()
         }
     }
 }
