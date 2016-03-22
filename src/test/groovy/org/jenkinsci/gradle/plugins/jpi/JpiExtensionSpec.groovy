@@ -128,12 +128,12 @@ class JpiExtensionSpec extends Specification {
         jpiExtension.workDir == dir
     }
 
-    def 'repo URL defaults to maven.jenkins-ci.org if not set'(String value) {
+    def 'repo URL defaults to repo.jenkins-ci.org if not set'(String value) {
         when:
         jpiExtension.repoUrl = value
 
         then:
-        jpiExtension.repoUrl == 'http://maven.jenkins-ci.org:8081/content/repositories/releases'
+        jpiExtension.repoUrl == 'https://repo.jenkins-ci.org/releases'
 
         where:
         value << [null, '']
@@ -147,12 +147,12 @@ class JpiExtensionSpec extends Specification {
         jpiExtension.repoUrl == 'https://maven.example.org/'
     }
 
-    def 'snapshot repo URL defaults to maven.jenkins-ci.org if not set'(String value) {
+    def 'snapshot repo URL defaults to repo.jenkins-ci.org if not set'(String value) {
         when:
         jpiExtension.snapshotRepoUrl = value
 
         then:
-        jpiExtension.snapshotRepoUrl == 'http://maven.jenkins-ci.org:8081/content/repositories/snapshots'
+        jpiExtension.snapshotRepoUrl == 'https://repo.jenkins-ci.org/snapshots'
 
         where:
         value << [null, '']

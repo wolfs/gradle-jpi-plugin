@@ -14,7 +14,7 @@ buildscript {
         // Maven repository, but has dependencies in Maven Central.
         mavenCentral()
         maven {
-            url 'http://repo.jenkins-ci.org/releases/'
+            url 'https://repo.jenkins-ci.org/releases/'
         }
     }
     dependencies {
@@ -57,10 +57,10 @@ jenkinsPlugin {
     workDir = file('/tmp/jenkins')
     
     // URL used to deploy the plugin, defaults to the value shown
-    repoUrl = 'http://maven.jenkins-ci.org:8081/content/repositories/releases'
+    repoUrl = 'https://repo.jenkins-ci.org/releases'
 
     // URL used to deploy snapshots of the plugin, defaults to the value shown
-    snapshotRepoUrl = 'http://maven.jenkins-ci.org:8081/content/repositories/snapshots'
+    snapshotRepoUrl = 'https://repo.jenkins-ci.org/snapshots'
 
     // enable injection of additional tests for checking the syntax of Jelly and other things
     disabledTestInjection = false

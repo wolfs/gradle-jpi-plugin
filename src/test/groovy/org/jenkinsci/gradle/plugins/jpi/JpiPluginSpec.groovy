@@ -69,11 +69,11 @@ class JpiPluginSpec extends Specification {
         project.components.size() == 3
 
         where:
-        projectVersion   | repositoryUrl                                                     | extension
-        '1.0.0'          | 'http://maven.jenkins-ci.org:8081/content/repositories/releases'  | 'jpi'
-        '1.0.0-SNAPSHOT' | 'http://maven.jenkins-ci.org:8081/content/repositories/snapshots' | 'jpi'
-        '1.0.0'          | 'http://maven.jenkins-ci.org:8081/content/repositories/releases'  | 'hpi'
-        '1.0.0-SNAPSHOT' | 'http://maven.jenkins-ci.org:8081/content/repositories/snapshots' | 'hpi'
+        projectVersion   | repositoryUrl                           | extension
+        '1.0.0'          | 'https://repo.jenkins-ci.org/releases'  | 'jpi'
+        '1.0.0-SNAPSHOT' | 'https://repo.jenkins-ci.org/snapshots' | 'jpi'
+        '1.0.0'          | 'https://repo.jenkins-ci.org/releases'  | 'hpi'
+        '1.0.0-SNAPSHOT' | 'https://repo.jenkins-ci.org/snapshots' | 'hpi'
     }
 
     def 'jpi task has been setup'() {
@@ -162,7 +162,8 @@ class JpiPluginSpec extends Specification {
         project.repositories.get(1).name == 'MavenLocal'
         project.repositories.get(2) instanceof MavenArtifactRepository
         project.repositories.get(2).name == 'jenkins'
-        (project.repositories.get(2) as MavenArtifactRepository).url == URI.create('http://repo.jenkins-ci.org/public/')
+        (project.repositories.get(2) as MavenArtifactRepository).url ==
+                URI.create('https://repo.jenkins-ci.org/public/')
     }
 
     def 'repositories have not been setup'() {

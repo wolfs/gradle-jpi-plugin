@@ -5,6 +5,9 @@
     ([#71](https://github.com/jenkinsci/gradle-jpi-plugin/pull/71))
   * allow to specify the HTTP port for the `server` task with the `jenkins.httpPort` project or system property
     ([JENKINS-31881](https://issues.jenkins-ci.org/browse/JENKINS-31881))
+  * changed default repository URL to `https://repo.jenkins-ci.org/releases`
+  * changed default snapshot repository URL to `https://repo.jenkins-ci.org/snapshots`
+  * use HTTPS URLs for `repo.jenkins-ci.org`
 
 ## 0.15.0 (2016-02-18)
 

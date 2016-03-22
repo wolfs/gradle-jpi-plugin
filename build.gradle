@@ -11,7 +11,7 @@ repositories {
     mavenCentral()
     maven {
         name 'jenkins'
-        url 'http://repo.jenkins-ci.org/releases'
+        url 'https://repo.jenkins-ci.org/releases'
     }
 }
 
@@ -119,10 +119,10 @@ gradle.taskGraph.whenReady { taskGraph ->
             repositories {
                 mavenDeployer {
                     def credentials = loadCredentialsForJenkinsCommunityRepository()
-                    repository(url: 'http://maven.jenkins-ci.org:8081/content/repositories/releases') {
+                    repository(url: 'https://repo.jenkins-ci.org/releases') {
                         authentication(credentials)
                     }
-                    snapshotRepository(url: 'http://maven.jenkins-ci.org:8081/content/repositories/snapshots') {
+                    snapshotRepository(url: 'https://repo.jenkins-ci.org/snapshots') {
                         authentication(credentials)
                     }
                 }

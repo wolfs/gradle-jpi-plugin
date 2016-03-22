@@ -253,7 +253,7 @@ class JpiPlugin implements Plugin<Project> {
                     mavenLocal()
                     maven {
                         name 'jenkins'
-                        url('http://repo.jenkins-ci.org/public/')
+                        url('https://repo.jenkins-ci.org/public/')
                     }
                 }
             }
