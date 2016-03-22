@@ -18,7 +18,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'org.jenkins-ci.tools:gradle-jpi-plugin:0.15.0'
+        classpath 'org.jenkins-ci.tools:gradle-jpi-plugin:0.16.0'
     }
 }
 

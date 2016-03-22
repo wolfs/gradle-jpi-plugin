@@ -1,4 +1,4 @@
-## 0.15.1 (unreleased)
+## 0.16.0 (2016-03-22)
 
   * updated Gradle to version 2.8
   * fixed a classpath problem in the `localizer` task
