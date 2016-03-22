@@ -1,7 +1,10 @@
-apply plugin: 'groovy'
-apply plugin: 'maven'
-apply plugin: 'signing'
-apply plugin: 'codenarc'
+plugins {
+    id 'groovy'
+    id 'maven'
+    id 'signing'
+    id 'codenarc'
+    id 'com.gradle.plugin-publish' version '0.9.4'
+}
 
 task wrapper(type: Wrapper) {
     gradleVersion = '2.8'
@@ -112,6 +115,20 @@ test {
 group = 'org.jenkins-ci.tools'
 archivesBaseName = 'gradle-jpi-plugin'
 description = 'Gradle plugin for building and packaging Jenkins plugins'
+
+pluginBundle {
+    website = 'https://wiki.jenkins-ci.org/display/JENKINS/Gradle+JPI+Plugin'
+    vcsUrl = 'https://github.com/jenkinsci/gradle-jpi-plugin'
+    description = 'A plugin for building Jenkins plugins'
+    tags = ['jenkins']
+
+    plugins {
+        jpiPlugin {
+            id = 'org.jenkins-ci.jpi'
+            displayName = 'JPI plugin'
+        }
+    }
+}
 
 gradle.taskGraph.whenReady { taskGraph ->
     if (taskGraph.hasTask(uploadArchives)) {

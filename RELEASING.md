@@ -35,6 +35,7 @@ Steps
 * Build the code: `gradlew clean check install`
 * Test the plugin with Jenkins plugin projects using it (e.g. https://github.com/jenkinsci/job-dsl-plugin)
 * Deploy: `gradlew uploadArchives`
+* Publish to Gradle plugin portal: `gradlew publishPlugins`
 * Increment the version in `gradle.properties` and append `-SNAPSHOT`
 * Update `CHANGELOG.md`, add the next version
 * Commit the updated version number: `git commit -am "bumping version"`
