@@ -11,11 +11,8 @@ task wrapper(type: Wrapper) {
 }
 
 repositories {
-    mavenCentral()
-    maven {
-        name 'jenkins'
-        url 'https://repo.jenkins-ci.org/releases'
-    }
+    // using JCenter for dependency resolution is recommended, see https://plugins.gradle.org/docs/publish-plugin
+    jcenter()
 }
 
 sourceCompatibility = '1.6'
