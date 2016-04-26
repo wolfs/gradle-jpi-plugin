@@ -23,10 +23,10 @@ dependencies {
     compile 'org.jenkins-ci:version-number:1.0'
     compile 'net.java.sezpoz:sezpoz:1.9'
     compile localGroovy()
-    testCompile('org.spockframework:spock-core:0.7-groovy-2.0') {
+    testCompile('org.spockframework:spock-core:1.0-groovy-2.4') {
         exclude module: 'groovy-all' // use the version that is distributed with Gradle
     }
-    testCompile 'xmlunit:xmlunit:1.5'
+    testCompile 'xmlunit:xmlunit:1.6'
     testCompile gradleTestKit()
 }
 
