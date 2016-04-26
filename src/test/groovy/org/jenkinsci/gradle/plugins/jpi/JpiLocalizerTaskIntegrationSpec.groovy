@@ -12,13 +12,14 @@ class JpiLocalizerTaskIntegrationSpec extends Specification {
 
     def 'single-module project should be able to run LocalizerTask'() {
         given:
-        prepareFile('build.gradle') << "plugins { id 'org.jenkins-ci.jpi' }"
-        prepareFile('src/main/resources/Messages.properties') << 'key1=value1\nkey2=value2'
+        project.newFile('build.gradle') << "plugins { id 'org.jenkins-ci.jpi' }"
+        project.newFolder('src', 'main', 'resources')
+        project.newFile('src/main/resources/Messages.properties') << 'key1=value1\nkey2=value2'
 
         when:
         def result = GradleRunner.create()
                 .withProjectDir(project.root)
-                .withPluginClasspath(pluginClasspath)
+                .withPluginClasspath()
                 .withArguments('localizer')
                 .build()
 
@@ -32,15 +33,16 @@ class JpiLocalizerTaskIntegrationSpec extends Specification {
 
     def 'multi-module project should be able to run LocalizerTask'() {
         given:
-        prepareFile('build.gradle') << ''
-        prepareFile('settings.gradle') << 'include ":plugin"'
-        prepareFile('plugin/build.gradle') << "plugins { id 'org.jenkins-ci.jpi' }"
-        prepareFile('plugin/src/main/resources/Messages.properties') << 'key3=value3\nkey4=value4'
+        project.newFile('build.gradle') << ''
+        project.newFile('settings.gradle') << 'include ":plugin"'
+        project.newFolder('plugin', 'src', 'main', 'resources')
+        project.newFile('plugin/build.gradle') << "plugins { id 'org.jenkins-ci.jpi' }"
+        project.newFile('plugin/src/main/resources/Messages.properties') << 'key3=value3\nkey4=value4'
 
         when:
         def result = GradleRunner.create()
                 .withProjectDir(project.root)
-                .withPluginClasspath(pluginClasspath)
+                .withPluginClasspath()
                 .withArguments(':plugin:localizer')
                 .build()
 
@@ -50,20 +52,5 @@ class JpiLocalizerTaskIntegrationSpec extends Specification {
         generatedJavaFile.exists()
         generatedJavaFile.text.contains('public static String key3()')
         generatedJavaFile.text.contains('public static String key4()')
-    }
-
-    private File prepareFile(String relativeFilePath) {
-        def newFile = new File(project.root, relativeFilePath)
-        newFile.parentFile.mkdirs()
-        newFile.createNewFile()
-        newFile
-    }
-
-    private List<File> getPluginClasspath() {
-        getClass()
-                .classLoader
-                .getResource('plugin-classpath.txt')
-                .readLines()
-                .collect { new File(it) }
     }
 }

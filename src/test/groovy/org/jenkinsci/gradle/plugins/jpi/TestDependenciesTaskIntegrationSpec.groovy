@@ -12,12 +12,12 @@ class TestDependenciesTaskIntegrationSpec extends Specification {
 
     def 'resolves test dependencies'() {
         given:
-        prepareFile('build.gradle') << getClass().getResource('resolveTestDependencies.gradle').text
+        project.newFile('build.gradle') << getClass().getResource('resolveTestDependencies.gradle').text
 
         when:
         def result = GradleRunner.create()
                 .withProjectDir(project.root)
-                .withPluginClasspath(pluginClasspath)
+                .withPluginClasspath()
                 .withArguments('processTestResources')
                 .build()
 
@@ -32,20 +32,5 @@ class TestDependenciesTaskIntegrationSpec extends Specification {
         new File(dir, 'cloudbees-folder.hpi').exists()
         new File(dir, 'token-macro.hpi').exists()
         new File(dir, 'credentials.hpi').exists()
-    }
-
-    private File prepareFile(String relativeFilePath) {
-        def newFile = new File(project.root, relativeFilePath)
-        newFile.parentFile.mkdirs()
-        newFile.createNewFile()
-        newFile
-    }
-
-    private List<File> getPluginClasspath() {
-        getClass()
-                .classLoader
-                .getResource('plugin-classpath.txt')
-                .readLines()
-                .collect { new File(it) }
     }
 }

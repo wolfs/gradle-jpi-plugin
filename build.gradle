@@ -4,10 +4,11 @@ plugins {
     id 'signing'
     id 'codenarc'
     id 'com.gradle.plugin-publish' version '0.9.4'
+    id 'java-gradle-plugin'
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '2.8'
+    gradleVersion = '2.13'
 }
 
 repositories {
@@ -27,7 +28,6 @@ dependencies {
         exclude module: 'groovy-all' // use the version that is distributed with Gradle
     }
     testCompile 'xmlunit:xmlunit:1.6'
-    testCompile gradleTestKit()
 }
 
 artifacts {
@@ -168,23 +168,4 @@ private loadCredentialsForJenkinsCommunityRepository() {
     def props = new Properties()
     dotFile.withInputStream { props.load(it) }
     [userName: props.userName, password: props.password]
-}
-
-// Write the plugin's classpath to a file to share with the tests
-// https://docs.gradle.org/current/userguide/test_kit.html#sub:test-kit-classpath-injection
-task createClasspathManifest {
-    def outputDir = file("$buildDir/$name")
-
-    inputs.files sourceSets.main.runtimeClasspath
-    outputs.dir outputDir
-
-    doLast {
-        outputDir.mkdirs()
-        file("$outputDir/plugin-classpath.txt").text = sourceSets.main.runtimeClasspath.join("\n")
-    }
-}
-
-// Add the classpath file to the test runtime classpath
-dependencies {
-    testRuntime files(createClasspathManifest)
 }
