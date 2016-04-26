@@ -1,5 +1,9 @@
 ## 0.16.1 (unreleased)
 
+  * copy plugin dependencies to `test-dependencies` directory instead of `plugins` directory to mimic the behavior of
+    the Maven HPI plugin
+    ([#74](https://github.com/jenkinsci/gradle-jpi-plugin/pull/74))
+
 ## 0.16.0 (2016-03-22)
 
   * updated Gradle to version 2.8

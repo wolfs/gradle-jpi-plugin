@@ -1,0 +1,9 @@
+plugins {
+    id 'org.jenkins-ci.jpi'
+}
+
+dependencies {
+    jenkinsPlugins 'org.jenkins-ci.plugins:structs:1.1@jar'
+    optionalJenkinsPlugins 'org.jenkins-ci.plugins:config-file-provider:2.8.1@jar'
+    jenkinsTest 'org.jenkins-ci.plugins:cloudbees-folder:4.4@jar'
+}
