@@ -1,4 +1,4 @@
-## 0.16.1 (unreleased)
+## 0.17.0 (2016-04-26)
 
   * updated Gradle to version 2.13
   * copy plugin dependencies to `test-dependencies` directory instead of `plugins` directory to mimic the behavior of
