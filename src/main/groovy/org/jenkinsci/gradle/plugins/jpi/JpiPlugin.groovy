@@ -49,7 +49,6 @@ import org.gradle.language.base.plugins.LifecycleBasePlugin
 import static org.gradle.api.logging.LogLevel.INFO
 import static org.gradle.api.plugins.JavaPlugin.RUNTIME_CONFIGURATION_NAME
 import static org.gradle.api.tasks.SourceSet.TEST_SOURCE_SET_NAME
-import static org.gradle.util.GFileUtils.copyFile
 import static org.jenkinsci.gradle.plugins.jpi.JpiManifest.attributesToMap
 
 /**
@@ -140,7 +139,7 @@ class JpiPlugin implements Plugin<Project> {
         configureConfigurations(gradleProject)
         configureJpi(gradleProject)
         configureJar(gradleProject)
-        configureTestResources(gradleProject)
+        configureTestDependencies(gradleProject)
         configurePublishing(gradleProject)
         configureTestHpl(gradleProject)
     }
@@ -184,9 +183,8 @@ class JpiPlugin implements Plugin<Project> {
         }
     }
 
-    private static configureTestResources(Project project) {
+    private static configureTestDependencies(Project project) {
         JavaPluginConvention javaConvention = project.convention.getPlugin(JavaPluginConvention)
-        Task processTestResources = project.tasks.getByName(javaConvention.sourceSets.test.processResourcesTaskName)
         Configuration plugins = project.configurations.create('pluginResources')
 
         project.afterEvaluate {
@@ -199,15 +197,12 @@ class JpiPlugin implements Plugin<Project> {
                     project.dependencies.add(plugins.name, "${it.group}:${it.name}:${it.version}")
                 }
             }
-            processTestResources.inputs.files(plugins)
         }
 
-        processTestResources.doLast {
-            File targetDir = javaConvention.sourceSets.test.output.resourcesDir
-            plugins.resolvedConfiguration.resolvedArtifacts.findAll { it.extension in ['hpi', 'jpi'] }.each {
-                copyFile(it.file, new File(targetDir, "plugins/${it.name}.${it.extension}"))
-            }
-        }
+        TestDependenciesTask task = project.tasks.create(TestDependenciesTask.TASK_NAME, TestDependenciesTask)
+        task.pluginsConfiguration = plugins
+
+        project.tasks.getByName(javaConvention.sourceSets.test.processResourcesTaskName).dependsOn(task)
     }
 
     private static configureLocalizer(Project project) {
