@@ -1,35 +1,23 @@
 package org.jenkinsci.gradle.plugins.jpi
 
-import org.gradle.api.DefaultTask
-import org.gradle.api.artifacts.Configuration
 import org.gradle.api.plugins.JavaPluginConvention
-import org.gradle.api.tasks.InputFiles
-import org.gradle.api.tasks.OutputDirectory
-import org.gradle.api.tasks.TaskAction
+import org.gradle.api.tasks.Copy
 
-import static org.gradle.util.GFileUtils.copyFile
-
-class TestDependenciesTask extends DefaultTask {
+class TestDependenciesTask extends Copy {
     public static final String TASK_NAME = 'resolveTestDependencies'
 
-    @InputFiles
-    Configuration pluginsConfiguration
-
-    @OutputDirectory
-    File testDependenciesDir
-
     TestDependenciesTask() {
-        JavaPluginConvention javaConvention = project.convention.getPlugin(JavaPluginConvention)
-        testDependenciesDir = new File(javaConvention.sourceSets.test.output.resourcesDir, 'test-dependencies')
-    }
+        include('*.hpi')
+        include('*.jpi')
 
-    @TaskAction
-    void resolveTestDependencies() {
-        List<String> artifacts = []
-        pluginsConfiguration.resolvedConfiguration.resolvedArtifacts.findAll { it.extension in ['hpi', 'jpi'] }.each {
-            copyFile(it.file, new File(testDependenciesDir, "${it.name}.${it.extension}"))
-            artifacts << it.name
+        into {
+            JavaPluginConvention javaConvention = project.convention.getPlugin(JavaPluginConvention)
+            new File(javaConvention.sourceSets.test.output.resourcesDir, 'test-dependencies')
         }
-        new File(testDependenciesDir, 'index').setText(artifacts.join('\n'), 'UTF-8')
+
+        doLast {
+            List<String> baseNames = source*.name.collect { it[0..it.lastIndexOf('.') - 1] }
+            new File(destinationDir, 'index').setText(baseNames.join('\n'), 'UTF-8')
+        }
     }
 }
