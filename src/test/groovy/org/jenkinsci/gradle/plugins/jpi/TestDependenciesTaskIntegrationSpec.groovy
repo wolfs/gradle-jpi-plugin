@@ -26,11 +26,14 @@ class TestDependenciesTaskIntegrationSpec extends Specification {
         result.task(':processTestResources').outcome == TaskOutcome.UP_TO_DATE
         File dir = new File(project.root, 'build/resources/test/test-dependencies')
         dir.directory
-        new File(dir, 'index').text == 'structs\nconfig-file-provider\ncloudbees-folder\ntoken-macro\ncredentials'
-        new File(dir, 'structs.hpi').exists()
-        new File(dir, 'config-file-provider.hpi').exists()
-        new File(dir, 'cloudbees-folder.hpi').exists()
-        new File(dir, 'token-macro.hpi').exists()
-        new File(dir, 'credentials.hpi').exists()
+        new File(dir, 'index').text == [
+                'structs-1.1', 'config-file-provider-2.8.1', 'cloudbees-folder-4.4',
+                'token-macro-1.5.1', 'credentials-1.9.1'
+        ].join('\n')
+        new File(dir, 'structs-1.1.hpi').exists()
+        new File(dir, 'config-file-provider-2.8.1.hpi').exists()
+        new File(dir, 'cloudbees-folder-4.4.hpi').exists()
+        new File(dir, 'token-macro-1.5.1.hpi').exists()
+        new File(dir, 'credentials-1.9.1.hpi').exists()
     }
 }

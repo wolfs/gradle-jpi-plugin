@@ -185,7 +185,7 @@ class JpiPlugin implements Plugin<Project> {
 
     private static configureTestDependencies(Project project) {
         JavaPluginConvention javaConvention = project.convention.getPlugin(JavaPluginConvention)
-        Configuration plugins = project.configurations.create('pluginResources')
+        Configuration plugins = project.configurations.create('pluginResources').setVisible(false)
 
         project.afterEvaluate {
             [
@@ -200,7 +200,7 @@ class JpiPlugin implements Plugin<Project> {
         }
 
         TestDependenciesTask task = project.tasks.create(TestDependenciesTask.TASK_NAME, TestDependenciesTask)
-        task.pluginsConfiguration = plugins
+        task.from(plugins)
 
         project.tasks.getByName(javaConvention.sourceSets.test.processResourcesTaskName).dependsOn(task)
     }
