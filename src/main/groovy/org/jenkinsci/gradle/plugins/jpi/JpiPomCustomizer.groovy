@@ -8,6 +8,7 @@ import org.gradle.api.plugins.JavaPlugin
 
 import static org.gradle.api.artifacts.ArtifactRepositoryContainer.DEFAULT_MAVEN_CENTRAL_REPO_NAME
 import static org.gradle.api.artifacts.ArtifactRepositoryContainer.DEFAULT_MAVEN_LOCAL_REPO_NAME
+import static org.jenkinsci.gradle.plugins.jpi.JpiPlugin.CORE_DEPENDENCY_CONFIGURATION_NAME
 import static org.jenkinsci.gradle.plugins.jpi.JpiPlugin.OPTIONAL_PLUGINS_DEPENDENCY_CONFIGURATION_NAME
 import static org.jenkinsci.gradle.plugins.jpi.JpiPlugin.PLUGINS_DEPENDENCY_CONFIGURATION_NAME
 
@@ -33,7 +34,6 @@ class JpiPomCustomizer {
     }
 
     void customizePom(Node pom) {
-        pom.append(makeParentNode())
         pom.appendNode('name', jpiExtension.displayName)
         if (jpiExtension.url) {
             pom.appendNode('url', jpiExtension.url)
@@ -58,11 +58,15 @@ class JpiPomCustomizer {
                 getByName(PLUGINS_DEPENDENCY_CONFIGURATION_NAME).dependencies
         DependencySet optionalPluginDependencies = project.configurations.
                 getByName(OPTIONAL_PLUGINS_DEPENDENCY_CONFIGURATION_NAME).dependencies
+        DependencySet coreDependencies = project.configurations.
+                getByName(CORE_DEPENDENCY_CONFIGURATION_NAME).dependencies
         DependencySet compileDependencies = project.configurations.
                 getByName(JavaPlugin.COMPILE_CONFIGURATION_NAME).dependencies
         Set<Dependency> allPluginDependencies = pluginDependencies + optionalPluginDependencies
 
-        pom.dependencies[0].each { Node dependency ->
+        Node dependenciesNode = pom.dependencies[0] as Node
+        dependenciesNode = dependenciesNode ?: pom.appendNode('dependencies')
+        dependenciesNode.each { Node dependency ->
             String groupId = dependency.groupId.text()
             String artifactId = dependency.artifactId.text()
             Node scope = dependency.scope[0] as Node
@@ -77,14 +81,14 @@ class JpiPomCustomizer {
                 dependency.remove(scope)
             }
         }
-    }
 
-    private Node makeParentNode() {
-        Node parentNode = new Node(null, 'parent')
-        parentNode.appendNode('groupId', 'org.jenkins-ci.plugins')
-        parentNode.appendNode('artifactId', 'plugin')
-        parentNode.appendNode('version', jpiExtension.coreVersion)
-        parentNode
+        coreDependencies.each {
+            Node dependency = dependenciesNode.appendNode('dependency')
+            dependency.appendNode('groupId', it.group)
+            dependency.appendNode('artifactId', it.name)
+            dependency.appendNode('version', it.version)
+            dependency.appendNode('scope', 'provided')
+        }
     }
 
     private Node makeScmNode() {

@@ -8,24 +8,7 @@
     <version>unspecified</version>
     <packaging>hpi</packaging>
     <name>test</name>
-    <url>https://lorem-ipsum.org</url>
-    <description>lorem ipsum</description>
-    <scm>
-        <url>https://github.com/lorem/ipsum</url>
-        <connection>scm:git:git://github.com/lorem/ipsum.git</connection>
-    </scm>
-    <developers>
-        <developer>
-            <id>abayer</id>
-            <name>Andrew Bayer</name>
-            <email>andrew.bayer@gmail.com</email>
-        </developer>
-    </developers>
     <repositories>
-        <repository>
-            <id>lorem-ipsum</id>
-            <url>https://repo.lorem-ipsum.org/</url>
-        </repository>
         <repository>
             <id>jenkins</id>
             <url>https://repo.jenkins-ci.org/public/</url>
@@ -35,13 +18,13 @@
         <dependency>
             <groupId>org.jenkins-ci.main</groupId>
             <artifactId>jenkins-core</artifactId>
-            <version>1.580.1</version>
+            <version>1.618</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>findbugs</groupId>
+            <groupId>com.google.code.findbugs</groupId>
             <artifactId>annotations</artifactId>
-            <version>1.0.0</version>
+            <version>3.0.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

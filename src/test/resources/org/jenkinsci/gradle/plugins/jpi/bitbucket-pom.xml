@@ -7,11 +7,6 @@
     <artifactId>test</artifactId>
     <version>unspecified</version>
     <packaging>hpi</packaging>
-    <parent>
-        <groupId>org.jenkins-ci.plugins</groupId>
-        <artifactId>plugin</artifactId>
-        <version>1.580.1</version>
-    </parent>
     <name>test</name>
     <scm>
         <url>https://bitbucket.org/lorem/ipsum</url>
@@ -22,4 +17,24 @@
             <url>https://repo.jenkins-ci.org/public/</url>
         </repository>
     </repositories>
+    <dependencies>
+        <dependency>
+            <groupId>org.jenkins-ci.main</groupId>
+            <artifactId>jenkins-core</artifactId>
+            <version>1.580.1</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>findbugs</groupId>
+            <artifactId>annotations</artifactId>
+            <version>1.0.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>2.4</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
 </project>
