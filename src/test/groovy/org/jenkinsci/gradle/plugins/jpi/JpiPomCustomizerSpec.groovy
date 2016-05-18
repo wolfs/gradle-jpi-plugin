@@ -196,6 +196,40 @@ class JpiPomCustomizerSpec extends Specification {
         compareXml('compile-dependencies-pom.xml', pom)
     }
 
+    def 'updated FindBugs version in 1.618'() {
+        setup:
+        project.with {
+            apply plugin: 'jpi'
+            jenkinsPlugin {
+                coreVersion = '1.618'
+            }
+        }
+        (project as ProjectInternal).evaluate()
+
+        when:
+        Node pom = generatePom()
+
+        then:
+        compareXml('updated-findbugs-pom.xml', pom)
+    }
+
+    def 'updated Servlet API version in 2.0'() {
+        setup:
+        project.with {
+            apply plugin: 'jpi'
+            jenkinsPlugin {
+                coreVersion = '2.0'
+            }
+        }
+        (project as ProjectInternal).evaluate()
+
+        when:
+        Node pom = generatePom()
+
+        then:
+        compareXml('updated-servlet-api-pom.xml', pom)
+    }
+
     private Node generatePom() {
         PublishingExtension publishingExtension = project.extensions.getByType(PublishingExtension)
         MavenPublication publication = publishingExtension.publications.getByName('mavenJpi') as MavenPublication

@@ -120,6 +120,9 @@ class JpiExtension {
         this.coreVersion = v
         def uiSamplesVersion = v
         def testHarnessVersion = v
+        def servletApiVersion = '2.4'
+        def findBugsGroup = 'findbugs'
+        def findBugsVersion = '1.0.0'
 
         if (new VersionNumber(this.coreVersion) <= new VersionNumber('1.419.99')) {
             throw new GradleException('The gradle-jpi-plugin requires Jenkins 1.420 or later')
@@ -129,8 +132,17 @@ class JpiExtension {
             uiSamplesVersion = '2.0'
         }
 
+        if (new VersionNumber(this.coreVersion) >= new VersionNumber('1.618')) {
+            findBugsGroup = 'com.google.code.findbugs'
+            findBugsVersion = '3.0.0'
+        }
+
         if (new VersionNumber(this.coreVersion) > new VersionNumber('1.644')) {
             testHarnessVersion = '2.0'
+        }
+
+        if (new VersionNumber(this.coreVersion) >= new VersionNumber('2.0')) {
+            servletApiVersion = '3.1.0'
         }
 
         // workarounds for JENKINS-26331
@@ -149,8 +161,8 @@ class JpiExtension {
             project.dependencies {
                 jenkinsCore(
                         [group: 'org.jenkins-ci.main', name: 'jenkins-core', version: v, ext: 'jar', transitive: true],
-                        [group: 'findbugs', name: 'annotations', version: '1.0.0'],
-                        [group: 'javax.servlet', name: 'servlet-api', version: '2.4']
+                        [group: findBugsGroup, name: 'annotations', version: findBugsVersion],
+                        [group: 'javax.servlet', name: 'servlet-api', version: servletApiVersion]
                 )
 
                 jenkinsWar(group: 'org.jenkins-ci.main', name: 'jenkins-war', version: v, ext: 'war')

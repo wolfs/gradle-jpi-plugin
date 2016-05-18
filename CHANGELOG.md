@@ -1,5 +1,8 @@
 ## 0.17.1 (unreleased)
 
+  * removed reference to parent POM from generated POM and declare relevant dependencies directly
+    ([JENKINS-34874](https://issues.jenkins-ci.org/browse/JENKINS-34874))
+
 ## 0.17.0 (2016-04-26)
 
   * updated Gradle to version 2.13
