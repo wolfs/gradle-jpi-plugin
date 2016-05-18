@@ -1,4 +1,4 @@
-## 0.17.1 (unreleased)
+## 0.18.0 (2016-05-18)
 
   * removed reference to parent POM from generated POM and declare relevant dependencies directly
     ([JENKINS-34874](https://issues.jenkins-ci.org/browse/JENKINS-34874))
