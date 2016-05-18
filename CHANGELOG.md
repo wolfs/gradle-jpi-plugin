@@ -1,3 +1,5 @@
+## 0.18.1 (unreleased)
+
 ## 0.18.0 (2016-05-18)
 
   * removed reference to parent POM from generated POM and declare relevant dependencies directly
