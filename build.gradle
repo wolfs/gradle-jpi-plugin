@@ -8,7 +8,7 @@ plugins {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '2.13'
+    gradleVersion = '2.14-rc-1'
 }
 
 repositories {
@@ -123,6 +123,15 @@ pluginBundle {
         jpiPlugin {
             id = 'org.jenkins-ci.jpi'
             displayName = 'JPI plugin'
+        }
+    }
+}
+
+gradlePlugin {
+    plugins {
+        jpiPlugin {
+            id = 'org.jenkins-ci.jpi'
+            implementationClass = 'org.jenkinsci.gradle.plugins.jpi.JpiPlugin'
         }
     }
 }
