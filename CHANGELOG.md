@@ -1,5 +1,8 @@
 ## 0.18.1 (unreleased)
 
+  * Fixed Servlet API dependency for Jenkins 2.0 and later
+    ([JENKINS-34945](https://issues.jenkins-ci.org/browse/JENKINS-34945))
+
 ## 0.18.0 (2016-05-18)
 
   * removed reference to parent POM from generated POM and declare relevant dependencies directly

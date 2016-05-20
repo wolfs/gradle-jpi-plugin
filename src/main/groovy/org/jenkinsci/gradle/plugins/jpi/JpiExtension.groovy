@@ -120,6 +120,7 @@ class JpiExtension {
         this.coreVersion = v
         def uiSamplesVersion = v
         def testHarnessVersion = v
+        def servletApiArtifact = 'servlet-api'
         def servletApiVersion = '2.4'
         def findBugsGroup = 'findbugs'
         def findBugsVersion = '1.0.0'
@@ -142,6 +143,7 @@ class JpiExtension {
         }
 
         if (new VersionNumber(this.coreVersion) >= new VersionNumber('2.0')) {
+            servletApiArtifact = 'javax.servlet-api'
             servletApiVersion = '3.1.0'
         }
 
@@ -162,7 +164,7 @@ class JpiExtension {
                 jenkinsCore(
                         [group: 'org.jenkins-ci.main', name: 'jenkins-core', version: v, ext: 'jar', transitive: true],
                         [group: findBugsGroup, name: 'annotations', version: findBugsVersion],
-                        [group: 'javax.servlet', name: 'servlet-api', version: servletApiVersion]
+                        [group: 'javax.servlet', name: servletApiArtifact, version: servletApiVersion]
                 )
 
                 jenkinsWar(group: 'org.jenkins-ci.main', name: 'jenkins-war', version: v, ext: 'war')
