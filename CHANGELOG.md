@@ -1,3 +1,5 @@
+## 0.18.2 (unreleased)
+
 ## 0.18.1 (2016-05-22)
 
   * Fixed Servlet API dependency for Jenkins 2.0 and later
