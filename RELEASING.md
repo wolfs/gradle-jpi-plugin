@@ -31,7 +31,7 @@ Steps
 * Update `CHANGELOG.md`, set the release date
 * Update the version in `README.md`
 * Ensure everything is checked in: `git commit -S -am "releasing 0.6.0"`
-* Tag the source as it is: `git tag -a 0.6.0 -m "Gradle JPI Plugin 0.6.0"`
+* Tag the source as it is: `git tag -s -a 0.6.0 -m "Gradle JPI Plugin 0.6.0"`
 * Build the code: `gradlew clean check install`
 * Test the plugin with Jenkins plugin projects using it (e.g. https://github.com/jenkinsci/job-dsl-plugin)
 * Deploy: `gradlew uploadArchives`
