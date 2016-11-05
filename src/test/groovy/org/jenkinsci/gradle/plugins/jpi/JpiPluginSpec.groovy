@@ -1,6 +1,7 @@
 package org.jenkinsci.gradle.plugins.jpi
 
 import org.gradle.api.Project
+import org.gradle.api.UnknownDomainObjectException
 import org.gradle.api.artifacts.repositories.MavenArtifactRepository
 import org.gradle.api.internal.project.ProjectInternal
 import org.gradle.api.plugins.BasePlugin
@@ -114,12 +115,12 @@ class JpiPluginSpec extends Specification {
             }
         }
         (project as ProjectInternal).evaluate()
+        project.extensions.getByType(PublishingExtension)
 
         then:
-        PublishingExtension publishingExtension = project.extensions.getByType(PublishingExtension)
-        publishingExtension.publications.size() == 0
-        publishingExtension.repositories.size() == 0
         project.components.size() == 3
+        UnknownDomainObjectException ex = thrown()
+        ex.message.contains("Extension of type 'PublishingExtension' does not exist.")
     }
 
     def 'localizer task has been setup'(Object outputDir, String expectedOutputDir) {

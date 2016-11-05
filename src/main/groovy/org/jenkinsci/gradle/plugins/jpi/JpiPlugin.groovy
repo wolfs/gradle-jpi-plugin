@@ -92,7 +92,6 @@ class JpiPlugin implements Plugin<Project> {
     void apply(final Project gradleProject) {
         gradleProject.plugins.apply(JavaPlugin)
         gradleProject.plugins.apply(WarPlugin)
-        gradleProject.plugins.apply(MavenPublishPlugin)
         gradleProject.plugins.apply(GroovyPlugin)
 
         // never run war as it's useless
@@ -290,7 +289,6 @@ class JpiPlugin implements Plugin<Project> {
     }
 
     private static configurePublishing(Project project) {
-        PublishingExtension publishingExtension = project.extensions.getByType(PublishingExtension)
         JpiExtension jpiExtension = project.extensions.getByType(JpiExtension)
 
         AbstractArchiveTask jpi = project.tasks.getByName(Jpi.TASK_NAME) as AbstractArchiveTask
@@ -312,6 +310,8 @@ class JpiPlugin implements Plugin<Project> {
         // delay configuration until all settings are available (groupId, shortName, ...)
         project.afterEvaluate {
             if (jpiExtension.configurePublishing) {
+                project.plugins.apply(MavenPublishPlugin)
+                PublishingExtension publishingExtension = project.extensions.getByType(PublishingExtension)
                 publishingExtension.publications {
                     mavenJpi(MavenPublication) {
                         artifactId jpiExtension.shortName
@@ -345,6 +345,7 @@ class JpiPlugin implements Plugin<Project> {
         project.gradle.taskGraph.whenReady { TaskGraphExecuter taskGraph ->
             if (jpiExtension.configurePublishing && taskGraph.hasTask(project.tasks.publish)) {
                 def credentials = loadDotJenkinsOrg()
+                PublishingExtension publishingExtension = project.extensions.getByType(PublishingExtension)
                 publishingExtension.repositories.getByName('jenkins').credentials {
                     username credentials.userName
                     password credentials.password

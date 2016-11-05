@@ -1,5 +1,8 @@
 ## 0.18.2 (unreleased)
 
+  * do not apply "maven-publish" plugin if `configurePublishing` is `false`
+    ([#80](https://github.com/jenkinsci/gradle-jpi-plugin/pull/80))
+
 ## 0.18.1 (2016-05-22)
 
   * Fixed Servlet API dependency for Jenkins 2.0 and later
