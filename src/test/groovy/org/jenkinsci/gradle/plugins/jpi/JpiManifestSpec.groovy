@@ -2,16 +2,30 @@ package org.jenkinsci.gradle.plugins.jpi
 
 import org.gradle.api.Project
 import org.gradle.api.internal.project.ProjectInternal
-import org.gradle.jvm.tasks.Jar
 import org.gradle.testfixtures.ProjectBuilder
+import org.gradle.testkit.runner.BuildResult
+import org.gradle.testkit.runner.GradleRunner
+import org.gradle.testkit.runner.TaskOutcome
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
 import spock.lang.Specification
 import spock.lang.Unroll
 
+import java.util.jar.JarFile
 import java.util.jar.Manifest
 
 class JpiManifestSpec extends Specification {
+    public static final String PROJECT = """
+plugins {
+    id 'org.jenkins-ci.jpi'
+}
+
+jenkinsPlugin {
+    coreVersion = '1.642'
+}
+
+version = '1.2'"""
+
     Project project = ProjectBuilder.builder().build()
 
     @Rule
@@ -35,26 +49,44 @@ class JpiManifestSpec extends Specification {
         manifest == readManifest('basics.mf')
     }
 
-    def 'basics for JAR'() {
-        setup:
-        project.with {
-            apply plugin: 'jpi'
-            group = 'org.example'
-            version = '1.2'
-            jenkinsPlugin {
-                coreVersion = '1.509.3'
-            }
-        }
-        (project as ProjectInternal).evaluate()
+    def 'JAR contains manifest'() {
+        given:
+        temporaryFolder.newFolder('test', 'src', 'main', 'java')
+        temporaryFolder.newFile('test/build.gradle') << PROJECT
+        temporaryFolder.newFile('test/src/main/java/TestPlugin.java') << 'class TestPlugin extends hudson.Plugin {}'
 
         when:
-        Jar jar = project.tasks.jar as Jar
-        def manifest = jar.manifest
+        BuildResult result = GradleRunner.create()
+                .withProjectDir(new File(temporaryFolder.root, 'test'))
+                .withPluginClasspath()
+                .withArguments('jar')
+                .build()
 
         then:
-        manifest.attributes.collectEntries { k, v -> [k.toString(), v] } == JpiManifest.attributesToMap(
-                readManifest('basics.mf').mainAttributes
-        )
+        result.task(':jar').outcome == TaskOutcome.SUCCESS
+        File generatedJarFile = new File(temporaryFolder.root, 'test/build/libs/test-1.2.jar')
+        generatedJarFile.exists()
+        new JarFile(generatedJarFile).manifest.mainAttributes == readManifest('test.mf').mainAttributes
+    }
+
+    def 'JPI contains manifest'() {
+        given:
+        temporaryFolder.newFolder('test', 'src', 'main', 'java')
+        temporaryFolder.newFile('test/build.gradle') << PROJECT
+        temporaryFolder.newFile('test/src/main/java/TestPlugin.java') << 'class TestPlugin extends hudson.Plugin {}'
+
+        when:
+        BuildResult result = GradleRunner.create()
+                .withProjectDir(new File(temporaryFolder.root, 'test'))
+                .withPluginClasspath()
+                .withArguments('jpi')
+                .build()
+
+        then:
+        result.task(':jpi').outcome == TaskOutcome.SUCCESS
+        File generatedJarFile = new File(temporaryFolder.root, 'test/build/libs/test.hpi')
+        generatedJarFile.exists()
+        new JarFile(generatedJarFile).manifest.mainAttributes == readManifest('test.mf').mainAttributes
     }
 
     def 'plugin class'() {
