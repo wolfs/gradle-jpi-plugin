@@ -2,6 +2,8 @@
 
   * do not apply "maven-publish" plugin if `configurePublishing` is `false`
     ([#80](https://github.com/jenkinsci/gradle-jpi-plugin/pull/80))
+  * fixed problem with missing `Plugin-Class` attribute in generated manifest
+    ([JENKINS-38920](https://issues.jenkins-ci.org/browse/JENKINS-38920))
 
 ## 0.18.1 (2016-05-22)
 

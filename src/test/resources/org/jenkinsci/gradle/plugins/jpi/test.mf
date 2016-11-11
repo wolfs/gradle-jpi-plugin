@@ -1,0 +1,8 @@
+Long-Name: test
+Support-Dynamic-Loading: true
+Plugin-Version: 1.2
+Jenkins-Version: 1.642
+Extension-Name: test
+Plugin-Class: TestPlugin
+Manifest-Version: 1.0
+Short-Name: test

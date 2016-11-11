@@ -165,19 +165,21 @@ class JpiPlugin implements Plugin<Project> {
         jpi.group = BasePlugin.BUILD_GROUP
         jpi.dependsOn(jpiExtension.mainSourceTree().runtimeClasspath)
         jpi.classpath = jpiExtension.mainSourceTree().runtimeClasspath - providedRuntime
+        jpi.doFirst {
+            jpi.manifest.attributes(attributesToMap(new JpiManifest(project).mainAttributes))
+        }
 
         project.tasks.findByName(LifecycleBasePlugin.ASSEMBLE_TASK_NAME).dependsOn(jpi)
         project.afterEvaluate {
             jpi.archiveName = "${jpiExtension.shortName}.${jpiExtension.fileExtension}"
             jpi.extension = jpiExtension.fileExtension
-            jpi.manifest.attributes(attributesToMap(new JpiManifest(project).mainAttributes))
         }
     }
 
     private static configureJar(Project project) {
         // add manifest to the JAR file
-        project.afterEvaluate {
-            Jar jarTask = project.tasks.getByName(JavaPlugin.JAR_TASK_NAME) as Jar
+        Jar jarTask = project.tasks.getByName(JavaPlugin.JAR_TASK_NAME) as Jar
+        jarTask.doFirst {
             jarTask.manifest.attributes(attributesToMap(new JpiManifest(project).mainAttributes))
         }
     }
