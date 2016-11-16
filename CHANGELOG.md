@@ -1,4 +1,4 @@
-## 0.18.2 (unreleased)
+## 0.19.0 (2016-11-16)
 
   * do not apply "maven-publish" plugin if `configurePublishing` is `false`
     ([#80](https://github.com/jenkinsci/gradle-jpi-plugin/pull/80))
