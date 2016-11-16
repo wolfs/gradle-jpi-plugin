@@ -40,6 +40,6 @@ Steps
 * Update `CHANGELOG.md`, add the next version
 * Commit the updated version number: `git commit -S -am "bumping version"`
 * Push the two new commit and the tag back to GitHub: `git push && git push --tags`
-* Close all resolved issues in JIRA: https://issues.jenkins-ci.org/browse/JENKINS/component/16321
+* Close all resolved issues in JIRA: https://issues.jenkins-ci.org/secure/Dashboard.jspa?selectPageId=15444
 * Send an email to jenkinsci-dev@googlegroups.com
 
