@@ -1,4 +1,4 @@
-## 0.20.0 (unreleased)
+## 0.20.0 (2016-11-17)
 
   * updated to Gradle 3.2
   * dropped support for building with Java 6
