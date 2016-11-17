@@ -94,7 +94,7 @@ uploadArchives {
 }
 
 codenarc {
-    toolVersion = '0.24'
+    toolVersion = '0.26.0'
     configFile = file('config/codenarc/rules.groovy')
 }
 
