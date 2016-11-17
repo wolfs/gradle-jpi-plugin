@@ -7,10 +7,6 @@ plugins {
     id 'java-gradle-plugin'
 }
 
-task wrapper(type: Wrapper) {
-    gradleVersion = '2.13'
-}
-
 repositories {
     // using JCenter for dependency resolution is recommended, see https://plugins.gradle.org/docs/publish-plugin
     jcenter()
