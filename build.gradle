@@ -12,7 +12,8 @@ repositories {
     jcenter()
 }
 
-sourceCompatibility = '1.6'
+sourceCompatibility = '1.7'
+targetCompatibility = '1.7'
 
 dependencies {
     compile gradleApi()
