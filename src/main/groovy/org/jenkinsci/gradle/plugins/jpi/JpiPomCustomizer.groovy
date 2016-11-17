@@ -70,6 +70,7 @@ class JpiPomCustomizer {
             String groupId = dependency.groupId.text()
             String artifactId = dependency.artifactId.text()
             Node scope = dependency.scope[0] as Node
+            Node exclusions = dependency.exclusions[0] as Node
 
             // add the optional element for all optional plugin dependencies
             if (optionalPluginDependencies.any { it.group == groupId && it.name == artifactId }) {
@@ -79,6 +80,11 @@ class JpiPomCustomizer {
             // remove the scope for all plugin and compile dependencies
             if ((allPluginDependencies + compileDependencies).any { it.group == groupId && it.name == artifactId }) {
                 dependency.remove(scope)
+            }
+
+            // remove exclusions from all plugin dependencies
+            if (exclusions && allPluginDependencies.any { it.group == groupId && it.name == artifactId }) {
+                dependency.remove(exclusions)
             }
         }
 

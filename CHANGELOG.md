@@ -1,5 +1,8 @@
 ## 0.20.0 (unreleased)
 
+  * updated to Gradle 3.2
+  * dropped support for building with Java 6
+
 ## 0.19.0 (2016-11-16)
 
   * do not apply "maven-publish" plugin if `configurePublishing` is `false`

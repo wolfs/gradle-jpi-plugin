@@ -1,6 +1,5 @@
 package org.jenkinsci.gradle.plugins.jpi
 
-import org.custommonkey.xmlunit.XMLUnit
 import org.gradle.api.Project
 import org.gradle.api.internal.artifacts.ivyservice.ivyresolve.strategy.DefaultVersionComparator
 import org.gradle.api.internal.artifacts.ivyservice.ivyresolve.strategy.DefaultVersionSelectorScheme
@@ -16,6 +15,8 @@ import org.gradle.api.publish.maven.internal.tasks.MavenPomFileGenerator
 import org.gradle.testfixtures.ProjectBuilder
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
+import org.xmlunit.builder.DiffBuilder
+import org.xmlunit.builder.Input
 import spock.lang.Specification
 
 class JpiPomCustomizerSpec extends Specification {
@@ -23,10 +24,6 @@ class JpiPomCustomizerSpec extends Specification {
     TemporaryFolder temporaryFolder = new TemporaryFolder()
 
     Project project = ProjectBuilder.builder().build()
-
-    def setup() {
-        XMLUnit.ignoreWhitespace = true
-    }
 
     def 'minimal POM'() {
         setup:
@@ -249,7 +246,12 @@ class JpiPomCustomizerSpec extends Specification {
     }
 
     private static boolean compareXml(String fileName, Node node) {
-        XMLUnit.compareXML(readXml(fileName), toXml(node)).similar()
+        !DiffBuilder.compare(Input.fromString(readXml(fileName)))
+                .withTest(Input.fromString(toXml(node)))
+                .checkForSimilar()
+                .ignoreWhitespace()
+                .build()
+                .hasDifferences()
     }
 
     private static String readXml(String fileName) {

@@ -164,7 +164,7 @@ class JpiExtension {
                 jenkinsCore(
                         [group: 'org.jenkins-ci.main', name: 'jenkins-core', version: v, ext: 'jar', transitive: true],
                         [group: findBugsGroup, name: 'annotations', version: findBugsVersion],
-                        [group: 'javax.servlet', name: servletApiArtifact, version: servletApiVersion]
+                        [group: 'javax.servlet', name: servletApiArtifact, version: servletApiVersion],
                 )
 
                 jenkinsWar(group: 'org.jenkins-ci.main', name: 'jenkins-war', version: v, ext: 'war')

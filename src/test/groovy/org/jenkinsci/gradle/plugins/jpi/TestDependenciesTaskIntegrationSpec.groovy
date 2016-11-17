@@ -28,7 +28,7 @@ class TestDependenciesTaskIntegrationSpec extends Specification {
         dir.directory
         new File(dir, 'index').text == [
                 'structs-1.1', 'config-file-provider-2.8.1', 'cloudbees-folder-4.4',
-                'token-macro-1.5.1', 'credentials-1.9.1'
+                'token-macro-1.5.1', 'credentials-1.9.1',
         ].join('\n')
         new File(dir, 'structs-1.1.hpi').exists()
         new File(dir, 'config-file-provider-2.8.1.hpi').exists()
