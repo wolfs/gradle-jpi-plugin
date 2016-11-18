@@ -201,7 +201,7 @@ class JpiPlugin implements Plugin<Project> {
         }
 
         TestDependenciesTask task = project.tasks.create(TestDependenciesTask.TASK_NAME, TestDependenciesTask)
-        task.from(plugins)
+        task.configuration = plugins
 
         project.tasks.getByName(javaConvention.sourceSets.test.processResourcesTaskName).dependsOn(task)
     }

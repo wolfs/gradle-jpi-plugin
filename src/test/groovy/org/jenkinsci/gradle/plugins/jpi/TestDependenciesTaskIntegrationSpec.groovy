@@ -18,7 +18,7 @@ class TestDependenciesTaskIntegrationSpec extends Specification {
         def result = GradleRunner.create()
                 .withProjectDir(project.root)
                 .withPluginClasspath()
-                .withArguments('processTestResources')
+                .withArguments('processTestResources', '--stacktrace')
                 .build()
 
         then:
@@ -27,13 +27,13 @@ class TestDependenciesTaskIntegrationSpec extends Specification {
         File dir = new File(project.root, 'build/resources/test/test-dependencies')
         dir.directory
         new File(dir, 'index').text == [
-                'structs-1.1', 'config-file-provider-2.8.1', 'cloudbees-folder-4.4',
-                'token-macro-1.5.1', 'credentials-1.9.1',
+                'structs', 'config-file-provider', 'cloudbees-folder',
+                'token-macro', 'credentials',
         ].join('\n')
-        new File(dir, 'structs-1.1.hpi').exists()
-        new File(dir, 'config-file-provider-2.8.1.hpi').exists()
-        new File(dir, 'cloudbees-folder-4.4.hpi').exists()
-        new File(dir, 'token-macro-1.5.1.hpi').exists()
-        new File(dir, 'credentials-1.9.1.hpi').exists()
+        new File(dir, 'structs.hpi').exists()
+        new File(dir, 'config-file-provider.hpi').exists()
+        new File(dir, 'cloudbees-folder.hpi').exists()
+        new File(dir, 'token-macro.hpi').exists()
+        new File(dir, 'credentials.hpi').exists()
     }
 }

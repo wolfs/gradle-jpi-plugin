@@ -1,5 +1,9 @@
 ## 0.21.0 (unreleased)
 
+  * strip version from plugin file names in `test-dependencies` directory to mimic the behavior of the Maven HPI plugin
+    better
+    ([#83](https://github.com/jenkinsci/gradle-jpi-plugin/pull/83))
+
 ## 0.20.0 (2016-11-17)
 
   * updated to Gradle 3.2
