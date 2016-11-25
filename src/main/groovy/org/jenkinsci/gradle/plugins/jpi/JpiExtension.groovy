@@ -238,6 +238,15 @@ class JpiExtension {
     String gitHubUrl
 
     /**
+     * The license for the plugin. Optional.
+     */
+    Licenses licenses = new Licenses();
+
+    def licenses(Closure closure) {
+        ConfigureUtil.configure(closure, licenses)
+    }
+
+    /**
      * If true, the automatic test injection will be skipped.
      *
      * Disabled by default because of <a href="https://issues.jenkins-ci.org/browse/JENKINS-21977">JENKINS-21977</a>.
@@ -309,6 +318,40 @@ class JpiExtension {
 
         boolean isEmpty() {
             developerMap.isEmpty()
+        }
+    }
+
+    class Licenses {
+        def licenseMap = [:]
+
+        def getProperty(String name) {
+            licenseMap[name]
+        }
+
+        void setProperty(String name, val) {
+            licenseMap[name] = val
+        }
+
+        def license(Closure closure) {
+            def license = new JpiLicense(JpiExtension.this.project.logger)
+            license.configure(closure)
+            setProperty(license.name, license)
+        }
+
+        def each(Closure closure) {
+            licenseMap.values().each(closure)
+        }
+
+        def collect(Closure closure) {
+            licenseMap.values().collect(closure)
+        }
+
+        def getProperties() {
+            licenseMap
+        }
+
+        boolean isEmpty() {
+            licenseMap.isEmpty()
         }
     }
 }

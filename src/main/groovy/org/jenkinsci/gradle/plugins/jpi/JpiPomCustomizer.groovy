@@ -44,6 +44,9 @@ class JpiPomCustomizer {
         if (jpiExtension.gitHubUrl) {
             pom.append(makeScmNode())
         }
+        if (!jpiExtension.licenses.isEmpty()) {
+            pom.appendNode('licenses', jpiExtension.licenses.collect { JpiLicense l -> makeLicenseNode(l) })
+        }
         if (!jpiExtension.developers.isEmpty()) {
             pom.appendNode('developers', jpiExtension.developers.collect { JpiDeveloper d -> makeDeveloperNode(d) })
         }
@@ -128,5 +131,15 @@ class JpiPomCustomizer {
             }
         }
         developerNode
+    }
+
+    private static Node makeLicenseNode(JpiLicense license) {
+        Node licenseNode = new Node(null, 'license')
+        JpiLicense.LEGAL_FIELDS.each { String key ->
+            def value = license[key]
+            if (value) {
+                licenseNode.appendNode(key, value)
+            }
+        }
     }
 }
