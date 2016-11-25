@@ -240,7 +240,7 @@ class JpiExtension {
     /**
      * The license for the plugin. Optional.
      */
-    Licenses licenses = new Licenses();
+    Licenses licenses = new Licenses()
 
     def licenses(Closure closure) {
         ConfigureUtil.configure(closure, licenses)
