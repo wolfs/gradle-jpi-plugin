@@ -1,5 +1,6 @@
 ## 0.21.0 (unreleased)
 
+  * updated to Gradle 3.2.1
   * strip version from plugin file names in `test-dependencies` directory to mimic the behavior of the Maven HPI plugin
     better
   * allow to configure licenses for the generated POM
