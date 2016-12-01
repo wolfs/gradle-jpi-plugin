@@ -58,6 +58,14 @@ class JpiPomCustomizerSpec extends Specification {
                         email 'andrew.bayer@gmail.com'
                     }
                 }
+                licenses {
+                    license {
+                        name 'Apache License, Version 2.0'
+                        url 'https://www.apache.org/licenses/LICENSE-2.0.txt'
+                        distribution 'repo'
+                        comments 'A business-friendly OSS license'
+                    }
+                }
             }
             repositories {
                 maven {

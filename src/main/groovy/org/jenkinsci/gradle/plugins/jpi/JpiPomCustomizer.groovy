@@ -141,5 +141,6 @@ class JpiPomCustomizer {
                 licenseNode.appendNode(key, value)
             }
         }
+        licenseNode
     }
 }

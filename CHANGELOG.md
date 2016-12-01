@@ -2,6 +2,7 @@
 
   * strip version from plugin file names in `test-dependencies` directory to mimic the behavior of the Maven HPI plugin
     better
+  * allow to configure licenses for the generated POM
     ([#83](https://github.com/jenkinsci/gradle-jpi-plugin/pull/83))
 
 ## 0.20.0 (2016-11-17)
