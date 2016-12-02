@@ -1,4 +1,4 @@
-## 0.21.0 (unreleased)
+## 0.21.0 (2016-12-02)
 
   * updated to Gradle 3.2.1
   * strip version from plugin file names in `test-dependencies` directory to mimic the behavior of the Maven HPI plugin
