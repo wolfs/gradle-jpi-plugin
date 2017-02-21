@@ -3,8 +3,8 @@ package org.jenkinsci.gradle.plugins.jpi
 import org.gradle.api.DomainObjectSet
 import org.gradle.api.artifacts.ModuleDependency
 import org.gradle.api.artifacts.PublishArtifact
+import org.gradle.api.attributes.Usage
 import org.gradle.api.internal.component.SoftwareComponentInternal
-import org.gradle.api.internal.component.Usage
 
 class JpiComponent implements SoftwareComponentInternal {
     private final Usage jpiUsage = new JpiUsage()
