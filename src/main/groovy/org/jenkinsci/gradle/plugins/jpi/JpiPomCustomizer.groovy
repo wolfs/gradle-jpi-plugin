@@ -107,8 +107,8 @@ class JpiPomCustomizer {
                 exclusions = dependency.appendNode('exclusions')
                 it.excludeRules.each {
                     Node exclusion = exclusions.appendNode('exclusion')
-                    exclusion.appendNode('artifactId', it.module)
                     exclusion.appendNode('groupId', it.group)
+                    exclusion.appendNode('artifactId', it.module)
                 }
             }
         }

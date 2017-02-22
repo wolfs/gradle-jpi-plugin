@@ -201,6 +201,28 @@ class JpiPomCustomizerSpec extends Specification {
         compareXml('compile-dependencies-pom.xml', pom)
     }
 
+    def 'compile dependencies with excludes'() {
+        setup:
+        project.with {
+            apply plugin: 'jpi'
+            jenkinsPlugin {
+                coreVersion = '1.580.1'
+            }
+            dependencies {
+                compile('org.bitbucket.b_c:jose4j:0.5.5') {
+                    exclude group: 'org.slf4j', module: 'slf4j-api'
+                }
+            }
+        }
+        (project as ProjectInternal).evaluate()
+
+        when:
+        Node pom = generatePom()
+
+        then:
+        compareXml('compile-dependencies-with-excludes-pom.xml', pom)
+    }
+
     def 'updated FindBugs version in 1.618'() {
         setup:
         project.with {
