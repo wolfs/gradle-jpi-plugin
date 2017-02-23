@@ -15,7 +15,6 @@
  */
 package org.jenkinsci.gradle.plugins.jpi
 
-import org.gradle.api.DomainObjectSet
 import org.gradle.api.GradleException
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -23,12 +22,7 @@ import org.gradle.api.Task
 import org.gradle.api.XmlProvider
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.ConfigurationContainer
-import org.gradle.api.artifacts.Dependency
-import org.gradle.api.artifacts.DependencySet
 import org.gradle.api.artifacts.ResolvedArtifact
-import org.gradle.api.component.SoftwareComponent
-import org.gradle.api.internal.artifacts.publish.ArchivePublishArtifact
-import org.gradle.api.internal.plugins.DefaultArtifactPublicationSet
 import org.gradle.api.plugins.BasePlugin
 import org.gradle.api.plugins.JavaPlugin
 import org.gradle.api.plugins.JavaPluginConvention
@@ -38,16 +32,14 @@ import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.api.publish.maven.plugins.MavenPublishPlugin
 import org.gradle.api.tasks.SourceSet
-import org.gradle.api.tasks.bundling.AbstractArchiveTask
 import org.gradle.api.tasks.bundling.Jar
+import org.gradle.api.tasks.bundling.War
 import org.gradle.api.tasks.compile.GroovyCompile
 import org.gradle.api.tasks.compile.JavaCompile
 import org.gradle.api.tasks.testing.Test
 import org.gradle.execution.TaskGraphExecuter
-import org.gradle.language.base.plugins.LifecycleBasePlugin
 
 import static org.gradle.api.logging.LogLevel.INFO
-import static org.gradle.api.plugins.JavaPlugin.RUNTIME_CONFIGURATION_NAME
 import static org.gradle.api.tasks.SourceSet.TEST_SOURCE_SET_NAME
 import static org.jenkinsci.gradle.plugins.jpi.JpiManifest.attributesToMap
 
@@ -86,6 +78,7 @@ class JpiPlugin implements Plugin<Project> {
      */
     public static final String JENKINS_TEST_DEPENDENCY_CONFIGURATION_NAME = 'jenkinsTest'
 
+    public static final String JPI_TASK_NAME = 'jpi'
     public static final String SOURCES_JAR_TASK_NAME = 'sourcesJar'
     public static final String JAVADOC_JAR_TASK_NAME = 'javadocJar'
 
@@ -93,9 +86,6 @@ class JpiPlugin implements Plugin<Project> {
         gradleProject.plugins.apply(JavaPlugin)
         gradleProject.plugins.apply(WarPlugin)
         gradleProject.plugins.apply(GroovyPlugin)
-
-        // never run war as it's useless
-        gradleProject.tasks.getByName('war').onlyIf { false }
 
         def ext = new JpiExtension(gradleProject)
         gradleProject.extensions.jenkinsPlugin = ext
@@ -157,23 +147,23 @@ class JpiPlugin implements Plugin<Project> {
     }
 
     private static configureJpi(Project project) {
-        Configuration providedRuntime = project.configurations.getByName(WarPlugin.PROVIDED_RUNTIME_CONFIGURATION_NAME)
         JpiExtension jpiExtension = project.extensions.getByType(JpiExtension)
 
-        Jpi jpi = project.tasks.create(Jpi.TASK_NAME, Jpi)
-        jpi.description = 'Generates the JPI package'
-        jpi.group = BasePlugin.BUILD_GROUP
-        jpi.dependsOn(jpiExtension.mainSourceTree().runtimeClasspath)
-        jpi.classpath = jpiExtension.mainSourceTree().runtimeClasspath - providedRuntime
-        jpi.doFirst {
-            jpi.manifest.attributes(attributesToMap(new JpiManifest(project).mainAttributes))
+        War war = project.tasks[WarPlugin.WAR_TASK_NAME] as War
+        war.description = 'Generates the JPI package'
+        war.doFirst {
+            war.manifest.attributes(attributesToMap(new JpiManifest(project).mainAttributes))
         }
 
-        project.tasks.findByName(LifecycleBasePlugin.ASSEMBLE_TASK_NAME).dependsOn(jpi)
         project.afterEvaluate {
-            jpi.archiveName = "${jpiExtension.shortName}.${jpiExtension.fileExtension}"
-            jpi.extension = jpiExtension.fileExtension
+            war.archiveName = "${jpiExtension.shortName}.${jpiExtension.fileExtension}"
+            war.extension = jpiExtension.fileExtension
         }
+
+        Task jpi = project.tasks.create(JPI_TASK_NAME)
+        jpi.dependsOn(war)
+        jpi.description = 'Generates the JPI package'
+        jpi.group = BasePlugin.BUILD_GROUP
     }
 
     private static configureJar(Project project) {
@@ -293,21 +283,9 @@ class JpiPlugin implements Plugin<Project> {
     private static configurePublishing(Project project) {
         JpiExtension jpiExtension = project.extensions.getByType(JpiExtension)
 
-        AbstractArchiveTask jpi = project.tasks.getByName(Jpi.TASK_NAME) as AbstractArchiveTask
         Task jar = project.tasks.getByName(JavaPlugin.JAR_TASK_NAME)
         Task sourcesJar = project.tasks.getByName(SOURCES_JAR_TASK_NAME)
         Task javadocJar = project.tasks.getByName(JAVADOC_JAR_TASK_NAME)
-        DependencySet runtimeDependencies = project.configurations[RUNTIME_CONFIGURATION_NAME].allDependencies
-        DependencySet coreDependencies = project.configurations[CORE_DEPENDENCY_CONFIGURATION_NAME].allDependencies
-
-        ArchivePublishArtifact jpiArtifact = new ArchivePublishArtifact(jpi)
-        project.extensions.getByType(DefaultArtifactPublicationSet).addCandidate(jpiArtifact)
-
-        // exclude core dependencies which are inherited from the parent POM
-        DomainObjectSet<Dependency> jpiDependencies = runtimeDependencies.matching { !coreDependencies.contains(it) }
-
-        SoftwareComponent jpiComponent = new JpiComponent(jpiArtifact, jpiDependencies)
-        project.components.add(jpiComponent)
 
         // delay configuration until all settings are available (groupId, shortName, ...)
         project.afterEvaluate {
@@ -318,7 +296,7 @@ class JpiPlugin implements Plugin<Project> {
                     mavenJpi(MavenPublication) {
                         artifactId jpiExtension.shortName
 
-                        from jpiComponent
+                        from(project.components.web)
 
                         artifact jar
                         artifact sourcesJar

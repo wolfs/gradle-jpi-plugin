@@ -1,13 +1,16 @@
 package org.jenkinsci.gradle.plugins.jpi
 
 import org.gradle.api.Project
+import org.gradle.api.Task
 import org.gradle.api.UnknownDomainObjectException
 import org.gradle.api.artifacts.repositories.MavenArtifactRepository
 import org.gradle.api.internal.project.ProjectInternal
 import org.gradle.api.plugins.BasePlugin
 import org.gradle.api.plugins.JavaPluginConvention
+import org.gradle.api.plugins.WarPlugin
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
+import org.gradle.api.tasks.bundling.War
 import org.gradle.testfixtures.ProjectBuilder
 import spock.lang.Specification
 
@@ -34,7 +37,7 @@ class JpiPluginSpec extends Specification {
 
         where:
         taskName     | taskClass
-        'jpi'        | Jpi
+        'jpi'        | Task
         'server'     | ServerTask
         'localizer'  | LocalizerTask
         'insertTest' | TestInsertionTask
@@ -67,7 +70,7 @@ class JpiPluginSpec extends Specification {
         publishingExtension.repositories.get(0).name == 'jenkins'
         publishingExtension.repositories.get(0) instanceof MavenArtifactRepository
         (publishingExtension.repositories.get(0) as MavenArtifactRepository).url == URI.create(repositoryUrl)
-        project.components.size() == 3
+        project.components.size() == 2
 
         where:
         projectVersion   | repositoryUrl                           | extension
@@ -89,12 +92,17 @@ class JpiPluginSpec extends Specification {
         (project as ProjectInternal).evaluate()
 
         then:
-        Jpi task = project.tasks[Jpi.TASK_NAME] as Jpi
+        War task = project.tasks[WarPlugin.WAR_TASK_NAME] as War
         task != null
         task.description != null
         task.group == BasePlugin.BUILD_GROUP
         task.archiveName == archiveName
         task.extension == extension
+        Task jpi = project.tasks[JpiPlugin.JPI_TASK_NAME]
+        jpi != null
+        jpi.description != null
+        jpi.group == BasePlugin.BUILD_GROUP
+        jpi.dependsOn.contains(task)
 
         where:
         name  | extension || archiveName
@@ -118,7 +126,7 @@ class JpiPluginSpec extends Specification {
         project.extensions.getByType(PublishingExtension)
 
         then:
-        project.components.size() == 3
+        project.components.size() == 2
         UnknownDomainObjectException ex = thrown()
         ex.message.contains("Extension of type 'PublishingExtension' does not exist.")
     }
@@ -216,7 +224,7 @@ class JpiPluginSpec extends Specification {
         (project as ProjectInternal).evaluate()
 
         then:
-        project.tasks.assemble.dependsOn.contains(project.tasks.jpi)
+        project.tasks.jpi.dependsOn.contains(project.tasks.war)
     }
 
     private static List<String> collectDependencies(Project project, String configuration) {

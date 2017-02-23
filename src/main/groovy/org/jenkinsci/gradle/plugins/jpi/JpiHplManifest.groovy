@@ -16,7 +16,9 @@
 package org.jenkinsci.gradle.plugins.jpi
 
 import org.gradle.api.Project
+import org.gradle.api.plugins.WarPlugin
 import org.gradle.api.plugins.WarPluginConvention
+import org.gradle.api.tasks.bundling.War
 
 /**
  * @author Kohsuke Kawaguchi
@@ -26,14 +28,14 @@ class JpiHplManifest extends JpiManifest {
         super(project)
 
         def conv = project.extensions.getByType(JpiExtension)
-        def jpi = project.tasks.getByName(Jpi.TASK_NAME)
+        War war = project.tasks.getByName(WarPlugin.WAR_TASK_NAME) as War
 
         // src/main/webApp
         def warconv = project.convention.getPlugin(WarPluginConvention)
         mainAttributes.putValue('Resource-Path', warconv.webAppDir.absolutePath)
 
         // add resource directories directly so that we can pick up the source, then add all the jars and class path
-        Set<File> libraries = conv.mainSourceTree().resources.srcDirs + jpi.classpath.files
+        Set<File> libraries = conv.mainSourceTree().resources.srcDirs + war.classpath.files
         mainAttributes.putValue('Libraries', libraries.findAll { it.exists() }.join(','))
     }
 }

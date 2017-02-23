@@ -1,5 +1,11 @@
 ## 0.22.0 (unreleased)
 
+  * fixed compatibility with Gradle 3.4
+  * removed the classes `org.jenkinsci.gradle.plugins.jpi.Jpi` and `org.jenkinsci.gradle.plugins.jpi.JpiComponent` as
+    they are no longer used by the plugin
+  * the `jpi` task has been replaced by the standard `war` task and changed to a no-op tasks that depends on the `war`
+    task, use the `war` task to customize the JPI/HPI archive
+
 ## 0.21.0 (2016-12-02)
 
   * updated to Gradle 3.2.1

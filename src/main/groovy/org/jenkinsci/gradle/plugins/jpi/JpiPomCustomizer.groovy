@@ -3,11 +3,13 @@ package org.jenkinsci.gradle.plugins.jpi
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Dependency
 import org.gradle.api.artifacts.DependencySet
+import org.gradle.api.artifacts.ModuleDependency
 import org.gradle.api.artifacts.repositories.MavenArtifactRepository
 import org.gradle.api.plugins.JavaPlugin
 
 import static org.gradle.api.artifacts.ArtifactRepositoryContainer.DEFAULT_MAVEN_CENTRAL_REPO_NAME
 import static org.gradle.api.artifacts.ArtifactRepositoryContainer.DEFAULT_MAVEN_LOCAL_REPO_NAME
+import static org.gradle.api.plugins.JavaPlugin.RUNTIME_CONFIGURATION_NAME
 import static org.jenkinsci.gradle.plugins.jpi.JpiPlugin.CORE_DEPENDENCY_CONFIGURATION_NAME
 import static org.jenkinsci.gradle.plugins.jpi.JpiPlugin.OPTIONAL_PLUGINS_DEPENDENCY_CONFIGURATION_NAME
 import static org.jenkinsci.gradle.plugins.jpi.JpiPlugin.PLUGINS_DEPENDENCY_CONFIGURATION_NAME
@@ -63,12 +65,19 @@ class JpiPomCustomizer {
                 getByName(OPTIONAL_PLUGINS_DEPENDENCY_CONFIGURATION_NAME).dependencies
         DependencySet coreDependencies = project.configurations.
                 getByName(CORE_DEPENDENCY_CONFIGURATION_NAME).dependencies
+        DependencySet runtimeDependencies = project.configurations[RUNTIME_CONFIGURATION_NAME].allDependencies
         DependencySet compileDependencies = project.configurations.
                 getByName(JavaPlugin.COMPILE_CONFIGURATION_NAME).dependencies
         Set<Dependency> allPluginDependencies = pluginDependencies + optionalPluginDependencies
 
         Node dependenciesNode = pom.dependencies[0] as Node
         dependenciesNode = dependenciesNode ?: pom.appendNode('dependencies')
+        (runtimeDependencies - coreDependencies).each {
+            Node dependency = dependenciesNode.appendNode('dependency')
+            dependency.appendNode('groupId', it.group)
+            dependency.appendNode('artifactId', it.name)
+            dependency.appendNode('version', it.version)
+        }
         dependenciesNode.each { Node dependency ->
             String groupId = dependency.groupId.text()
             String artifactId = dependency.artifactId.text()
@@ -81,13 +90,26 @@ class JpiPomCustomizer {
             }
 
             // remove the scope for all plugin and compile dependencies
-            if ((allPluginDependencies + compileDependencies).any { it.group == groupId && it.name == artifactId }) {
+            if (scope && (allPluginDependencies + compileDependencies).any {
+                it.group == groupId && it.name == artifactId
+            }) {
                 dependency.remove(scope)
             }
 
             // remove exclusions from all plugin dependencies
             if (exclusions && allPluginDependencies.any { it.group == groupId && it.name == artifactId }) {
                 dependency.remove(exclusions)
+            }
+
+            compileDependencies.withType(ModuleDependency).find {
+                it.group == groupId && it.name == artifactId && it.excludeRules
+            }.each {
+                exclusions = dependency.appendNode('exclusions')
+                it.excludeRules.each {
+                    Node exclusion = exclusions.appendNode('exclusion')
+                    exclusion.appendNode('groupId', it.group)
+                    exclusion.appendNode('artifactId', it.module)
+                }
             }
         }
 

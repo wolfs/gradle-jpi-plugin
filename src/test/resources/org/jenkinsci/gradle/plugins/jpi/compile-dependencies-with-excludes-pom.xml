@@ -16,9 +16,15 @@
     </repositories>
     <dependencies>
         <dependency>
-            <groupId>javax.ejb</groupId>
-            <artifactId>ejb</artifactId>
-            <version>2.1</version>
+            <groupId>org.bitbucket.b_c</groupId>
+            <artifactId>jose4j</artifactId>
+            <version>0.5.5</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.jenkins-ci.main</groupId>
