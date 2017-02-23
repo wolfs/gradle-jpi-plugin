@@ -1,4 +1,4 @@
-## 0.22.0 (unreleased)
+## 0.22.0 (2017-02-23)
 
   * fixed compatibility with Gradle 3.4
   * removed the classes `org.jenkinsci.gradle.plugins.jpi.Jpi` and `org.jenkinsci.gradle.plugins.jpi.JpiComponent` as
