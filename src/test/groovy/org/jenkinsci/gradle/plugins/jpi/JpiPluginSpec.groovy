@@ -200,6 +200,7 @@ class JpiPluginSpec extends Specification {
                 coreVersion = '1.554.2'
             }
         }
+        project.ext.set('android.injected.invoked.from.ide', true)
         (project as ProjectInternal).evaluate()
 
         then:
