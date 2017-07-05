@@ -156,7 +156,9 @@ class JpiPlugin implements Plugin<Project> {
             doLast {
                 Map<String, ?> attributes = attributesToMap(new JpiManifest(project).mainAttributes)
                 war.manifest.attributes(attributes)
+                war.inputs.property('manifest', attributes)
                 jar.manifest.attributes(attributes)
+                jar.inputs.property('manifest', attributes)
             }
 
             dependsOn(javaPluginConvention.sourceSets.getByName(MAIN_SOURCE_SET_NAME).output)
