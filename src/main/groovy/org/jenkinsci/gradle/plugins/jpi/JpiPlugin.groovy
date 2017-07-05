@@ -40,6 +40,7 @@ import org.gradle.api.tasks.testing.Test
 import org.gradle.execution.TaskGraphExecuter
 
 import static org.gradle.api.logging.LogLevel.INFO
+import static org.gradle.api.tasks.SourceSet.MAIN_SOURCE_SET_NAME
 import static org.gradle.api.tasks.SourceSet.TEST_SOURCE_SET_NAME
 import static org.jenkinsci.gradle.plugins.jpi.JpiManifest.attributesToMap
 
@@ -126,8 +127,8 @@ class JpiPlugin implements Plugin<Project> {
 
         configureRepositories(gradleProject)
         configureConfigurations(gradleProject)
+        configureManifest(gradleProject)
         configureJpi(gradleProject)
-        configureJar(gradleProject)
         configureTestDependencies(gradleProject)
         configurePublishing(gradleProject)
         configureTestHpl(gradleProject)
@@ -146,14 +147,30 @@ class JpiPlugin implements Plugin<Project> {
         props
     }
 
+    private static configureManifest(Project project) {
+        JavaPluginConvention javaPluginConvention = project.convention.getPlugin(JavaPluginConvention)
+        War war = project.tasks[WarPlugin.WAR_TASK_NAME] as War
+        Jar jar = project.tasks.getByName(JavaPlugin.JAR_TASK_NAME) as Jar
+
+        Task configureManifest = project.task('configureManifest') {
+            doLast {
+                Map<String, ?> attributes = attributesToMap(new JpiManifest(project).mainAttributes)
+                war.manifest.attributes(attributes)
+                jar.manifest.attributes(attributes)
+            }
+
+            dependsOn(javaPluginConvention.sourceSets.getByName(MAIN_SOURCE_SET_NAME).output)
+        }
+
+        war.dependsOn(configureManifest)
+        jar.dependsOn(configureManifest)
+    }
+
     private static configureJpi(Project project) {
         JpiExtension jpiExtension = project.extensions.getByType(JpiExtension)
 
         War war = project.tasks[WarPlugin.WAR_TASK_NAME] as War
         war.description = 'Generates the JPI package'
-        war.doFirst {
-            war.manifest.attributes(attributesToMap(new JpiManifest(project).mainAttributes))
-        }
 
         project.afterEvaluate {
             war.archiveName = "${jpiExtension.shortName}.${jpiExtension.fileExtension}"
@@ -164,14 +181,6 @@ class JpiPlugin implements Plugin<Project> {
         jpi.dependsOn(war)
         jpi.description = 'Generates the JPI package'
         jpi.group = BasePlugin.BUILD_GROUP
-    }
-
-    private static configureJar(Project project) {
-        // add manifest to the JAR file
-        Jar jarTask = project.tasks.getByName(JavaPlugin.JAR_TASK_NAME) as Jar
-        jarTask.doFirst {
-            jarTask.manifest.attributes(attributesToMap(new JpiManifest(project).mainAttributes))
-        }
     }
 
     private static configureTestDependencies(Project project) {
