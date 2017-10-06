@@ -1,6 +1,6 @@
 ## 0.23.0 (unreleased)
 
-  * updated to Gradle 3.5
+  * updated to Gradle 3.5.1
 
 ## 0.22.0 (2017-02-23)
 
