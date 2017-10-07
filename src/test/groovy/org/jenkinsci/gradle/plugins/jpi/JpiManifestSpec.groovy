@@ -69,6 +69,53 @@ version = '1.2'"""
         new JarFile(generatedJarFile).manifest.mainAttributes == readManifest('test.mf').mainAttributes
     }
 
+    def 'JAR is up-to-date if unchanged'() {
+        given:
+        temporaryFolder.newFolder('test', 'src', 'main', 'java')
+        temporaryFolder.newFile('test/build.gradle') << PROJECT
+        temporaryFolder.newFile('test/src/main/java/TestPlugin.java') << 'class TestPlugin extends hudson.Plugin {}'
+        GradleRunner runner = GradleRunner.create()
+                .withProjectDir(new File(temporaryFolder.root, 'test'))
+                .withPluginClasspath()
+                .withArguments('jar')
+
+        when:
+        BuildResult result = runner.build()
+
+        then:
+        result.task(':jar').outcome == TaskOutcome.SUCCESS
+
+        when:
+        result = runner.build()
+
+        then:
+        result.task(':jar').outcome == TaskOutcome.UP_TO_DATE
+    }
+
+    def 'JAR is built if manifest changed'() {
+        given:
+        temporaryFolder.newFolder('test', 'src', 'main', 'java')
+        File buildFile = temporaryFolder.newFile('test/build.gradle') << PROJECT
+        temporaryFolder.newFile('test/src/main/java/TestPlugin.java') << 'class TestPlugin extends hudson.Plugin {}'
+        GradleRunner runner = GradleRunner.create()
+                .withProjectDir(new File(temporaryFolder.root, 'test'))
+                .withPluginClasspath()
+                .withArguments('jar')
+
+        when:
+        BuildResult result = runner.build()
+
+        then:
+        result.task(':jar').outcome == TaskOutcome.SUCCESS
+
+        when:
+        buildFile.text = PROJECT.replace('1.2', '1.3')
+        result = runner.build()
+
+        then:
+        result.task(':jar').outcome == TaskOutcome.SUCCESS
+    }
+
     def 'JPI contains manifest'() {
         given:
         temporaryFolder.newFolder('test', 'src', 'main', 'java')
@@ -83,10 +130,62 @@ version = '1.2'"""
                 .build()
 
         then:
+        result.task(':war').outcome == TaskOutcome.SUCCESS
         result.task(':jpi').outcome == TaskOutcome.SUCCESS
         File generatedJarFile = new File(temporaryFolder.root, 'test/build/libs/test.hpi')
         generatedJarFile.exists()
         new JarFile(generatedJarFile).manifest.mainAttributes == readManifest('test.mf').mainAttributes
+    }
+
+    def 'JPI is up-to-date if unchanged'() {
+        given:
+        temporaryFolder.newFolder('test', 'src', 'main', 'java')
+        temporaryFolder.newFile('test/build.gradle') << PROJECT
+        temporaryFolder.newFile('test/src/main/java/TestPlugin.java') << 'class TestPlugin extends hudson.Plugin {}'
+        GradleRunner runner = GradleRunner.create()
+                .withProjectDir(new File(temporaryFolder.root, 'test'))
+                .withPluginClasspath()
+                .withArguments('jpi')
+
+        when:
+        BuildResult result = runner.build()
+
+        then:
+        result.task(':war').outcome == TaskOutcome.SUCCESS
+        result.task(':jpi').outcome == TaskOutcome.SUCCESS
+
+        when:
+        result = runner.build()
+
+        then:
+        result.task(':war').outcome == TaskOutcome.UP_TO_DATE
+        result.task(':jpi').outcome == TaskOutcome.UP_TO_DATE
+    }
+
+    def 'JPI is built if manifest changed'() {
+        given:
+        temporaryFolder.newFolder('test', 'src', 'main', 'java')
+        File buildFile = temporaryFolder.newFile('test/build.gradle') << PROJECT
+        temporaryFolder.newFile('test/src/main/java/TestPlugin.java') << 'class TestPlugin extends hudson.Plugin {}'
+        GradleRunner runner = GradleRunner.create()
+                .withProjectDir(new File(temporaryFolder.root, 'test'))
+                .withPluginClasspath()
+                .withArguments('jpi')
+
+        when:
+        BuildResult result = runner.build()
+
+        then:
+        result.task(':war').outcome == TaskOutcome.SUCCESS
+        result.task(':jpi').outcome == TaskOutcome.SUCCESS
+
+        when:
+        buildFile.text = PROJECT.replace('1.2', '1.3')
+        result = runner.build()
+
+        then:
+        result.task(':war').outcome == TaskOutcome.SUCCESS
+        result.task(':jpi').outcome == TaskOutcome.SUCCESS
     }
 
     def 'plugin class'() {
