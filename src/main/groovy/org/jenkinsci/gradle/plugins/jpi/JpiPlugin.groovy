@@ -40,6 +40,7 @@ import org.gradle.api.tasks.testing.Test
 import org.gradle.execution.TaskGraphExecuter
 
 import static org.gradle.api.logging.LogLevel.INFO
+import static org.gradle.api.plugins.JavaPlugin.COMPILE_CLASSPATH_CONFIGURATION_NAME
 import static org.gradle.api.plugins.JavaPlugin.TEST_COMPILE_CONFIGURATION_NAME
 import static org.gradle.api.plugins.WarPlugin.PROVIDED_COMPILE_CONFIGURATION_NAME
 import static org.gradle.api.tasks.SourceSet.TEST_SOURCE_SET_NAME
@@ -366,7 +367,8 @@ class JpiPlugin implements Plugin<Project> {
 
     private static void resolvePluginDependencies(Project project, String from, String to) {
         ConfigurationContainer configurations = project.configurations
-        configurations.getByName(to).incoming.beforeResolve { ResolvableDependencies resolvableDependencies ->
+        Configuration compileClasspathConfiguration = configurations.getByName(COMPILE_CLASSPATH_CONFIGURATION_NAME)
+        compileClasspathConfiguration.incoming.beforeResolve { ResolvableDependencies resolvableDependencies ->
             configurations.getByName(from).resolvedConfiguration.resolvedArtifacts
                     .findAll { it.type == 'hpi' || it.type == 'jpi' }
                     .each { project.dependencies.add(to, "${it.moduleVersion.id}@jar") }
