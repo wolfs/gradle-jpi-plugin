@@ -39,8 +39,8 @@ import org.gradle.api.tasks.compile.JavaCompile
 import org.gradle.api.tasks.testing.Test
 import org.gradle.execution.TaskGraphExecuter
 
+import static org.gradle.api.artifacts.Configuration.State.UNRESOLVED
 import static org.gradle.api.logging.LogLevel.INFO
-import static org.gradle.api.plugins.JavaPlugin.COMPILE_CLASSPATH_CONFIGURATION_NAME
 import static org.gradle.api.plugins.JavaPlugin.TEST_COMPILE_CONFIGURATION_NAME
 import static org.gradle.api.plugins.WarPlugin.PROVIDED_COMPILE_CONFIGURATION_NAME
 import static org.gradle.api.tasks.SourceSet.TEST_SOURCE_SET_NAME
@@ -367,11 +367,17 @@ class JpiPlugin implements Plugin<Project> {
 
     private static void resolvePluginDependencies(Project project, String from, String to) {
         ConfigurationContainer configurations = project.configurations
-        Configuration compileClasspathConfiguration = configurations.getByName(COMPILE_CLASSPATH_CONFIGURATION_NAME)
-        compileClasspathConfiguration.incoming.beforeResolve { ResolvableDependencies resolvableDependencies ->
-            configurations.getByName(from).resolvedConfiguration.resolvedArtifacts
-                    .findAll { it.type == 'hpi' || it.type == 'jpi' }
-                    .each { project.dependencies.add(to, "${it.moduleVersion.id}@jar") }
+        Configuration fromConfiguration = configurations.getByName(from)
+        Configuration toConfiguration = configurations.getByName(to)
+
+        project.configurations.each { Configuration c ->
+            c.incoming.beforeResolve { ResolvableDependencies resolvableDependencies ->
+                if (c.hierarchy.contains(toConfiguration) && fromConfiguration.state == UNRESOLVED) {
+                    fromConfiguration.resolvedConfiguration.resolvedArtifacts
+                            .findAll { it.type == 'hpi' || it.type == 'jpi' }
+                            .each { project.dependencies.add(to, "${it.moduleVersion.id}@jar") }
+                }
+            }
         }
     }
 }
