@@ -6,6 +6,7 @@ import org.gradle.api.UnknownDomainObjectException
 import org.gradle.api.artifacts.repositories.MavenArtifactRepository
 import org.gradle.api.internal.project.ProjectInternal
 import org.gradle.api.plugins.BasePlugin
+import org.gradle.api.plugins.JavaPlugin
 import org.gradle.api.plugins.JavaPluginConvention
 import org.gradle.api.plugins.WarPlugin
 import org.gradle.api.publish.PublishingExtension
@@ -201,6 +202,7 @@ class JpiPluginSpec extends Specification {
             }
         }
         (project as ProjectInternal).evaluate()
+        project.configurations.getByName(JavaPlugin.COMPILE_CLASSPATH_CONFIGURATION_NAME).resolve()
 
         then:
         def dependencies = collectDependencies(project, 'testCompile')
