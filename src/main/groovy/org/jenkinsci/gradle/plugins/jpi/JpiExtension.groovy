@@ -169,10 +169,17 @@ class JpiExtension {
 
                 jenkinsWar(group: 'org.jenkins-ci.main', name: 'jenkins-war', version: v, ext: 'war')
 
+                if (new VersionNumber(this.coreVersion) < new VersionNumber('2.64')) {
+                    jenkinsTest("org.jenkins-ci.main:jenkins-war:${v}:war-for-test")
+                }
+
                 jenkinsTest("org.jenkins-ci.main:jenkins-test-harness:${testHarnessVersion}")
                 jenkinsTest("org.jenkins-ci.main:ui-samples-plugin:${uiSamplesVersion}",
-                        "org.jenkins-ci.main:jenkins-war:${v}:war-for-test",
                         'junit:junit-dep:4.10')
+            }
+
+            if (new VersionNumber(this.coreVersion) >= new VersionNumber('2.64')) {
+                project.configurations.jenkinsTest.extendsFrom(project.configurations.jenkinsWar)
             }
         }
     }
