@@ -167,7 +167,7 @@ class JpiExtension {
                         [group: 'javax.servlet', name: servletApiArtifact, version: servletApiVersion],
                 )
 
-                jenkinsWar(group: 'org.jenkins-ci.main', name: 'jenkins-war', version: v, ext: 'war')
+                jenkinsWar(group: 'org.jenkins-ci.main', name: 'jenkins-war', version: v)
 
                 if (new VersionNumber(this.coreVersion) < new VersionNumber('2.64')) {
                     jenkinsTest("org.jenkins-ci.main:jenkins-war:${v}:war-for-test")
