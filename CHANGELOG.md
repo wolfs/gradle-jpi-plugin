@@ -1,5 +1,8 @@
 ## 0.24.0 (unreleased)
 
+  * fixed support for core versions >= 2.64
+    ([JENKINS-46899](https://issues.jenkins-ci.org/browse/JENKINS-46899))
+
 ## 0.23.1 (2017-10-10)
 
   * updated to Gradle 3.5.1
