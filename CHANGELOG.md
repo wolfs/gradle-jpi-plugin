@@ -1,3 +1,5 @@
+## 0.25.0 (unreleased)
+
 ## 0.24.0 (2017-11-02)
 
   * fixed support for core versions >= 2.64
