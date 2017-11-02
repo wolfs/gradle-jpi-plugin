@@ -1,4 +1,4 @@
-## 0.24.0 (unreleased)
+## 0.24.0 (2017-11-02)
 
   * fixed support for core versions >= 2.64
     ([JENKINS-46899](https://issues.jenkins-ci.org/browse/JENKINS-46899))
