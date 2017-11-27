@@ -116,6 +116,16 @@ configuration.
   and debugging. The HTTP port can be changed with the `jenkins.httpPort` project or system property, e.g.
   `gradle server -Djenkins.httpPort=8082`.
 
+## Gradle 4+
+
+Note that Gradle 4.0 changed the default layout of the classes folders. Where Gradle 3.x put all classes of groovy and java code into a single directory, Gradle 4 by default creates separate directories for all languages. Unfortunately, this breaks the way
+SezPoz (the library indexing the Extension annotations) works, meaning that all annotations from java code are effectively ignored.
+
+If you combine java and groovy code and both provide extensions you need to either:
+
+- Use joint compilation, i.e. put your java source files into the groovy source path (src/main/groovy)
+- or force Gradle to use the old layout by including something like `sourceSets.main.output.classesDir = new File(buildDir, "classes/main")` in your build.gradle as a workaround.
+
 ## Debugging
 
 It is possible to attach a remote debugger to the Jenkins instance started by `gradle server`. The `GRADLE_OPTS`
