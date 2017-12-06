@@ -21,6 +21,7 @@ import net.java.sezpoz.Index
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.Dependency
+import org.gradle.api.file.FileCollection
 import org.gradle.api.plugins.JavaPluginConvention
 
 import java.text.SimpleDateFormat
@@ -41,12 +42,17 @@ class JpiManifest extends Manifest {
     JpiManifest(Project project) {
         def conv = project.extensions.getByType(JpiExtension)
         def javaPluginConvention = project.convention.getPlugin(JavaPluginConvention)
-        def classDir = javaPluginConvention.sourceSets.getByName(MAIN_SOURCE_SET_NAME).output.classesDir
+        def classDirs = javaPluginConvention.sourceSets.getByName(MAIN_SOURCE_SET_NAME).output.classesDirs
 
         mainAttributes[MANIFEST_VERSION] = '1.0'
 
-        File pluginImpl = new File(classDir, 'META-INF/services/hudson.Plugin')
-        if (pluginImpl.exists()) {
+        def pluginImpl = classDirs.collect {
+            new File(it, 'META-INF/services/hudson.Plugin')
+        }.find {
+            it.exists()
+        }
+
+        if (pluginImpl?.exists()) {
             mainAttributes.putValue('Plugin-Class', pluginImpl.readLines('UTF-8')[0])
         }
 
@@ -90,7 +96,7 @@ class JpiManifest extends Manifest {
             )
         }
 
-        YesNoMaybe supportDynamicLoading = isSupportDynamicLoading(classDir)
+        YesNoMaybe supportDynamicLoading = isSupportDynamicLoading(classDirs)
         if (supportDynamicLoading != YesNoMaybe.MAYBE) {
             mainAttributes.putValue('Support-Dynamic-Loading', (supportDynamicLoading == YesNoMaybe.YES).toString())
         }
@@ -122,9 +128,9 @@ class JpiManifest extends Manifest {
         }
     }
 
-    private static YesNoMaybe isSupportDynamicLoading(File classDir) throws IOException {
+    private static YesNoMaybe isSupportDynamicLoading(FileCollection classDirs) throws IOException {
         ClassLoader classLoader = new URLClassLoader(
-                [classDir.toURI().toURL()] as URL[],
+                classDirs*.toURI()*.toURL() as URL[],
                 JpiManifest.classLoader as ClassLoader
         )
         def enums = Index.load(Extension, Object, classLoader).collect { it.annotation().dynamicLoadable() }

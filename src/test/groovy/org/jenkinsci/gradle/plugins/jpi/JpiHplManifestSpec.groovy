@@ -16,7 +16,7 @@ class JpiHplManifestSpec extends Specification {
         }
         def libraries = [
                 new File(project.projectDir, 'src/main/resources'),
-                new File(project.buildDir, 'classes/main'),
+                new File(project.buildDir, 'classes/java/main'),
                 new File(project.buildDir, 'resources/main'),
         ]
         libraries*.mkdirs()
