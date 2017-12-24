@@ -56,7 +56,11 @@ class JpiManifest extends Manifest {
         }
 
         if (pluginImpls.size() > 1) {
-            throw new GradleException(String.format("Found multiple directories containing Jenkins plugin implementations ('%s'). Use joint compilation to work around this problem.", pluginImpls*.path.join("', '")))
+            throw new GradleException(
+                    'Found multiple directories containing Jenkins plugin implementations ' +
+                            "('${pluginImpls*.path.join("', '")}'). " +
+                            'Use joint compilation to work around this problem.'
+            )
         }
 
         def pluginImpl = pluginImpls.find()

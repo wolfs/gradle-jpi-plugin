@@ -349,7 +349,7 @@ class JpiPlugin implements Plugin<Project> {
         // generate test hpl manifest for the current plugin, to be used during unit test
         GenerateTestHpl generateTestHpl = project.tasks.create('generate-test-hpl', GenerateTestHpl)
         generateTestHpl.hplDir.set(project.layout.buildDirectory.dir('generated-resources/test'))
-        testSourceSet.getOutput().dir(generateTestHpl.hplDir)
+        testSourceSet.output.dir(generateTestHpl.hplDir)
     }
 
     private static void resolvePluginDependencies(Project project) {
