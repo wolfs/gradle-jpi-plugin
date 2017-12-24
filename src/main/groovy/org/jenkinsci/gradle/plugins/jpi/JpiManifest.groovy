@@ -18,6 +18,7 @@ package org.jenkinsci.gradle.plugins.jpi
 import hudson.Extension
 import jenkins.YesNoMaybe
 import net.java.sezpoz.Index
+import org.gradle.api.GradleException
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.Dependency
@@ -46,11 +47,19 @@ class JpiManifest extends Manifest {
 
         mainAttributes[MANIFEST_VERSION] = '1.0'
 
-        def pluginImpl = classDirs.collect {
+        checkForDuplicateSezpozDetections(classDirs)
+
+        def pluginImpls = classDirs.collect {
             new File(it, 'META-INF/services/hudson.Plugin')
-        }.find {
+        }.findAll {
             it.exists()
         }
+
+        if (pluginImpls.size() > 1) {
+            throw new GradleException(String.format("Found multiple directories containing Jenkins plugin implementations ('%s'). Use joint compilation to work around this problem.", pluginImpls*.path.join("', '")))
+        }
+
+        def pluginImpl = pluginImpls.find()
 
         if (pluginImpl?.exists()) {
             mainAttributes.putValue('Plugin-Class', pluginImpl.readLines('UTF-8')[0])
@@ -103,6 +112,25 @@ class JpiManifest extends Manifest {
 
         // remove empty values
         mainAttributes.entrySet().removeAll { it.value == null || it.value.toString().empty }
+    }
+
+    static void checkForDuplicateSezpozDetections(FileCollection classesDirs) {
+        Set<String> existingSezpozFiles
+        classesDirs.each { classDir ->
+            def files = new File(classDir, 'META-INF/annotations').list()
+            if (files == null) {
+                return
+            }
+            files.each {
+                if (!new File(classDir, it).isFile()) {
+                    return
+                }
+                if (existingSezpozFiles.contains(it)) {
+                    throw new GradleException("Overlapping Sezpoz file: ${it}. Use joint compilation!")
+                }
+                existingSezpozFiles.add(it)
+            }
+        }
     }
 
     private static String findDependencyProjects(Project project) {
