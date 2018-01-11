@@ -190,7 +190,8 @@ class JpiPlugin implements Plugin<Project> {
 
     private static configureTestDependencies(Project project) {
         JavaPluginConvention javaConvention = project.convention.getPlugin(JavaPluginConvention)
-        Configuration plugins = project.configurations.create('pluginResources').setVisible(false)
+        Configuration plugins = project.configurations.create('pluginResources')
+        plugins.visible = false
 
         project.afterEvaluate {
             [
@@ -261,29 +262,32 @@ class JpiPlugin implements Plugin<Project> {
     }
 
     private static configureConfigurations(Project project) {
-        ConfigurationContainer cc = project.configurations
-        Configuration jenkinsCoreConfiguration = cc.create(CORE_DEPENDENCY_CONFIGURATION_NAME).
-                setVisible(false).
-                setDescription('Jenkins core that your plugin is built against')
-        Configuration jenkinsPluginsConfiguration = cc.create(PLUGINS_DEPENDENCY_CONFIGURATION_NAME).
-                setVisible(false).
-                setDescription('Jenkins plugins which your plugin is built against')
-        Configuration optionalJenkinsPluginsConfiguration = cc.create(OPTIONAL_PLUGINS_DEPENDENCY_CONFIGURATION_NAME).
-                setVisible(false).
-                setDescription('Optional Jenkins plugins dependencies which your plugin is built against')
-        Configuration jenkinsTestConfiguration = cc.create(JENKINS_TEST_DEPENDENCY_CONFIGURATION_NAME).
-                setVisible(false).
-                setDescription('Jenkins plugin test dependencies.')
+        Configuration core = project.configurations.create(CORE_DEPENDENCY_CONFIGURATION_NAME)
+        core.visible = false
+        core.description = 'Jenkins core that your plugin is built against'
+
+        Configuration plugins = project.configurations.create(PLUGINS_DEPENDENCY_CONFIGURATION_NAME)
+        plugins.visible = false
+        plugins.description = 'Jenkins plugins which your plugin is built against'
+
+        Configuration optionalPlugins = project.configurations.create(OPTIONAL_PLUGINS_DEPENDENCY_CONFIGURATION_NAME)
+        optionalPlugins.visible = false
+        optionalPlugins.description = 'Optional Jenkins plugins dependencies which your plugin is built against'
+
+        Configuration test = project.configurations.create(JENKINS_TEST_DEPENDENCY_CONFIGURATION_NAME)
                 .exclude(group: 'org.jenkins-ci.modules', module: 'ssh-cli-auth')
                 .exclude(group: 'org.jenkins-ci.modules', module: 'sshd')
-        cc.getByName(PROVIDED_COMPILE_CONFIGURATION_NAME).extendsFrom(jenkinsCoreConfiguration)
-        cc.getByName(PROVIDED_COMPILE_CONFIGURATION_NAME).extendsFrom(jenkinsPluginsConfiguration)
-        cc.getByName(PROVIDED_COMPILE_CONFIGURATION_NAME).extendsFrom(optionalJenkinsPluginsConfiguration)
-        cc.getByName(TEST_COMPILE_CONFIGURATION_NAME).extendsFrom(jenkinsTestConfiguration)
+        test.visible = false
+        test.description = 'Jenkins plugin test dependencies.'
+        
+        project.configurations.getByName(PROVIDED_COMPILE_CONFIGURATION_NAME).extendsFrom(core)
+        project.configurations.getByName(PROVIDED_COMPILE_CONFIGURATION_NAME).extendsFrom(plugins)
+        project.configurations.getByName(PROVIDED_COMPILE_CONFIGURATION_NAME).extendsFrom(optionalPlugins)
+        project.configurations.getByName(TEST_COMPILE_CONFIGURATION_NAME).extendsFrom(test)
 
-        cc.create(WAR_DEPENDENCY_CONFIGURATION_NAME).
-                setVisible(false).
-                setDescription('Jenkins war that corresponds to the Jenkins core')
+        Configuration warDependencies = project.configurations.create(WAR_DEPENDENCY_CONFIGURATION_NAME)
+        warDependencies.visible = false
+        warDependencies.description = 'Jenkins war that corresponds to the Jenkins core'
 
         resolvePluginDependencies(project)
     }
