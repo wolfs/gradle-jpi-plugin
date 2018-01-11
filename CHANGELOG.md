@@ -1,5 +1,8 @@
 ## 0.25.0 (unreleased)
 
+  * allow to override `repoUrl` and `snapshotRepoUrl` settings from the command line
+    ([JENKINS-45588](https://issues.jenkins-ci.org/browse/JENKINS-45588))
+
 ## 0.24.0 (2017-11-02)
 
   * fixed support for core versions >= 2.64
