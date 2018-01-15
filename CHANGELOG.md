@@ -1,3 +1,5 @@
+## 0.26.0 (unreleased)
+
 ## 0.25.0 (2018-01-15)
 
   * allow to override `repoUrl` and `snapshotRepoUrl` settings from the command line
