@@ -156,6 +156,9 @@ class JpiExtensionSpec extends Specification {
 
         then:
         jpiExtension.repoUrl == 'https://acme.org/'
+
+        cleanup:
+        System.properties.remove('jpi.repoUrl')
     }
 
     def 'snapshot repo URL defaults to repo.jenkins-ci.org if not set'(String value) {
@@ -186,6 +189,9 @@ class JpiExtensionSpec extends Specification {
 
         then:
         jpiExtension.snapshotRepoUrl == 'https://acme.org/'
+
+        cleanup:
+        System.properties.remove('jpi.snapshotRepoUrl')
     }
 
     def 'core versions earlier than 1.420 are not supported'(String version) {
