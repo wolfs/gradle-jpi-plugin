@@ -147,6 +147,20 @@ class JpiExtensionSpec extends Specification {
         jpiExtension.repoUrl == 'https://maven.example.org/'
     }
 
+    def 'repo URL is overridden by project property'() {
+        setup:
+        System.properties['jpi.repoUrl'] = 'https://acme.org/'
+
+        when:
+        jpiExtension.repoUrl = 'any'
+
+        then:
+        jpiExtension.repoUrl == 'https://acme.org/'
+
+        cleanup:
+        System.properties.remove('jpi.repoUrl')
+    }
+
     def 'snapshot repo URL defaults to repo.jenkins-ci.org if not set'(String value) {
         when:
         jpiExtension.snapshotRepoUrl = value
@@ -164,6 +178,20 @@ class JpiExtensionSpec extends Specification {
 
         then:
         jpiExtension.snapshotRepoUrl == 'https://maven.example.org/'
+    }
+
+    def 'snapshot repo URL is overridden by System property'() {
+        setup:
+        System.properties['jpi.snapshotRepoUrl'] = 'https://acme.org/'
+
+        when:
+        jpiExtension.snapshotRepoUrl = 'any'
+
+        then:
+        jpiExtension.snapshotRepoUrl == 'https://acme.org/'
+
+        cleanup:
+        System.properties.remove('jpi.snapshotRepoUrl')
     }
 
     def 'core versions earlier than 1.420 are not supported'(String version) {

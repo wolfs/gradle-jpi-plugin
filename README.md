@@ -45,9 +45,11 @@ jenkinsPlugin {
     workDir = file('/tmp/jenkins')
     
     // URL used to deploy the plugin, defaults to the value shown
+    // the system property 'jpi.repoUrl' can be used to override this option
     repoUrl = 'https://repo.jenkins-ci.org/releases'
 
     // URL used to deploy snapshots of the plugin, defaults to the value shown
+    // the system property 'jpi.snapshotRepoUrl' can be used to override this option
     snapshotRepoUrl = 'https://repo.jenkins-ci.org/snapshots'
 
     // enable injection of additional tests for checking the syntax of Jelly and other things
