@@ -279,7 +279,7 @@ class JpiPlugin implements Plugin<Project> {
                 .exclude(group: 'org.jenkins-ci.modules', module: 'sshd')
         test.visible = false
         test.description = 'Jenkins plugin test dependencies.'
-        
+
         project.configurations.getByName(PROVIDED_COMPILE_CONFIGURATION_NAME).extendsFrom(core)
         project.configurations.getByName(PROVIDED_COMPILE_CONFIGURATION_NAME).extendsFrom(plugins)
         project.configurations.getByName(PROVIDED_COMPILE_CONFIGURATION_NAME).extendsFrom(optionalPlugins)

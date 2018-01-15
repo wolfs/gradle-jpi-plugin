@@ -7,7 +7,15 @@ ruleset {
 
     ruleset('rulesets/convention.xml') {
         // we don't care for now
+        exclude 'FieldTypeRequired'
+        // we don't care for now
+        exclude 'MethodParameterTypeRequired\t'
+        // we don't care for now
+        exclude 'MethodReturnTypeRequired'
+        // we don't care for now
         exclude 'NoDef'
+        // we don't care for now
+        exclude 'VariableTypeRequired'
     }
 
     ruleset('rulesets/design.xml')
