@@ -130,11 +130,14 @@ If you combine java and groovy code and both provide extensions you need to eith
 
 ## Debugging
 
-It is possible to attach a remote debugger to the Jenkins instance started by `gradle server`. The `GRADLE_OPTS`
-environment variable must be used to configure the JVM debug options.
+It is possible to attach a remote debugger to the Jenkins instance started by `gradle server`.
 
-    $ export GRADLE_OPTS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005
-    $ ./gradlew server
+    $ ./gradlew server -Dorg.gradle.debug=true
+
+This command will run the gradle JVM with the appropriate options on the default debug port.
+If more control is required, the JVM options can be set in more detail:
+
+    $ ./gradlew server -Dorg.gradle.jvmargs=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005
 
 The `server` task enables several debug options: `stapler.trace`, `stapler.jelly.noCache` and `debug.YUI`. This
 increases the page load time. All option can be changed and new options can be added by passing them as system
