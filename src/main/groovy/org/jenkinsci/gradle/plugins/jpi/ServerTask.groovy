@@ -78,6 +78,9 @@ class ServerTask extends DefaultTask {
         project.configurations.getByName(JpiPlugin.PLUGINS_DEPENDENCY_CONFIGURATION_NAME).dependencies.each {
             project.dependencies.add(plugins.name, "${it.group}:${it.name}:${it.version}")
         }
+        project.configurations.getByName(JpiPlugin.JENKINS_SERVER_DEPENDENCY_CONFIGURATION_NAME).dependencies.each {
+            project.dependencies.add(plugins.name, "${it.group}:${it.name}:${it.version}")
+        }
 
         // copy the resolved HPI/JPI files to the plugins directory
         def workDir = project.extensions.getByType(JpiExtension).workDir
