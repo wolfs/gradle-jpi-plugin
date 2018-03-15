@@ -1,5 +1,8 @@
 ## 0.26.0 (unreleased)
 
+  * bundle license and dependency information
+    ([JENKINS-27729](https://issues.jenkins-ci.org/browse/JENKINS-27729))
+
 ## 0.25.0 (2018-01-15)
 
   * allow to override `repoUrl` and `snapshotRepoUrl` settings from the command line

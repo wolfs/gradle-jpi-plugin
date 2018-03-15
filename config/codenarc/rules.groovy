@@ -18,7 +18,10 @@ ruleset {
         exclude 'VariableTypeRequired'
     }
 
-    ruleset('rulesets/design.xml')
+    ruleset('rulesets/design.xml') {
+        // does not necessarily lead to better code
+        exclude 'Instanceof'
+    }
 
     ruleset('rulesets/dry.xml') {
         // does not necessarily lead to better code
