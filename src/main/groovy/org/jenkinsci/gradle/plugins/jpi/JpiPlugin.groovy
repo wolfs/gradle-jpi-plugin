@@ -86,6 +86,7 @@ class JpiPlugin implements Plugin<Project> {
     public static final String JPI_TASK_NAME = 'jpi'
     public static final String SOURCES_JAR_TASK_NAME = 'sourcesJar'
     public static final String JAVADOC_JAR_TASK_NAME = 'javadocJar'
+    public static final String LICENSE_TASK_NAME = 'generateLicenseInfo'
 
     void apply(final Project gradleProject) {
         gradleProject.plugins.apply(JavaPlugin)
@@ -231,7 +232,7 @@ class JpiPlugin implements Plugin<Project> {
     private static configureLicenseInfo(Project project) {
         JavaPluginConvention javaConvention = project.convention.getPlugin(JavaPluginConvention)
 
-        LicenseTask task = project.tasks.create(LicenseTask.TASK_NAME, LicenseTask)
+        LicenseTask task = project.tasks.create(LICENSE_TASK_NAME, LicenseTask)
         task.description = 'Generates license information.'
         task.group = BasePlugin.BUILD_GROUP
         task.outputDirectory = new File(project.buildDir, 'licenses')

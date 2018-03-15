@@ -6,23 +6,26 @@ import org.gradle.api.DefaultTask
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.ModuleVersionIdentifier
 import org.gradle.api.artifacts.ResolvedArtifact
+import org.gradle.api.file.FileCollection
+import org.gradle.api.tasks.InputFiles
+import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
 import org.gradle.internal.component.local.model.DefaultProjectComponentIdentifier
 
 class LicenseTask extends DefaultTask {
-    static final String TASK_NAME = 'generateLicenseInfo'
+    @Internal
+    Set<Configuration> configurations
 
-    private Set<Configuration> configurations
-
+    @Internal
     Set<Configuration> providedConfigurations
 
     @OutputDirectory
     File outputDirectory
 
-    void setConfigurations(Set<Configuration> configurations) {
-        this.configurations = configurations
-        this.inputs.files(configurations*.incoming.files)
+    @InputFiles
+    FileCollection getInputFiles() {
+        project.files(configurations*.incoming.files, providedConfigurations*.incoming.files)
     }
 
     @TaskAction
@@ -71,7 +74,7 @@ class LicenseTask extends DefaultTask {
     }
 
     private Set<ResolvedArtifact> collectPomArtifacts() {
-        Configuration pomConfiguration = project.configurations.create('poms')
+        Configuration pomConfiguration = project.configurations.create("poms-${System.nanoTime()}")
 
         collectDependencies().each { ResolvedArtifact artifact ->
             ModuleVersionIdentifier id = artifact.moduleVersion.id
