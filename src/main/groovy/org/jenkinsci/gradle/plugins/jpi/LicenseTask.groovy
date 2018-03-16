@@ -4,6 +4,7 @@ import groovy.xml.MarkupBuilder
 import groovy.xml.QName
 import org.gradle.api.DefaultTask
 import org.gradle.api.artifacts.Configuration
+import org.gradle.api.artifacts.Dependency
 import org.gradle.api.artifacts.ModuleVersionIdentifier
 import org.gradle.api.artifacts.ResolvedArtifact
 import org.gradle.api.file.FileCollection
@@ -74,19 +75,22 @@ class LicenseTask extends DefaultTask {
     }
 
     private Set<ResolvedArtifact> collectPomArtifacts() {
-        Configuration pomConfiguration = project.configurations.create("poms-${System.nanoTime()}")
-
-        collectDependencies().each { ResolvedArtifact artifact ->
-            ModuleVersionIdentifier id = artifact.moduleVersion.id
-            if (!(artifact.id.componentIdentifier instanceof DefaultProjectComponentIdentifier)) {
-                project.dependencies.add(pomConfiguration.name, "${id.group}:${id.name}:${id.version}@pom")
-            }
-        }
-
-        pomConfiguration.resolvedConfiguration.resolvedArtifacts
+        project.configurations
+                .detachedConfiguration(collectDependencies())
+                .resolvedConfiguration
+                .resolvedArtifacts
     }
 
-    private Set<ResolvedArtifact> collectDependencies() {
+    private Dependency[] collectDependencies() {
+        collectArtifacts().findAll { ResolvedArtifact artifact ->
+            !(artifact.id.componentIdentifier instanceof DefaultProjectComponentIdentifier)
+        }.collect { ResolvedArtifact artifact ->
+            ModuleVersionIdentifier id = artifact.moduleVersion.id
+            project.dependencies.create("${id.group}:${id.name}:${id.version}@pom")
+        }
+    }
+
+    private Set<ResolvedArtifact> collectArtifacts() {
         Set<ResolvedArtifact> artifacts = []
 
         configurations.each { artifacts += it.resolvedConfiguration.resolvedArtifacts }
