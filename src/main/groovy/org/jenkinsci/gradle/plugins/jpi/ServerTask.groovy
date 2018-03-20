@@ -15,13 +15,16 @@
  */
 package org.jenkinsci.gradle.plugins.jpi
 
+import org.gradle.api.artifacts.ResolvedArtifact
 import org.gradle.util.GFileUtils
 
 import java.util.jar.JarFile
 import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
-import org.gradle.api.artifacts.Configuration
 import org.gradle.api.tasks.TaskAction
+
+import static org.jenkinsci.gradle.plugins.jpi.JpiPlugin.JENKINS_SERVER_DEPENDENCY_CONFIGURATION_NAME
+import static org.jenkinsci.gradle.plugins.jpi.JpiPlugin.PLUGINS_DEPENDENCY_CONFIGURATION_NAME
 
 /**
  * Task that starts Jenkins in place with the current plugin.
@@ -73,15 +76,14 @@ class ServerTask extends DefaultTask {
     }
 
     private copyPluginDependencies() {
-        // create new configuration with plugin dependencies, ignoring the (jar) extension to get the HPI/JPI files
-        Configuration plugins = project.configurations.create('plugins')
-        project.configurations.getByName(JpiPlugin.PLUGINS_DEPENDENCY_CONFIGURATION_NAME).dependencies.each {
-            project.dependencies.add(plugins.name, "${it.group}:${it.name}:${it.version}")
+        Set<ResolvedArtifact> artifacts = []
+        [PLUGINS_DEPENDENCY_CONFIGURATION_NAME, JENKINS_SERVER_DEPENDENCY_CONFIGURATION_NAME].each { String name ->
+            artifacts += project.configurations[name].resolvedConfiguration.resolvedArtifacts
         }
 
         // copy the resolved HPI/JPI files to the plugins directory
         def workDir = project.extensions.getByType(JpiExtension).workDir
-        plugins.resolvedConfiguration.resolvedArtifacts.findAll { it.extension in ['hpi', 'jpi'] }.each {
+        artifacts.findAll { it.extension in ['hpi', 'jpi'] }.each {
             GFileUtils.copyFile(it.file, new File(workDir, "plugins/${it.name}.${it.extension}"))
         }
     }

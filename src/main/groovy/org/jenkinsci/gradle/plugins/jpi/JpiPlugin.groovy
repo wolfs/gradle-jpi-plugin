@@ -83,6 +83,11 @@ class JpiPlugin implements Plugin<Project> {
      */
     public static final String JENKINS_TEST_DEPENDENCY_CONFIGURATION_NAME = 'jenkinsTest'
 
+    /**
+     * Represents the extra dependencies on other Jenkins plugins for the server task.
+     */
+    public static final String JENKINS_SERVER_DEPENDENCY_CONFIGURATION_NAME = 'jenkinsServer'
+
     public static final String JPI_TASK_NAME = 'jpi'
     public static final String SOURCES_JAR_TASK_NAME = 'sourcesJar'
     public static final String JAVADOC_JAR_TASK_NAME = 'javadocJar'
@@ -200,6 +205,7 @@ class JpiPlugin implements Plugin<Project> {
             [
                     PLUGINS_DEPENDENCY_CONFIGURATION_NAME,
                     OPTIONAL_PLUGINS_DEPENDENCY_CONFIGURATION_NAME,
+                    JENKINS_SERVER_DEPENDENCY_CONFIGURATION_NAME,
                     JENKINS_TEST_DEPENDENCY_CONFIGURATION_NAME,
             ].each {
                 project.configurations.getByName(it).dependencies.each {
@@ -297,6 +303,10 @@ class JpiPlugin implements Plugin<Project> {
         Configuration optionalPlugins = project.configurations.create(OPTIONAL_PLUGINS_DEPENDENCY_CONFIGURATION_NAME)
         optionalPlugins.visible = false
         optionalPlugins.description = 'Optional Jenkins plugins dependencies which your plugin is built against'
+
+        Configuration serverPlugins = project.configurations.create(JENKINS_SERVER_DEPENDENCY_CONFIGURATION_NAME)
+        serverPlugins.visible = false
+        serverPlugins.description = 'Jenkins plugins which will be installed by the server task'
 
         Configuration test = project.configurations.create(JENKINS_TEST_DEPENDENCY_CONFIGURATION_NAME)
                 .exclude(group: 'org.jenkins-ci.modules', module: 'ssh-cli-auth')
