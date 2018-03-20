@@ -18,9 +18,11 @@ package org.jenkinsci.gradle.plugins.jpi
 import hudson.Extension
 import jenkins.YesNoMaybe
 import net.java.sezpoz.Index
+import org.gradle.api.GradleException
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.Dependency
+import org.gradle.api.file.FileCollection
 import org.gradle.api.plugins.JavaPluginConvention
 
 import java.text.SimpleDateFormat
@@ -41,12 +43,29 @@ class JpiManifest extends Manifest {
     JpiManifest(Project project) {
         def conv = project.extensions.getByType(JpiExtension)
         def javaPluginConvention = project.convention.getPlugin(JavaPluginConvention)
-        def classDir = javaPluginConvention.sourceSets.getByName(MAIN_SOURCE_SET_NAME).output.classesDir
+        def classDirs = javaPluginConvention.sourceSets.getByName(MAIN_SOURCE_SET_NAME).output.classesDirs
 
         mainAttributes[MANIFEST_VERSION] = '1.0'
 
-        File pluginImpl = new File(classDir, 'META-INF/services/hudson.Plugin')
-        if (pluginImpl.exists()) {
+        checkForDuplicateSezpozDetections(classDirs)
+
+        def pluginImpls = classDirs.collect {
+            new File(it, 'META-INF/services/hudson.Plugin')
+        }.findAll {
+            it.exists()
+        }
+
+        if (pluginImpls.size() > 1) {
+            throw new GradleException(
+                    'Found multiple directories containing Jenkins plugin implementations ' +
+                            "('${pluginImpls*.path.join("', '")}'). " +
+                            'Use joint compilation to work around this problem.'
+            )
+        }
+
+        def pluginImpl = pluginImpls.find()
+
+        if (pluginImpl?.exists()) {
             mainAttributes.putValue('Plugin-Class', pluginImpl.readLines('UTF-8')[0])
         }
 
@@ -90,13 +109,32 @@ class JpiManifest extends Manifest {
             )
         }
 
-        YesNoMaybe supportDynamicLoading = isSupportDynamicLoading(classDir)
+        YesNoMaybe supportDynamicLoading = isSupportDynamicLoading(classDirs)
         if (supportDynamicLoading != YesNoMaybe.MAYBE) {
             mainAttributes.putValue('Support-Dynamic-Loading', (supportDynamicLoading == YesNoMaybe.YES).toString())
         }
 
         // remove empty values
         mainAttributes.entrySet().removeAll { it.value == null || it.value.toString().empty }
+    }
+
+    static void checkForDuplicateSezpozDetections(FileCollection classesDirs) {
+        Set<String> existingSezpozFiles
+        classesDirs.each { classDir ->
+            def files = new File(classDir, 'META-INF/annotations').list()
+            if (files == null) {
+                return
+            }
+            files.each {
+                if (!new File(classDir, it).isFile()) {
+                    return
+                }
+                if (existingSezpozFiles.contains(it)) {
+                    throw new GradleException("Overlapping Sezpoz file: ${it}. Use joint compilation!")
+                }
+                existingSezpozFiles.add(it)
+            }
+        }
     }
 
     private static String findDependencyProjects(Project project) {
@@ -122,9 +160,9 @@ class JpiManifest extends Manifest {
         }
     }
 
-    private static YesNoMaybe isSupportDynamicLoading(File classDir) throws IOException {
+    private static YesNoMaybe isSupportDynamicLoading(FileCollection classDirs) throws IOException {
         ClassLoader classLoader = new URLClassLoader(
-                [classDir.toURI().toURL()] as URL[],
+                classDirs*.toURI()*.toURL() as URL[],
                 JpiManifest.classLoader as ClassLoader
         )
         def enums = Index.load(Extension, Object, classLoader).collect { it.annotation().dynamicLoadable() }
