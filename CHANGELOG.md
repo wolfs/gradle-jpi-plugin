@@ -1,6 +1,6 @@
 ## 0.26.0 (unreleased)
 
-  * updated to Gradle 4.4
+  * updated to Gradle 4.6
   * bundle license and dependency information
     ([JENKINS-27729](https://issues.jenkins-ci.org/browse/JENKINS-27729))
   * added `jenkinsServer` configuration that can be used to install extra plugins for the `server` task
