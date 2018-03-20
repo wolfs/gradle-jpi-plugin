@@ -1,0 +1,24 @@
+plugins {
+    id 'org.jenkins-ci.jpi'
+}
+
+group = 'org.foo'
+description = 'lorem ipsum'
+version = '1.2.3'
+
+jenkinsPlugin {
+    coreVersion = '2.72'
+    displayName = 'A Test'
+    url = 'https:/acme.org'
+    licenses {
+        license {
+            name 'Apache License, Version 2.0'
+            url 'https://www.apache.org/licenses/LICENSE-2.0.txt'
+        }
+    }
+}
+
+dependencies {
+    compile 'commons-codec:commons-codec:1.8'
+    compile 'xmlunit:xmlunit:1.4'
+}

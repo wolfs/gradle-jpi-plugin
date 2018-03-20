@@ -41,9 +41,10 @@ import org.gradle.execution.TaskGraphExecuter
 
 import static org.gradle.api.artifacts.Configuration.State.UNRESOLVED
 import static org.gradle.api.logging.LogLevel.INFO
-import static org.gradle.api.tasks.SourceSet.MAIN_SOURCE_SET_NAME
 import static org.gradle.api.plugins.JavaPlugin.TEST_COMPILE_CONFIGURATION_NAME
 import static org.gradle.api.plugins.WarPlugin.PROVIDED_COMPILE_CONFIGURATION_NAME
+import static org.gradle.api.plugins.WarPlugin.PROVIDED_RUNTIME_CONFIGURATION_NAME
+import static org.gradle.api.tasks.SourceSet.MAIN_SOURCE_SET_NAME
 import static org.gradle.api.tasks.SourceSet.TEST_SOURCE_SET_NAME
 import static org.jenkinsci.gradle.plugins.jpi.JpiManifest.attributesToMap
 
@@ -85,6 +86,7 @@ class JpiPlugin implements Plugin<Project> {
     public static final String JPI_TASK_NAME = 'jpi'
     public static final String SOURCES_JAR_TASK_NAME = 'sourcesJar'
     public static final String JAVADOC_JAR_TASK_NAME = 'javadocJar'
+    public static final String LICENSE_TASK_NAME = 'generateLicenseInfo'
 
     void apply(final Project gradleProject) {
         gradleProject.plugins.apply(JavaPlugin)
@@ -104,6 +106,7 @@ class JpiPlugin implements Plugin<Project> {
         test.systemProperty('buildDirectory', gradleProject.buildDir.absolutePath)
 
         configureLocalizer(gradleProject)
+        configureLicenseInfo(gradleProject)
         configureInjectedTest(gradleProject)
 
         gradleProject.task(SOURCES_JAR_TASK_NAME, type: Jar, dependsOn: 'classes') {
@@ -224,6 +227,27 @@ class JpiPlugin implements Plugin<Project> {
         }
         javaConvention.sourceSets.main.java.srcDir { localizer.destinationDir }
         project.tasks[javaConvention.sourceSets.main.compileJavaTaskName].dependsOn(localizer)
+    }
+
+    private static configureLicenseInfo(Project project) {
+        JavaPluginConvention javaConvention = project.convention.getPlugin(JavaPluginConvention)
+
+        LicenseTask task = project.tasks.create(LICENSE_TASK_NAME, LicenseTask)
+        task.description = 'Generates license information.'
+        task.group = BasePlugin.BUILD_GROUP
+        task.outputDirectory = new File(project.buildDir, 'licenses')
+        task.configurations = [
+                project.configurations[javaConvention.sourceSets.main.compileConfigurationName],
+                project.configurations[javaConvention.sourceSets.main.runtimeConfigurationName],
+        ]
+        task.providedConfigurations = [
+                project.configurations[PROVIDED_COMPILE_CONFIGURATION_NAME],
+                project.configurations[PROVIDED_RUNTIME_CONFIGURATION_NAME],
+        ]
+
+        War war = project.tasks[WarPlugin.WAR_TASK_NAME] as War
+        war.webInf.from(task.outputDirectory)
+        war.dependsOn(task)
     }
 
     private static configureInjectedTest(Project project) {
