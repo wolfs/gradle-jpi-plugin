@@ -71,7 +71,6 @@ class JpiPluginSpec extends Specification {
         publishingExtension.repositories.get(0).name == 'jenkins'
         publishingExtension.repositories.get(0) instanceof MavenArtifactRepository
         (publishingExtension.repositories.get(0) as MavenArtifactRepository).url == URI.create(repositoryUrl)
-        project.components.size() == 2
 
         where:
         projectVersion   | repositoryUrl                           | extension
@@ -127,7 +126,6 @@ class JpiPluginSpec extends Specification {
         project.extensions.getByType(PublishingExtension)
 
         then:
-        project.components.size() == 2
         UnknownDomainObjectException ex = thrown()
         ex.message.contains("Extension of type 'PublishingExtension' does not exist.")
     }
