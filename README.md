@@ -153,4 +153,5 @@ Here are some real world examples of Jenkins plugins using the Gradle JPI plugin
 
 * [Job DSL Plugin](https://github.com/jenkinsci/job-dsl-plugin)
 * [Selenium Axis Plugin](https://github.com/jenkinsci/selenium-axis-plugin)
+* [Doktor Plugin](https://github.com/jenkinsci/doktor-plugin)
 * [more plugins built with Gradle](https://jenkins.ci.cloudbees.com/job/jenkins%20plugin%20%28gradle%29/)
