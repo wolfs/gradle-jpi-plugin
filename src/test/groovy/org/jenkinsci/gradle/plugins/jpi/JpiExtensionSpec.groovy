@@ -315,7 +315,7 @@ class JpiExtensionSpec extends Specification {
 
         then:
         def dependencies = collectDependencies(project, 'jenkinsTest')
-        'org.jenkins-ci.main:jenkins-test-harness:2.0' in dependencies
+        'org.jenkins-ci.main:jenkins-test-harness:2.31' in dependencies
         'org.jenkins-ci.main:ui-samples-plugin:2.0' in dependencies
         'junit:junit-dep:4.10' in dependencies
         project.configurations.jenkinsWar in project.configurations.jenkinsTest.extendsFrom
