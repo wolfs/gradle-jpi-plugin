@@ -176,8 +176,10 @@ class JpiExtension {
                 }
 
                 jenkinsTest("org.jenkins-ci.main:jenkins-test-harness:${testHarnessVersion}")
-                jenkinsTest("org.jenkins-ci.main:ui-samples-plugin:${uiSamplesVersion}",
-                        'junit:junit-dep:4.10')
+                jenkinsTest("org.jenkins-ci.main:ui-samples-plugin:${uiSamplesVersion}")
+                if (new VersionNumber(this.coreVersion) < new VersionNumber('1.505')) {
+                    jenkinsTest('junit:junit-dep:4.10')
+                }
             }
         }
     }
