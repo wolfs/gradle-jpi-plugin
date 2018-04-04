@@ -5,6 +5,7 @@
     ([JENKINS-27729](https://issues.jenkins-ci.org/browse/JENKINS-27729))
   * added `jenkinsServer` configuration that can be used to install extra plugins for the `server` task
   * the `junit:junit-dep:4.10` dependency is no longer added to `jenkinsTest` configuration for core versions >= 1.505
+    ([JENKINS-48353](https://issues.jenkins-ci.org/browse/JENKINS-48353))
 
 ## 0.25.0 (2018-01-15)
 
