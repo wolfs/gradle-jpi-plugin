@@ -147,6 +147,10 @@ class JpiExtension {
             servletApiVersion = '3.1.0'
         }
 
+        if (new VersionNumber(this.coreVersion) >= new VersionNumber('2.64')) {
+            testHarnessVersion = '2.31'
+        }
+
         // workarounds for JENKINS-26331
         if (new VersionNumber(this.coreVersion) >= new VersionNumber('1.545') &&
                 new VersionNumber(this.coreVersion) < new VersionNumber('1.592')) {

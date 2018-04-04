@@ -6,6 +6,8 @@
   * added `jenkinsServer` configuration that can be used to install extra plugins for the `server` task
   * the `junit:junit-dep:4.10` dependency is no longer added to `jenkinsTest` configuration for core versions >= 1.505
     ([JENKINS-48353](https://issues.jenkins-ci.org/browse/JENKINS-48353))
+  * use Jenkins Test Harness 2.31 for core versions greater than 2.63
+    ([JENKINS-47988](https://issues.jenkins-ci.org/browse/JENKINS-47988))
 
 ## 0.25.0 (2018-01-15)
 
