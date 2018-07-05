@@ -23,7 +23,7 @@ for (int i = 0; i < platforms.size(); ++i) {
                             "JAVA_HOME=${tool jdkTool}",
                             'PATH+JAVA=${JAVA_HOME}/bin',
                     ]
-                    String command = "gradlew --no-daemon cleanTest build"
+                    String command = "gradlew clean build"
 
                     withEnv(env) {
                         if (isUnix()) {
