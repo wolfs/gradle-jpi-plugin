@@ -1,4 +1,9 @@
-## 0.27.0 (unreleased)
+## 0.28.0 (unreleased)
+
+## 0.27.0 (2018-07-05)
+
+  * updated to Gradle 4.8.1
+  * plugin is now compatible with Gradle 4.8
 
 ## 0.26.0 (2018-04-04)
 
