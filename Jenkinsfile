@@ -26,13 +26,15 @@ for (int i = 0; i < platforms.size(); ++i) {
                     String command = "gradlew clean build"
 
                     withEnv(env) {
-                        if (isUnix()) {
-                            timestamps {
-                                sh "./" + command
-                            }
-                        } else {
-                            timestamps {
-                                bat command
+                        retry(3) {
+                            if (isUnix()) {
+                                timestamps {
+                                    sh "./" + command
+                                }
+                            } else {
+                                timestamps {
+                                    bat command
+                                }
                             }
                         }
                     }
