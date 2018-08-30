@@ -22,12 +22,16 @@ repositories {
 sourceCompatibility = '1.7'
 targetCompatibility = '1.7'
 
+def sezpoz = 'net.java.sezpoz:sezpoz:1.12'
+
 dependencies {
+    annotationProcessor sezpoz
     compile gradleApi()
     compile 'org.jvnet.localizer:maven-localizer-plugin:1.13'
     compile 'org.jenkins-ci:version-number:1.0'
-    compile 'net.java.sezpoz:sezpoz:1.12'
+    compile sezpoz
     compile localGroovy()
+    testAnnotationProcessor sezpoz
     testCompile('org.spockframework:spock-core:1.0-groovy-2.4') {
         exclude module: 'groovy-all' // use the version that is distributed with Gradle
     }
