@@ -164,16 +164,5 @@ gradle.taskGraph.whenReady { taskGraph ->
 }
 
 private loadCredentialsForJenkinsCommunityRepository() {
-    def dotFile = new File(System.getProperty('user.home'), '.jenkins-ci.org')
-
-    if (!dotFile.exists()) {
-        throw new Exception(
-                "Trying to deploy to Jenkins community repository but there's no credential file ${dotFile}." +
-                        ' See https://wiki.jenkins-ci.org/display/JENKINS/Dot+Jenkins+Ci+Dot+Org'
-        )
-    }
-
-    def props = new Properties()
-    dotFile.withInputStream { props.load(it) }
-    [userName: props.userName, password: props.password]
+    [userName: project.findProperty('jenkins.username'), password: project.findProperty('jenkins.password')]
 }

@@ -7,13 +7,6 @@ These are the instructions to release the Gradle JPI Plugin.
 Prerequisites
 -------------
 
-Ensure you have your Jenkins credentials in `~/.jenkins-ci.org`:
-
-    userName=kohsuke
-    password=mypassword
-
-See [Dot Jenkins Ci Dot Org](https://wiki.jenkins-ci.org/display/JENKINS/Dot+Jenkins+Ci+Dot+Org) for details.
-
 Ensure you have your signing credentials in `~/.gradle/gradle.properties`:
 
     signing.keyId=24875D73
@@ -34,7 +27,7 @@ Steps
 * Tag the source as it is: `git tag -s -a 0.6.0 -m "Gradle JPI Plugin 0.6.0"`
 * Build the code: `gradlew clean check install`
 * Test the plugin with Jenkins plugin projects using it (e.g. https://github.com/jenkinsci/job-dsl-plugin)
-* Deploy: `gradlew uploadArchives`
+* Deploy: `gradlew -Pjenkins.username=<my-username> -Pjenkins.password=<my-password> uploadArchives`
 * Publish to Gradle plugin portal: `gradlew publishPlugins`
 * Increment the version in `gradle.properties` and append `-SNAPSHOT`
 * Update `CHANGELOG.md`, add the next version
