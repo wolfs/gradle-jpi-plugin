@@ -121,6 +121,19 @@ group = 'org.jenkins-ci.tools'
 archivesBaseName = 'gradle-jpi-plugin'
 description = 'Gradle plugin for building and packaging Jenkins plugins'
 
+gradlePlugin {
+    plugins {
+        jpiPlugin {
+            id = 'org.jenkins-ci.jpi'
+            implementationClass = 'org.jenkinsci.gradle.plugins.jpi.JpiPlugin'
+        }
+        legacyJpiPlugin {
+            id = 'jpi'
+            implementationClass = 'org.jenkinsci.gradle.plugins.jpi.JpiPlugin'
+        }
+    }
+}
+
 pluginBundle {
     website = 'https://wiki.jenkins-ci.org/display/JENKINS/Gradle+JPI+Plugin'
     vcsUrl = 'https://github.com/jenkinsci/gradle-jpi-plugin'
