@@ -1,5 +1,9 @@
 ## 0.29.0 (unreleased)
 
+## 0.28.1 (2018-11-26)
+
+  * fix deprecation warning when running on Gradle 5.0
+
 ## 0.28.0 (2018-11-26)
 
   * updated to Gradle 5.0
