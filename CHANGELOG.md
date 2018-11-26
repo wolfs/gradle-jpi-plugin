@@ -1,4 +1,10 @@
-## 0.28.0 (unreleased)
+## 0.29.0 (unreleased)
+
+## 0.28.0 (2018-11-26)
+
+  * updated to Gradle 5.0
+  * add `org.jenkins-ci.main:jenkins-core` to `annotationProcessor` config if >= Gradle 4.6
+  * drop java 7 testing from CI - Jenkins and Gradle both have Java 8 minimum requirement now
 
 ## 0.27.0 (2018-07-05)
 
