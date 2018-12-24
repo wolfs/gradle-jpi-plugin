@@ -1,7 +1,7 @@
 #!/usr/bin/env groovy
 
 def platforms = ['linux', 'windows']
-def jdkVersions = [8]
+def jdkVersions = [8, 11]
 Map tasks = [:]
 for (int i = 0; i < platforms.size(); ++i) {
     for (int j = 0; j < jdkVersions.size(); ++j) {
