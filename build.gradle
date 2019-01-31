@@ -42,6 +42,7 @@ artifacts {
 }
 
 signing {
+    useGpgCmd()
     required { !version.toString().endsWith('SNAPSHOT') && gradle.taskGraph.hasTask(tasks.uploadArchives) }
     sign configurations.archives
 }
