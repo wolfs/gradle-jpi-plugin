@@ -1,4 +1,8 @@
-## 0.29.0 (unreleased)
+## 0.30.0 (unreleased)
+
+## 0.29.0 (2019-01-30)
+
+  * skip Jenkins setup wizard on server task ([PR #109](https://github.com/jenkinsci/gradle-jpi-plugin/pull/109))
 
 ## 0.28.1 (2018-11-26)
 
