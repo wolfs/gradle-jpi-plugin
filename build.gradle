@@ -127,10 +127,6 @@ gradlePlugin {
             id = 'org.jenkins-ci.jpi'
             implementationClass = 'org.jenkinsci.gradle.plugins.jpi.JpiPlugin'
         }
-        legacyJpiPlugin {
-            id = 'jpi'
-            implementationClass = 'org.jenkinsci.gradle.plugins.jpi.JpiPlugin'
-        }
     }
 }
 
