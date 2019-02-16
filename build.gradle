@@ -3,7 +3,7 @@ plugins {
     id 'maven-publish'
     id 'signing'
     id 'codenarc'
-    id 'com.gradle.plugin-publish' version '0.9.8'
+    id 'com.gradle.plugin-publish' version '0.10.1'
     id 'java-gradle-plugin'
 }
 
@@ -39,8 +39,7 @@ dependencies {
 
 publishing {
     publications {
-        jpiPlugin(MavenPublication) {
-            from components.java
+        pluginMaven(MavenPublication) {
             pom {
                 name = 'Gradle JPI Plugin'
                 description = 'The Gradle JPI plugin is a Gradle plugin for building Jenkins plugins'
@@ -88,7 +87,7 @@ publishing {
 signing {
     useGpgCmd()
     required { project.hasProperty('jenkins.username') && project.hasProperty('jenkins.password') }
-    sign publishing.publications.jpiPlugin
+    sign publishing.publications.pluginMaven
 }
 
 codenarc {
@@ -110,7 +109,7 @@ description = 'Gradle plugin for building and packaging Jenkins plugins'
 
 gradlePlugin {
     plugins {
-        jpiPlugin {
+        pluginMaven {
             id = 'org.jenkins-ci.jpi'
             implementationClass = 'org.jenkinsci.gradle.plugins.jpi.JpiPlugin'
         }
@@ -122,11 +121,4 @@ pluginBundle {
     vcsUrl = 'https://github.com/jenkinsci/gradle-jpi-plugin'
     description = 'A plugin for building Jenkins plugins'
     tags = ['jenkins']
-
-    plugins {
-        jpiPlugin {
-            id = 'org.jenkins-ci.jpi'
-            displayName = 'JPI plugin'
-        }
-    }
 }
