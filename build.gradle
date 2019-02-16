@@ -1,6 +1,6 @@
 plugins {
     id 'groovy'
-    id 'maven'
+    id 'maven-publish'
     id 'signing'
     id 'codenarc'
     id 'com.gradle.plugin-publish' version '0.9.8'
@@ -37,71 +37,58 @@ dependencies {
     testImplementation 'org.xmlunit:xmlunit-core:2.3.0'
 }
 
-artifacts {
-    archives jar
+publishing {
+    publications {
+        jpiPlugin(MavenPublication) {
+            from components.java
+            pom {
+                name = 'Gradle JPI Plugin'
+                description = 'The Gradle JPI plugin is a Gradle plugin for building Jenkins plugins'
+                url = 'http://github.com/jenkinsci/gradle-jpi-plugin'
+                scm {
+                    url = 'https://github.com/jenkinsci/gradle-jpi-plugin'
+                }
+                licenses {
+                    license {
+                        name = 'Apache 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        distribution = 'repo'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'abayer'
+                        name = 'Andrew Bayer'
+                    }
+                    developer {
+                        id = 'kohsuke'
+                        name = 'Kohsuke Kawaguchi'
+                    }
+                    developer {
+                        id = 'daspilker'
+                        name = 'Daniel Spilker'
+                    }
+                }
+            }
+        }
+    }
+    repositories {
+        maven {
+            def path = version.toString().endsWith('SNAPSHOT') ? 'snapshots' : 'releases'
+            name = 'JenkinsCommunity'
+            url = "https://repo.jenkins-ci.org/${path}"
+            credentials {
+                username = project.findProperty('jenkins.username')
+                password = project.findProperty('jenkins.password')
+            }
+        }
+    }
 }
 
 signing {
     useGpgCmd()
-    required { !version.toString().endsWith('SNAPSHOT') && gradle.taskGraph.hasTask(tasks.uploadArchives) }
-    sign configurations.archives
-}
-
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-
-            pom.project {
-                name 'Gradle JPI Plugin'
-                packaging 'jar'
-                description 'The Gradle JPI plugin is a Gradle plugin for building Jenkins plugins'
-                url 'http://github.com/jenkinsci/gradle-jpi-plugin'
-
-                scm {
-                    url 'https://github.com/jenkinsci/gradle-jpi-plugin'
-                }
-
-                licenses {
-                    license {
-                        name 'Apache 2.0'
-                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                        distribution 'repo'
-                    }
-                }
-
-                developers {
-                    developer {
-                        id 'abayer'
-                        name 'Andrew Bayer'
-                    }
-                    developer {
-                        id 'kohsuke'
-                        name 'Kohsuke Kawaguchi'
-                    }
-                    developer {
-                        id 'daspilker'
-                        name 'Daniel Spilker'
-                    }
-                }
-            }
-
-            //mess with the generated pom to set the 'packaging' tag
-            pom.withXml { XmlProvider xmlProvider ->
-                def xml = xmlProvider.asString()
-                def pomXml = new XmlParser().parse(new ByteArrayInputStream(xml.toString().bytes))
-
-                pomXml.version[0] + { packaging('jar') }
-
-                def newXml = new StringWriter()
-                def printer = new XmlNodePrinter(new PrintWriter(newXml))
-                printer.preserveWhitespace = true
-                printer.print(pomXml)
-                xml.setLength(0)
-                xml.append(newXml.toString())
-            }
-        }
-    }
+    required { project.hasProperty('jenkins.username') && project.hasProperty('jenkins.password') }
+    sign publishing.publications.jpiPlugin
 }
 
 codenarc {
@@ -142,26 +129,4 @@ pluginBundle {
             displayName = 'JPI plugin'
         }
     }
-}
-
-gradle.taskGraph.whenReady { taskGraph ->
-    if (taskGraph.hasTask(uploadArchives)) {
-        uploadArchives {
-            repositories {
-                mavenDeployer {
-                    def credentials = loadCredentialsForJenkinsCommunityRepository()
-                    repository(url: 'https://repo.jenkins-ci.org/releases') {
-                        authentication(credentials)
-                    }
-                    snapshotRepository(url: 'https://repo.jenkins-ci.org/snapshots') {
-                        authentication(credentials)
-                    }
-                }
-            }
-        }
-    }
-}
-
-private loadCredentialsForJenkinsCommunityRepository() {
-    [userName: project.findProperty('jenkins.username'), password: project.findProperty('jenkins.password')]
 }
