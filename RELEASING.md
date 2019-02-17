@@ -27,7 +27,7 @@ Steps
 * Tag the source as it is: `git tag -s -a 0.6.0 -m "Gradle JPI Plugin 0.6.0"`
 * Build the code: `gradlew clean check install`
 * Test the plugin with Jenkins plugin projects using it (e.g. https://github.com/jenkinsci/job-dsl-plugin)
-* Deploy: `gradlew -Pjenkins.username=<my-username> -Pjenkins.password=<my-password> uploadArchives`
+* Deploy: `gradlew -Pjenkins.username=<my-username> -Pjenkins.password=<my-password> publishPluginMavenPublicationToJenkinsCommunityRepository`
 * Publish to Gradle plugin portal: `gradlew publishPlugins`
 * Increment the version in `gradle.properties` and append `-SNAPSHOT`
 * Update `CHANGELOG.md`, add the next version
