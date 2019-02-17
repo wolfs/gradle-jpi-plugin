@@ -1,5 +1,7 @@
 ## 0.30.0 (unreleased)
 
+  * updated to Gradle 5.2.1
+
 ## 0.29.0 (2019-01-30)
 
   * skip Jenkins setup wizard on server task ([PR #109](https://github.com/jenkinsci/gradle-jpi-plugin/pull/109))
