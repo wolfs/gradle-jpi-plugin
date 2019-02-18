@@ -112,6 +112,7 @@ gradlePlugin {
         pluginMaven {
             id = 'org.jenkins-ci.jpi'
             implementationClass = 'org.jenkinsci.gradle.plugins.jpi.JpiPlugin'
+            displayName = 'A plugin for building Jenkins plugins'
         }
     }
 }
