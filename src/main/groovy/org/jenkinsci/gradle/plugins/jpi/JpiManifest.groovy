@@ -24,8 +24,8 @@ import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.Dependency
 import org.gradle.api.file.FileCollection
 import org.gradle.api.plugins.JavaPluginConvention
+import org.jenkinsci.gradle.plugins.jpi.internal.VersionCalculator
 
-import java.text.SimpleDateFormat
 import java.util.jar.Attributes
 import java.util.jar.Manifest
 
@@ -79,14 +79,7 @@ class JpiManifest extends Manifest {
         }
         mainAttributes.putValue('Extension-Name', conv.shortName)
 
-        def version = project.version
-        if (version == Project.DEFAULT_VERSION) {
-            version = '1.0-SNAPSHOT'
-        }
-        if (version.toString().endsWith('-SNAPSHOT')) {
-            String dt = new SimpleDateFormat('MM/dd/yyyy HH:mm', Locale.default).format(new Date())
-            version += " (private-$dt-${System.getProperty('user.name')})"
-        }
+        def version = new VersionCalculator().calculate(project.version.toString())
         mainAttributes.putValue('Plugin-Version', version.toString())
 
         mainAttributes.putValue('Jenkins-Version', conv.coreVersion)
