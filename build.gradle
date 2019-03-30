@@ -85,6 +85,12 @@ signing {
     sign publishing.publications.pluginMaven
 }
 
+tasks.withType(Test).configureEach {
+    testLogging {
+        exceptionFormat = 'full'
+    }
+}
+
 codenarc {
     toolVersion = '1.1'
     configFile = file('config/codenarc/rules.groovy')
