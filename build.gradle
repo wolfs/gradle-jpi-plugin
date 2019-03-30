@@ -7,12 +7,6 @@ plugins {
     id 'java-gradle-plugin'
 }
 
-ext.ciBuild = 'JENKINS_URL' in System.getenv()
-
-if (ciBuild) {
-    println 'Running a CI build'
-}
-
 repositories {
     // using JCenter for dependency resolution is recommended, see https://plugins.gradle.org/docs/publish-plugin
     jcenter()
@@ -98,10 +92,6 @@ codenarc {
 
 codenarcTest {
     configFile = file('config/codenarc/rules-test.groovy')
-}
-
-test {
-    ignoreFailures = ciBuild
 }
 
 group = 'org.jenkins-ci.tools'
