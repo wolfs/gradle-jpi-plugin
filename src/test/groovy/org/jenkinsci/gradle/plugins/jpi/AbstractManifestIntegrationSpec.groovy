@@ -1,7 +1,6 @@
 package org.jenkinsci.gradle.plugins.jpi
 
 import groovy.transform.CompileStatic
-import org.apache.commons.text.RandomStringGenerator
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.GradleRunner
 import org.gradle.testkit.runner.TaskOutcome
@@ -15,8 +14,8 @@ import java.util.jar.JarInputStream
 abstract class AbstractManifestIntegrationSpec extends Specification {
     @Rule
     protected final TemporaryFolder projectDir = new TemporaryFolder()
-    protected final String projectName = generateName()
-    protected final String projectVersion = generateVersion()
+    protected final String projectName = TestDataGenerator.generateName()
+    protected final String projectVersion = TestDataGenerator.generateVersion()
     protected File settings
     protected File build
 
@@ -435,23 +434,5 @@ abstract class AbstractManifestIntegrationSpec extends Specification {
                 .manifest
                 .mainAttributes
                 .collectEntries { [(it.key.toString()): it.value.toString()] } as Map<String, String>
-    }
-
-    @CompileStatic
-    static String generateName() {
-        char[][] range = ['az'.toCharArray()]
-        new RandomStringGenerator.Builder()
-                .withinRange(range)
-                .build()
-                .generate(5, 20)
-    }
-
-    @CompileStatic
-    static String generateVersion() {
-        char[][] range = ['09'.toCharArray()]
-        def generator = new RandomStringGenerator.Builder()
-                .withinRange(range)
-                .build()
-        "${generator.generate(1)}.${generator.generate(1, 5)}"
     }
 }

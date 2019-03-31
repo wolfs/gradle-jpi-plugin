@@ -7,8 +7,15 @@
     it was from, and did not conflict resolve correctly. ISO8601 timestamps solve all
     three issues.
   * `jenkinsTest` dependencies now have jars added to `testImplementation` instead of
-    `testCompile`. `testCompile` has been deprecated since Gradle 4.7 was released on
-    2018-04-18.
+    `testCompile`. `testCompile` has been deprecated since Gradle 4.7 (released
+    2018-04-18).
+  * Copy dependencies to desired configurations by using [`Configuration#withDependencies`](https://docs.gradle.org/5.3.1/javadoc/org/gradle/api/artifacts/Configuration.html#withDependencies-org.gradle.api.Action-)
+    instead of checking the hierarchy and state of configuration resolution before
+    copying. The previous way ended up making the final result dependent on the order
+    configurations were resolved in, which wasn't guaranteed by Gradle. This feature
+    has been present since Gradle 4.4 (released 2017-12-06).
+  * Include a reason on the copied jar dependencies, using the [`because`](https://docs.gradle.org/4.6/release-notes.html#allow-declared-reasons-for-dependency-and-resolution-rules)
+    api, present since Gradle 4.6 (released 2018-02-28).
   * updated to Gradle 5.3.1
 
 ## 0.29.0 (2019-01-30)

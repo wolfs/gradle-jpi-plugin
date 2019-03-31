@@ -22,7 +22,8 @@ import org.gradle.api.Task
 import org.gradle.api.XmlProvider
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.ConfigurationContainer
-import org.gradle.api.artifacts.ResolvableDependencies
+import org.gradle.api.artifacts.Dependency
+import org.gradle.api.artifacts.ResolvedArtifact
 import org.gradle.api.execution.TaskExecutionGraph
 import org.gradle.api.plugins.BasePlugin
 import org.gradle.api.plugins.JavaPlugin
@@ -39,7 +40,6 @@ import org.gradle.api.tasks.compile.GroovyCompile
 import org.gradle.api.tasks.compile.JavaCompile
 import org.gradle.api.tasks.testing.Test
 
-import static org.gradle.api.artifacts.Configuration.State.UNRESOLVED
 import static org.gradle.api.logging.LogLevel.INFO
 import static org.gradle.api.plugins.JavaPlugin.TEST_IMPLEMENTATION_CONFIGURATION_NAME
 import static org.gradle.api.plugins.WarPlugin.PROVIDED_COMPILE_CONFIGURATION_NAME
@@ -413,14 +413,17 @@ class JpiPlugin implements Plugin<Project> {
         Configuration fromConfiguration = configurations.getByName(from)
         Configuration toConfiguration = configurations.getByName(to)
 
-        project.configurations.each { Configuration c ->
-            c.incoming.beforeResolve { ResolvableDependencies resolvableDependencies ->
-                if (c.hierarchy.contains(toConfiguration) && fromConfiguration.state == UNRESOLVED) {
-                    fromConfiguration.resolvedConfiguration.resolvedArtifacts
-                            .findAll { it.type == 'hpi' || it.type == 'jpi' }
-                            .each { project.dependencies.add(to, "${it.moduleVersion.id}@jar") }
-                }
-            }
+        toConfiguration.withDependencies { deps ->
+            fromConfiguration.resolvedConfiguration.resolvedArtifacts
+                    .findAll { it.type == 'hpi' || it.type == 'jpi' }
+                    .collect { toDependency(project, it, from) }
+                    .each { deps.add(it) }
+        }
+    }
+
+    private static Dependency toDependency(Project project, ResolvedArtifact it, String from) {
+        project.dependencies.create("${it.moduleVersion.id}@jar") { Dependency d ->
+            d.because "JpiPlugin added jar for compilation support (plugin present on $from)"
         }
     }
 }

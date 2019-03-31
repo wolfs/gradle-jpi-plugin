@@ -6,7 +6,6 @@ import org.gradle.api.UnknownDomainObjectException
 import org.gradle.api.artifacts.repositories.MavenArtifactRepository
 import org.gradle.api.internal.project.ProjectInternal
 import org.gradle.api.plugins.BasePlugin
-import org.gradle.api.plugins.JavaPlugin
 import org.gradle.api.plugins.JavaPluginConvention
 import org.gradle.api.plugins.WarPlugin
 import org.gradle.api.publish.PublishingExtension
@@ -188,31 +187,6 @@ class JpiPluginSpec extends Specification {
         project.repositories.size() == 0
     }
 
-    def 'testCompileClasspath configuration contains plugin JAR dependencies'() {
-        setup:
-        Project project = ProjectBuilder.builder().build()
-
-        when:
-        project.with {
-            apply plugin: 'jpi'
-            jenkinsPlugin {
-                coreVersion = '1.554.2'
-            }
-        }
-        (project as ProjectInternal).evaluate()
-        project.configurations.getByName(JavaPlugin.COMPILE_CLASSPATH_CONFIGURATION_NAME).resolve()
-
-        then:
-        def dependencies = collectDependencies(project, 'testCompileClasspath')
-        'org.jenkins-ci.main:maven-plugin:2.1@jar' in dependencies
-        'org.jenkins-ci.plugins:ant:1.2@jar' in dependencies
-        'org.jenkins-ci.plugins:antisamy-markup-formatter:1.0@jar' in dependencies
-        'org.jenkins-ci.plugins:javadoc:1.0@jar' in dependencies
-        'org.jenkins-ci.plugins:mailer:1.8@jar' in dependencies
-        'org.jenkins-ci.plugins:matrix-auth:1.0.2@jar' in dependencies
-        'org.jenkins-ci.plugins:subversion:1.45@jar' in dependencies
-    }
-
     def 'tasks are wired to lifecycle'() {
         setup:
         Project project = ProjectBuilder.builder().build()
@@ -225,11 +199,5 @@ class JpiPluginSpec extends Specification {
 
         then:
         project.tasks.jpi.dependsOn.contains(project.tasks.war)
-    }
-
-    private static List<String> collectDependencies(Project project, String configuration) {
-        project.configurations.getByName(configuration).resolvedConfiguration.resolvedArtifacts.collect {
-            "${it.moduleVersion.id}@${it.extension}".toString()
-        }
     }
 }
