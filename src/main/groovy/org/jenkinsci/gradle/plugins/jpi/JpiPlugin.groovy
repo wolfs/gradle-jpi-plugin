@@ -41,7 +41,7 @@ import org.gradle.api.tasks.testing.Test
 
 import static org.gradle.api.artifacts.Configuration.State.UNRESOLVED
 import static org.gradle.api.logging.LogLevel.INFO
-import static org.gradle.api.plugins.JavaPlugin.TEST_COMPILE_CONFIGURATION_NAME
+import static org.gradle.api.plugins.JavaPlugin.TEST_IMPLEMENTATION_CONFIGURATION_NAME
 import static org.gradle.api.plugins.WarPlugin.PROVIDED_COMPILE_CONFIGURATION_NAME
 import static org.gradle.api.plugins.WarPlugin.PROVIDED_RUNTIME_CONFIGURATION_NAME
 import static org.gradle.api.tasks.SourceSet.MAIN_SOURCE_SET_NAME
@@ -317,7 +317,7 @@ class JpiPlugin implements Plugin<Project> {
         project.configurations.getByName(PROVIDED_COMPILE_CONFIGURATION_NAME).extendsFrom(core)
         project.configurations.getByName(PROVIDED_COMPILE_CONFIGURATION_NAME).extendsFrom(plugins)
         project.configurations.getByName(PROVIDED_COMPILE_CONFIGURATION_NAME).extendsFrom(optionalPlugins)
-        project.configurations.getByName(TEST_COMPILE_CONFIGURATION_NAME).extendsFrom(test)
+        project.configurations.getByName(TEST_IMPLEMENTATION_CONFIGURATION_NAME).extendsFrom(test)
 
         Configuration warDependencies = project.configurations.create(WAR_DEPENDENCY_CONFIGURATION_NAME)
         warDependencies.visible = false
@@ -404,7 +404,7 @@ class JpiPlugin implements Plugin<Project> {
         resolvePluginDependencies(
                 project,
                 JENKINS_TEST_DEPENDENCY_CONFIGURATION_NAME,
-                TEST_COMPILE_CONFIGURATION_NAME
+                TEST_IMPLEMENTATION_CONFIGURATION_NAME
         )
     }
 

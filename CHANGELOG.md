@@ -1,12 +1,15 @@
 ## 0.30.0 (unreleased)
 
-  * updated to Gradle 5.3
   * `-SNAPSHOT` plugin version suffix format changed
     from `1.0-SNAPSHOT (private-01/31/1997 11:35-auser)`
     to `1.0-SNAPSHOT (private-1997-01-31T11:35:00Z-auser)`.
     Previously the format was timezone-dependent, had no indication of which timezone
     it was from, and did not conflict resolve correctly. ISO8601 timestamps solve all
     three issues.
+  * `jenkinsTest` dependencies now have jars added to `testImplementation` instead of
+    `testCompile`. `testCompile` has been deprecated since Gradle 4.7 was released on
+    2018-04-18.
+  * updated to Gradle 5.3.1
 
 ## 0.29.0 (2019-01-30)
 

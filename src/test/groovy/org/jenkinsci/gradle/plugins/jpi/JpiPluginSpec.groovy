@@ -188,7 +188,7 @@ class JpiPluginSpec extends Specification {
         project.repositories.size() == 0
     }
 
-    def 'testCompile configuration contains plugin JAR dependencies'() {
+    def 'testCompileClasspath configuration contains plugin JAR dependencies'() {
         setup:
         Project project = ProjectBuilder.builder().build()
 
@@ -203,7 +203,7 @@ class JpiPluginSpec extends Specification {
         project.configurations.getByName(JavaPlugin.COMPILE_CLASSPATH_CONFIGURATION_NAME).resolve()
 
         then:
-        def dependencies = collectDependencies(project, 'testCompile')
+        def dependencies = collectDependencies(project, 'testCompileClasspath')
         'org.jenkins-ci.main:maven-plugin:2.1@jar' in dependencies
         'org.jenkins-ci.plugins:ant:1.2@jar' in dependencies
         'org.jenkins-ci.plugins:antisamy-markup-formatter:1.0@jar' in dependencies
