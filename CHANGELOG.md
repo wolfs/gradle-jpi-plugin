@@ -1,4 +1,4 @@
-## 0.30.0 (unreleased)
+## 0.30.0 (2019-04-01)
 
   * `-SNAPSHOT` plugin version suffix format changed
     from `1.0-SNAPSHOT (private-01/31/1997 11:35-auser)`
