@@ -1,31 +1,23 @@
 package org.jenkinsci.gradle.plugins.jpi
 
-import org.gradle.testkit.runner.GradleRunner
 import org.gradle.testkit.runner.TaskOutcome
-import org.junit.Rule
-import org.junit.rules.TemporaryFolder
-import spock.lang.Specification
 
-class JpiLocalizerTaskIntegrationSpec extends Specification {
-    @Rule
-    final TemporaryFolder project = new TemporaryFolder()
+class JpiLocalizerTaskIntegrationSpec extends IntegrationSpec {
 
     def 'single-module project should be able to run LocalizerTask'() {
         given:
-        project.newFile('build.gradle') << "plugins { id 'org.jenkins-ci.jpi' }"
-        project.newFolder('src', 'main', 'resources')
-        project.newFile('src/main/resources/Messages.properties') << 'key1=value1\nkey2=value2'
+        projectDir.newFile('build.gradle') << "plugins { id 'org.jenkins-ci.jpi' }"
+        projectDir.newFolder('src', 'main', 'resources')
+        projectDir.newFile('src/main/resources/Messages.properties') << 'key1=value1\nkey2=value2'
 
         when:
-        def result = GradleRunner.create()
-                .withProjectDir(project.root)
-                .withPluginClasspath()
+        def result = gradleRunner()
                 .withArguments('localizer')
                 .build()
 
         then:
         result.task(':localizer').outcome == TaskOutcome.SUCCESS
-        def generatedJavaFile = new File(project.root, 'build/generated-src/localizer/Messages.java')
+        def generatedJavaFile = new File(projectDir.root, 'build/generated-src/localizer/Messages.java')
         generatedJavaFile.exists()
         generatedJavaFile.text.contains('public static String key1()')
         generatedJavaFile.text.contains('public static String key2()')
@@ -33,22 +25,20 @@ class JpiLocalizerTaskIntegrationSpec extends Specification {
 
     def 'multi-module project should be able to run LocalizerTask'() {
         given:
-        project.newFile('build.gradle') << ''
-        project.newFile('settings.gradle') << 'include ":plugin"'
-        project.newFolder('plugin', 'src', 'main', 'resources')
-        project.newFile('plugin/build.gradle') << "plugins { id 'org.jenkins-ci.jpi' }"
-        project.newFile('plugin/src/main/resources/Messages.properties') << 'key3=value3\nkey4=value4'
+        projectDir.newFile('build.gradle') << ''
+        projectDir.newFile('settings.gradle') << 'include ":plugin"'
+        projectDir.newFolder('plugin', 'src', 'main', 'resources')
+        projectDir.newFile('plugin/build.gradle') << "plugins { id 'org.jenkins-ci.jpi' }"
+        projectDir.newFile('plugin/src/main/resources/Messages.properties') << 'key3=value3\nkey4=value4'
 
         when:
-        def result = GradleRunner.create()
-                .withProjectDir(project.root)
-                .withPluginClasspath()
+        def result = gradleRunner()
                 .withArguments(':plugin:localizer')
                 .build()
 
         then:
         result.task(':plugin:localizer').outcome == TaskOutcome.SUCCESS
-        def generatedJavaFile = new File(project.root, 'plugin/build/generated-src/localizer/Messages.java')
+        def generatedJavaFile = new File(projectDir.root, 'plugin/build/generated-src/localizer/Messages.java')
         generatedJavaFile.exists()
         generatedJavaFile.text.contains('public static String key3()')
         generatedJavaFile.text.contains('public static String key4()')

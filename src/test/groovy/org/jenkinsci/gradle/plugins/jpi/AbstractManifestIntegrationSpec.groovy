@@ -2,18 +2,12 @@ package org.jenkinsci.gradle.plugins.jpi
 
 import groovy.transform.CompileStatic
 import org.gradle.testkit.runner.BuildResult
-import org.gradle.testkit.runner.GradleRunner
 import org.gradle.testkit.runner.TaskOutcome
-import org.junit.Rule
-import org.junit.rules.TemporaryFolder
-import spock.lang.Specification
 import spock.lang.Unroll
 
 import java.util.jar.JarInputStream
 
-abstract class AbstractManifestIntegrationSpec extends Specification {
-    @Rule
-    protected final TemporaryFolder projectDir = new TemporaryFolder()
+abstract class AbstractManifestIntegrationSpec extends IntegrationSpec {
     protected final String projectName = TestDataGenerator.generateName()
     protected final String projectVersion = TestDataGenerator.generateVersion()
     protected File settings
@@ -411,9 +405,7 @@ abstract class AbstractManifestIntegrationSpec extends Specification {
         if (overrideVersion) {
             args.add('-Pversion=' + overrideVersion)
         }
-        GradleRunner.create()
-                .withPluginClasspath()
-                .withProjectDir(projectDir.root)
+        gradleRunner()
                 .withArguments(args)
                 .build()
     }

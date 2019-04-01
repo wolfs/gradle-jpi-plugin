@@ -1,15 +1,9 @@
 package org.jenkinsci.gradle.plugins.jpi
 
 import groovy.json.JsonSlurper
-import org.gradle.testkit.runner.GradleRunner
 import org.gradle.testkit.runner.TaskOutcome
-import org.junit.Rule
-import org.junit.rules.TemporaryFolder
-import spock.lang.Specification
 
-class AddedDependenciesIntegrationSpec extends Specification {
-    @Rule
-    private final TemporaryFolder projectDir = new TemporaryFolder()
+class AddedDependenciesIntegrationSpec extends IntegrationSpec {
     private final String projectName = TestDataGenerator.generateName()
     private File settings
     private File build
@@ -36,9 +30,7 @@ class AddedDependenciesIntegrationSpec extends Specification {
             '''.stripIndent()
 
         when:
-        def result = GradleRunner.create()
-                .withProjectDir(projectDir.root)
-                .withPluginClasspath()
+        def result = gradleRunner()
                 .withArguments('processTestResources', '--stacktrace')
                 .build()
 
@@ -82,9 +74,7 @@ class AddedDependenciesIntegrationSpec extends Specification {
             '''.stripIndent()
 
         when:
-        GradleRunner.create()
-                .withProjectDir(projectDir.root)
-                .withPluginClasspath()
+        gradleRunner()
                 .withArguments('writeAllResolvedDependencies')
                 .build()
         def resolutionJson = new File(projectDir.root, 'build/resolved-dependencies.json')

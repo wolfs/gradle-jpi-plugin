@@ -1,15 +1,10 @@
 package org.jenkinsci.gradle.plugins.jpi
 
-import org.gradle.testkit.runner.GradleRunner
-import org.junit.Rule
 import org.junit.rules.TemporaryFolder
 import org.xmlunit.builder.DiffBuilder
 import org.xmlunit.builder.Input
-import spock.lang.Specification
 
-class JpiPomCustomizerIntegrationSpec extends Specification {
-    @Rule
-    private final TemporaryFolder projectDir = new TemporaryFolder()
+class JpiPomCustomizerIntegrationSpec extends IntegrationSpec {
     private File settings
     private File build
 
@@ -33,7 +28,7 @@ class JpiPomCustomizerIntegrationSpec extends Specification {
             """.stripIndent()
 
         when:
-        generatePomIn(projectDir)
+        generatePom()
 
         then:
         compareXml('minimal-pom.xml', actualPomIn(projectDir))
@@ -72,7 +67,7 @@ class JpiPomCustomizerIntegrationSpec extends Specification {
             """.stripIndent()
 
         when:
-        generatePomIn(projectDir)
+        generatePom()
 
         then:
         compareXml('complex-pom.xml', actualPomIn(projectDir))
@@ -88,7 +83,7 @@ class JpiPomCustomizerIntegrationSpec extends Specification {
             """.stripIndent()
 
         when:
-        generatePomIn(projectDir)
+        generatePom()
 
         then:
         compareXml('bitbucket-pom.xml', actualPomIn(projectDir))
@@ -106,7 +101,7 @@ class JpiPomCustomizerIntegrationSpec extends Specification {
             """.stripIndent()
 
         when:
-        generatePomIn(projectDir)
+        generatePom()
 
         then:
         compareXml('minimal-pom.xml', actualPomIn(projectDir))
@@ -124,7 +119,7 @@ class JpiPomCustomizerIntegrationSpec extends Specification {
             """.stripIndent()
 
         when:
-        generatePomIn(projectDir)
+        generatePom()
 
         then:
         compareXml('minimal-pom.xml', actualPomIn(projectDir))
@@ -142,7 +137,7 @@ class JpiPomCustomizerIntegrationSpec extends Specification {
             """.stripIndent()
 
         when:
-        generatePomIn(projectDir)
+        generatePom()
 
         then:
         compareXml('plugin-dependencies-pom.xml', actualPomIn(projectDir))
@@ -160,7 +155,7 @@ class JpiPomCustomizerIntegrationSpec extends Specification {
             """.stripIndent()
 
         when:
-        generatePomIn(projectDir)
+        generatePom()
 
         then:
         compareXml('optional-plugin-dependencies-pom.xml', actualPomIn(projectDir))
@@ -178,7 +173,7 @@ class JpiPomCustomizerIntegrationSpec extends Specification {
             """.stripIndent()
 
         when:
-        generatePomIn(projectDir)
+        generatePom()
 
         then:
         compareXml('compile-dependencies-pom.xml', actualPomIn(projectDir))
@@ -198,7 +193,7 @@ class JpiPomCustomizerIntegrationSpec extends Specification {
             """.stripIndent()
 
         when:
-        generatePomIn(projectDir)
+        generatePom()
 
         then:
         compareXml('compile-dependencies-with-excludes-pom.xml', actualPomIn(projectDir))
@@ -213,7 +208,7 @@ class JpiPomCustomizerIntegrationSpec extends Specification {
             """.stripIndent()
 
         when:
-        generatePomIn(projectDir)
+        generatePom()
 
         then:
         compareXml('updated-findbugs-pom.xml', actualPomIn(projectDir))
@@ -228,7 +223,7 @@ class JpiPomCustomizerIntegrationSpec extends Specification {
             """.stripIndent()
 
         when:
-        generatePomIn(projectDir)
+        generatePom()
 
         then:
         compareXml('updated-servlet-api-pom.xml', actualPomIn(projectDir))
@@ -253,10 +248,8 @@ class JpiPomCustomizerIntegrationSpec extends Specification {
         buffer.toString()
     }
 
-    static void generatePomIn(TemporaryFolder projectDir) {
-        GradleRunner.create()
-                .withPluginClasspath()
-                .withProjectDir(projectDir.root)
+    void generatePom() {
+        gradleRunner()
                 .withArguments('generatePomFileForMavenJpiPublication')
                 .build()
     }

@@ -85,6 +85,22 @@ signing {
     sign publishing.publications.pluginMaven
 }
 
+tasks.addRule("Pattern: testGradle<ID>") { String taskName ->
+    tasks.register(taskName, Test) { Test t ->
+        def gradleVersion = taskName - 'testGradle'
+        t.systemProperty 'gradle.under.test', gradleVersion
+        t.useJUnit { JUnitOptions o ->
+            o.includeCategories('org.jenkinsci.gradle.plugins.jpi.UsesGradleTestKit')
+        }
+        t.onlyIf {
+            gradleVersion.startsWith('4') && System.getProperty('java.specification.version') == '1.8' ||
+                    gradleVersion.startsWith('5')
+        }
+    }
+}
+
+check.dependsOn(['4.10.3', '5.0', '5.1.1', '5.2.1'].collect { tasks.named("testGradle$it") })
+
 tasks.withType(Test).configureEach {
     testLogging {
         exceptionFormat = 'full'
