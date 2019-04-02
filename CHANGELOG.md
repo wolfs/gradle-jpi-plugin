@@ -1,4 +1,4 @@
-## 0.31.0 (unreleased)
+## 0.31.0 (2019-04-01)
 
   * Use [Gradle DSL for POM customization](https://docs.gradle.org/4.8/release-notes.html#customizing-the-generated-pom)
     to allow multiple customizations to co-exist. For example, if you have multiple
