@@ -86,6 +86,7 @@ signing {
 }
 
 tasks.addRule("Pattern: testGradle<ID>") { String taskName ->
+    if (!taskName.startsWith('testGradle')) return
     tasks.register(taskName, Test) { Test t ->
         def gradleVersion = taskName - 'testGradle'
         t.systemProperty 'gradle.under.test', gradleVersion
