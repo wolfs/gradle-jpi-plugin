@@ -34,6 +34,48 @@ class JpiPomCustomizerIntegrationSpec extends IntegrationSpec {
         compareXml('minimal-pom.xml', actualPomIn(projectDir))
     }
 
+    def 'minimal POM with other publication logic setting the name'() {
+        setup:
+        build << """\
+            apply plugin: 'maven-publish'
+            jenkinsPlugin {
+                coreVersion = '1.580.1'
+            }
+            publishing.publications.withType(org.gradle.api.publish.maven.MavenPublication) {
+                it.pom {
+                    name = project.name
+                }
+            }
+            """.stripIndent()
+
+        when:
+        generatePom()
+
+        then:
+        compareXml('minimal-pom.xml', actualPomIn(projectDir))
+    }
+
+    def 'POM with other publication logic setting the description'() {
+        setup:
+        build << """\
+            apply plugin: 'maven-publish'
+            jenkinsPlugin {
+                coreVersion = '1.580.1'
+            }
+            description = 'this is my description'
+            publishing.publications.withType(org.gradle.api.publish.maven.MavenPublication) {
+                it.pom {
+                    description = project.description
+                }
+            }
+            """.stripIndent()
+
+        when:
+        generatePom()
+        then:
+        compareXml('minimal-pom-with-description.xml', actualPomIn(projectDir))
+    }
+
     def 'POM with all metadata'() {
         setup:
         build << """\

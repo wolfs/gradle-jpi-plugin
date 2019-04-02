@@ -8,32 +8,8 @@
     <version>unspecified</version>
     <packaging>hpi</packaging>
     <name>test</name>
-    <description>lorem ipsum</description>
-    <url>https://lorem-ipsum.org</url>
-    <licenses>
-        <license>
-            <name>Apache License, Version 2.0</name>
-            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
-            <distribution>repo</distribution>
-            <comments>A business-friendly OSS license</comments>
-        </license>
-    </licenses>
-    <developers>
-        <developer>
-            <id>abayer</id>
-            <name>Andrew Bayer</name>
-            <email>andrew.bayer@gmail.com</email>
-        </developer>
-    </developers>
-    <scm>
-        <connection>scm:git:git://github.com/lorem/ipsum.git</connection>
-        <url>https://github.com/lorem/ipsum</url>
-    </scm>
+    <description>this is my description</description>
     <repositories>
-        <repository>
-            <id>lorem-ipsum</id>
-            <url>https://repo.lorem-ipsum.org/</url>
-        </repository>
         <repository>
             <id>jenkins</id>
             <url>https://repo.jenkins-ci.org/public/</url>

@@ -1,5 +1,12 @@
 ## 0.31.0 (unreleased)
 
+  * Use [Gradle DSL for POM customization](https://docs.gradle.org/4.8/release-notes.html#customizing-the-generated-pom)
+    to allow multiple customizations to co-exist. For example, if you have multiple
+    plugins that set the POM's description from the project description, they work
+    OK together if both using the DSL. This plugin was creating another node, which
+    resulted in duplicate elements. This feature has been available since Gradle 4.8
+    (released 2018-06-04).
+
 ## 0.30.0 (2019-04-01)
 
   * `-SNAPSHOT` plugin version suffix format changed

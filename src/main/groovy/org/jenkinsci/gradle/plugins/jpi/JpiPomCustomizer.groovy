@@ -1,11 +1,20 @@
 package org.jenkinsci.gradle.plugins.jpi
 
+import groovy.transform.CompileStatic
 import org.gradle.api.Project
+import org.gradle.api.XmlProvider
 import org.gradle.api.artifacts.Dependency
 import org.gradle.api.artifacts.DependencySet
 import org.gradle.api.artifacts.ModuleDependency
 import org.gradle.api.artifacts.repositories.MavenArtifactRepository
 import org.gradle.api.plugins.JavaPlugin
+import org.gradle.api.provider.Property
+import org.gradle.api.publish.maven.MavenPom
+import org.gradle.api.publish.maven.MavenPomDeveloper
+import org.gradle.api.publish.maven.MavenPomDeveloperSpec
+import org.gradle.api.publish.maven.MavenPomLicense
+import org.gradle.api.publish.maven.MavenPomLicenseSpec
+import org.gradle.api.publish.maven.MavenPomScm
 
 import static org.gradle.api.artifacts.ArtifactRepositoryContainer.DEFAULT_MAVEN_CENTRAL_REPO_NAME
 import static org.gradle.api.artifacts.ArtifactRepositoryContainer.DEFAULT_MAVEN_LOCAL_REPO_NAME
@@ -34,23 +43,62 @@ class JpiPomCustomizer {
         this.jpiExtension = project.extensions.findByType(JpiExtension)
     }
 
-    void customizePom(Node pom) {
-        pom.appendNode('name', jpiExtension.displayName)
-        if (jpiExtension.url) {
-            pom.appendNode('url', jpiExtension.url)
-        }
-        if (project.description) {
-            pom.appendNode('description', project.description)
-        }
-        if (jpiExtension.gitHubUrl) {
-            pom.append(makeScmNode())
+    @CompileStatic
+    void customizePom(MavenPom pom) {
+        pom.packaging = jpiExtension.fileExtension
+        pom.name.set(jpiExtension.displayName)
+        pom.url.set(jpiExtension.url)
+        pom.description.set(project.description)
+        def github = jpiExtension.gitHubUrl
+        if (github) {
+            pom.scm { MavenPomScm s ->
+                s.url.set(github)
+                if (github =~ /^https:\/\/github\.com/) {
+                    s.connection.set(github.replaceFirst(~/https:/, 'scm:git:git:') + '.git')
+                }
+            }
         }
         if (!jpiExtension.licenses.isEmpty()) {
-            pom.appendNode('licenses', jpiExtension.licenses.collect { JpiLicense l -> makeLicenseNode(l) })
+            pom.licenses { MavenPomLicenseSpec s ->
+                jpiExtension.licenses.each { JpiLicense declared ->
+                    s.license { MavenPomLicense l ->
+                        ['name'        : l.name,
+                         'url'         : l.url,
+                         'distribution': l.distribution,
+                         'comments'    : l.comments,
+                        ].each {
+                            mapExtensionToProperty(declared, it.key, it.value)
+                        }
+                    }
+                }
+            }
         }
         if (!jpiExtension.developers.isEmpty()) {
-            pom.appendNode('developers', jpiExtension.developers.collect { JpiDeveloper d -> makeDeveloperNode(d) })
+            pom.developers { MavenPomDeveloperSpec s ->
+                jpiExtension.developers.each { JpiDeveloper declared ->
+                    s.developer { MavenPomDeveloper d ->
+                        ['id'             : d.id,
+                         'name'           : d.name,
+                         'email'          : d.email,
+                         'url'            : d.url,
+                         'organization'   : d.organization,
+                         'organizationUrl': d.organizationUrl,
+                         'timezone'       : d.timezone,
+                        ].each {
+                            mapExtensionToProperty(declared, it.key, it.value)
+                        }
+                    }
+                }
+            }
         }
+        pom.withXml { XmlProvider xmlProvider -> additionalCustomizations(xmlProvider.asNode()) }
+    }
+
+    private static mapExtensionToProperty(Object from, String property, Property<String> to) {
+        to.set(from.getProperty(property) as String)
+    }
+
+    void additionalCustomizations(Node pom) {
         if (repositories) {
             pom.appendNode('repositories', repositories.collect { makeRepositoryNode(it) })
         }
@@ -120,15 +168,6 @@ class JpiPomCustomizer {
         }
     }
 
-    private Node makeScmNode() {
-        Node scmNode = new Node(null, 'scm')
-        scmNode.appendNode('url', jpiExtension.gitHubUrl)
-        if (jpiExtension.gitHubUrl =~ /^https:\/\/github\.com/) {
-            scmNode.appendNode('connection', jpiExtension.gitHubUrl.replaceFirst(~/https:/, 'scm:git:git:') + '.git')
-        }
-        scmNode
-    }
-
     private List<MavenArtifactRepository> getRepositories() {
         project.repositories.withType(MavenArtifactRepository).findAll {
             !(it.name =~ "${DEFAULT_MAVEN_CENTRAL_REPO_NAME}\\d*" || it.name =~ "${DEFAULT_MAVEN_LOCAL_REPO_NAME}\\d*")
@@ -140,27 +179,5 @@ class JpiPomCustomizer {
         repositoryNode.appendNode('id', repository.name)
         repositoryNode.appendNode('url', repository.url)
         repositoryNode
-    }
-
-    private static Node makeDeveloperNode(JpiDeveloper developer) {
-        Node developerNode = new Node(null, 'developer')
-        JpiDeveloper.LEGAL_FIELDS.each { String key ->
-            def value = developer[key]
-            if (value) {
-                developerNode.appendNode(key, value)
-            }
-        }
-        developerNode
-    }
-
-    private static Node makeLicenseNode(JpiLicense license) {
-        Node licenseNode = new Node(null, 'license')
-        JpiLicense.LEGAL_FIELDS.each { String key ->
-            def value = license[key]
-            if (value) {
-                licenseNode.appendNode(key, value)
-            }
-        }
-        licenseNode
     }
 }
