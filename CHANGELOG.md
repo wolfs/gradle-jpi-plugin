@@ -6,6 +6,7 @@
     OK together if both using the DSL. This plugin was creating another node, which
     resulted in duplicate elements. This feature has been available since Gradle 4.8
     (released 2018-06-04).
+  * Enable publishing gradle metadata
 
 ## 0.30.0 (2019-04-01)
 
