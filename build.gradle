@@ -100,7 +100,7 @@ tasks.addRule("Pattern: testGradle<ID>") { String taskName ->
     }
 }
 
-check.dependsOn(['4.10.3', '5.0', '5.1.1', '5.2.1'].collect { tasks.named("testGradle$it") })
+check.dependsOn(['4.10.3', '5.0', '5.1.1', '5.2.1', '5.3.1'].collect { tasks.named("testGradle$it") })
 
 tasks.withType(Test).configureEach {
     testLogging {
