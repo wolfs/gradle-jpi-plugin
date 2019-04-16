@@ -51,6 +51,6 @@ for (int i = 0; i < platforms.size(); ++i) {
     }
 }
 
-timeout(60) {
+timeout(120) {
     parallel(tasks)
 }
