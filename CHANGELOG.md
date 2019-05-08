@@ -1,5 +1,10 @@
-## 0.32.0 (unreleased)
+## 0.33.0 (unreleased)
 
+## 0.32.0 (2019-05-08)
+
+  * Support publishing POMs with resolved versions when dependencies
+    are declared with dynamic versions - [PR #112](https://github.com/jenkinsci/gradle-jpi-plugin/pull/112)
+  * updated to Gradle 5.4.1
 
 ## 0.31.0 (2019-04-01)
 
