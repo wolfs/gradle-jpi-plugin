@@ -211,7 +211,7 @@ class JpiExtension {
     private File workDir
 
     File getWorkDir() {
-        workDir ?: new File(project.rootDir, 'work')
+        workDir ?: new File(project.projectDir, 'work')
     }
 
     /**
