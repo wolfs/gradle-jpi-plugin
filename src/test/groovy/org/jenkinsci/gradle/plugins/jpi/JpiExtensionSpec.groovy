@@ -114,7 +114,18 @@ class JpiExtensionSpec extends Specification {
         jpiExtension.workDir = null
 
         then:
-        jpiExtension.workDir == new File(project.rootDir, 'work')
+        jpiExtension.workDir == new File(project.projectDir, 'work')
+    }
+
+    def 'work directory defaults to work in child project the extension is applied to if not set'() {
+        when:
+        Project parent = ProjectBuilder.builder().build()
+        Project project = ProjectBuilder.builder().withParent(parent).build()
+        JpiExtension jpiExtension = new JpiExtension(project)
+        jpiExtension.workDir = null
+
+        then:
+        jpiExtension.workDir == new File(project.projectDir, 'work')
     }
 
     def 'work directory is used when set'() {
