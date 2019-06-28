@@ -1,4 +1,9 @@
-## 0.33.0 (unreleased)
+## 0.34.0 (unreleased)
+
+## 0.33.0 (2019-06-28)
+
+  * put work directory inside the project directory instead of at root level [PR #113](https://github.com/jenkinsci/gradle-jpi-plugin/pull/113)
+  * updated to Gradle 5.5
 
 ## 0.32.0 (2019-05-08)
 
