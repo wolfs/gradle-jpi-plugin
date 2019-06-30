@@ -1,9 +1,9 @@
-workflow "Update gradlew" {
+workflow "Daily" {
   on = "schedule(0 0 * * *)"
-  resolves = ["GitHub Action for Maven"]
+  resolves = ["Update Gradle Wrapper"]
 }
 
-action "GitHub Action for Maven" {
+action "Update Gradle Wrapper" {
   uses = "rahulsom/gradle-up@master"
   secrets = ["GITHUB_TOKEN"]
 }
