@@ -292,7 +292,7 @@
   * added `findbugs:annotations:1.0.0` to `jenkinsCore` configuration to avoid compiler warnings
     ([JENKINS-14400](https://issues.jenkins-ci.org/browse/JENKINS-14400))
   * the Maven `connection` and `developerConnection` SCM information is no longer generated into the POM
-  * removed `gitHubSCMConnection` and `gitHubSCMDevConnection` read-only options 
+  * removed `gitHubSCMConnection` and `gitHubSCMDevConnection` read-only options
   * replaced usages of deprecated `groovy` configuration by `compile` configuration
   * added a missing setter for `shortName`
   * added `org.jenkins-ci.jpi` as alternative qualified plugin id for Gradle plugin portal inclusion
@@ -312,7 +312,7 @@
     ([JENKINS-24298](https://issues.jenkins-ci.org/browse/JENKINS-24298))
   * added pluginFirstClassLoader attribute
     ([JENKINS-24808](https://issues.jenkins-ci.org/browse/JENKINS-24808))
-  * removed deprecation warnings by using newer API which has been introduced in Gradle 1.6 
+  * removed deprecation warnings by using newer API which has been introduced in Gradle 1.6
 
 ## 0.5.2 (unreleased)
 

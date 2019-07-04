@@ -23,27 +23,27 @@ jenkinsPlugin {
     // ID of the plugin, defaults to the project name without trailing '-plugin'
     shortName = 'hello-world'
 
-    // human-readable name of plugin                                               
+    // human-readable name of plugin
     displayName = 'Hello World plugin built with Gradle'
 
     // URL for plugin on Jenkins wiki or elsewhere
     url = 'http://wiki.jenkins-ci.org/display/JENKINS/SomePluginPage'
 
     // plugin URL on GitHub, optional
-    gitHubUrl = 'https://github.com/jenkinsci/some-plugin'              
+    gitHubUrl = 'https://github.com/jenkinsci/some-plugin'
 
     // use the plugin class loader before the core class loader, defaults to false
     pluginFirstClassLoader = true
 
-    // optional list of package prefixes that your plugin doesn't want to see from core 
+    // optional list of package prefixes that your plugin doesn't want to see from core
     maskClasses = 'groovy.grape org.apache.commons.codec'
 
     // optional version number from which this plugin release is configuration-compatible
     compatibleSinceVersion = '1.1.0'
-    
+
     // set the directory from which the development server will run, defaults to 'work'
     workDir = file('/tmp/jenkins')
-    
+
     // URL used to deploy the plugin, defaults to the value shown
     // the system property 'jpi.repoUrl' can be used to override this option
     repoUrl = 'https://repo.jenkins-ci.org/releases'
