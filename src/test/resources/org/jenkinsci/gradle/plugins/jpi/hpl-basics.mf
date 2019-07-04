@@ -5,4 +5,3 @@ Short-Name: test
 Plugin-Version: 1.2
 Long-Name: test
 Extension-Name: test
-

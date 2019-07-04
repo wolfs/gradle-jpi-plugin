@@ -35,4 +35,3 @@ Steps
 * Push the two new commit and the tag back to GitHub: `git push && git push --tags`
 * Close all resolved issues in JIRA: https://issues.jenkins-ci.org/secure/Dashboard.jspa?selectPageId=15444
 * Send an email to jenkinsci-dev@googlegroups.com
-
