@@ -1,6 +1,6 @@
 workflow "Daily" {
   resolves = ["Update Gradle Wrapper"]
-  on = "schedule(0 * * * *)"
+  on = "schedule(0 0 * * *)"
 }
 
 action "Update Gradle Wrapper" {
