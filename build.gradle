@@ -29,7 +29,7 @@ dependencies {
         exclude module: 'groovy-all' // use the version that is distributed with Gradle
     }
     testImplementation 'org.xmlunit:xmlunit-core:2.6.3'
-    testImplementation 'org.apache.commons:commons-text:1.7'
+    testImplementation 'org.apache.commons:commons-text:1.8'
 }
 
 publishing {
