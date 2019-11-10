@@ -10,7 +10,7 @@ import org.gradle.util.GradleVersion
 class GenerateTestHpl extends DefaultTask {
     private static final GradleVersion GRADLE_5_0 = GradleVersion.version('5.0')
     @OutputDirectory
-    DirectoryProperty hplDir
+    final DirectoryProperty hplDir
 
     GenerateTestHpl() {
         if (GradleVersion.current() >= GRADLE_5_0) {
