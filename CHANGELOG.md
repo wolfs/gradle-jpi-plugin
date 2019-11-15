@@ -1,4 +1,17 @@
-## 0.34.0 (unreleased)
+## 0.35.0 (unreleased)
+
+## 0.34.0 (2019-11-15)
+
+  * updated to Gradle 6.0
+  * fix property annotation of `TestDependenciesTask#configuration` in response to Gradle warning 
+  * make `GenerateTestHpl#hplDir` property `final` in response to Gradle warning
+  * formatting consistency improvements to in-repo documentation
+  * updated implementation dependency org.jenkins-ci:version-number:1.0 -> 1.1
+  * updated implementation dependency org.jvnet.localizer:maven-localizer-plugin:1.13 -> 1.24
+  * updated test dependency org.apache.commons:commons-text:1.6 -> 1.8
+  * updated test dependency org.spockframework:spock-core:1.2-groovy-2.5 -> 1.3-groovy-2.5
+  * updated test dependency org.xmlunit:xmlunit-core:2.3.0 -> 2.6.3
+  
 
 ## 0.33.0 (2019-06-28)
 
