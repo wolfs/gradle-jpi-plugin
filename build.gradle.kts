@@ -67,6 +67,10 @@ publishing {
                         id.set("daspilker")
                         name.set("Daniel Spilker")
                     }
+                    developer {
+                        id.set("sghill")
+                        name.set("Steve Hill")
+                    }
                 }
             }
         }
