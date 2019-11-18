@@ -97,8 +97,7 @@ class JpiPlugin implements Plugin<Project> {
         gradleProject.plugins.apply(WarPlugin)
         gradleProject.plugins.apply(GroovyPlugin)
 
-        def ext = new JpiExtension(gradleProject)
-        gradleProject.extensions.jenkinsPlugin = ext
+        def ext = gradleProject.extensions.create('jenkinsPlugin', JpiExtension, gradleProject)
 
         def server = gradleProject.tasks.create(ServerTask.TASK_NAME, ServerTask)
         server.description = 'Run Jenkins in place with the plugin being developed'
