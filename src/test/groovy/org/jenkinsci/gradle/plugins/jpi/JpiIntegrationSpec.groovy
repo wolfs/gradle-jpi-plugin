@@ -1,5 +1,6 @@
 package org.jenkinsci.gradle.plugins.jpi
 
+import org.gradle.testkit.runner.TaskOutcome
 import spock.lang.Unroll
 
 class JpiIntegrationSpec extends IntegrationSpec {
@@ -100,5 +101,15 @@ class JpiIntegrationSpec extends IntegrationSpec {
         "shortName 'banana'"          | 'banana'
         "shortName = 'carrot-plugin'" | 'carrot-plugin'
         "shortName 'date'"            | 'date'
+    }
+
+    def 'processTestResources should run resolveTestDependencies'() {
+        when:
+        def result = gradleRunner()
+                .withArguments('processTestResources')
+                .build()
+
+        then:
+        result.task(':resolveTestDependencies').outcome == TaskOutcome.NO_SOURCE
     }
 }

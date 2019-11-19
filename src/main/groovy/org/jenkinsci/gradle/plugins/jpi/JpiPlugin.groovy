@@ -215,7 +215,9 @@ class JpiPlugin implements Plugin<Project> {
         TestDependenciesTask task = project.tasks.create(TestDependenciesTask.TASK_NAME, TestDependenciesTask)
         task.configuration = plugins
 
-        project.tasks.getByName(javaConvention.sourceSets.test.processResourcesTaskName).dependsOn(task)
+        project.tasks.named(javaConvention.sourceSets.test.processResourcesTaskName).configure {
+            it.dependsOn(task)
+        }
     }
 
     private static configureLocalizer(Project project) {
