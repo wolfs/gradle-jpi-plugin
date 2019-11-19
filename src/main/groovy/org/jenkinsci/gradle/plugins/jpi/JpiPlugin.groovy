@@ -33,6 +33,7 @@ import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.api.publish.maven.plugins.MavenPublishPlugin
 import org.gradle.api.tasks.SourceSet
+import org.gradle.api.tasks.TaskProvider
 import org.gradle.api.tasks.bundling.Jar
 import org.gradle.api.tasks.bundling.War
 import org.gradle.api.tasks.compile.GroovyCompile
@@ -158,23 +159,27 @@ class JpiPlugin implements Plugin<Project> {
 
     private static configureManifest(Project project) {
         JavaPluginConvention javaPluginConvention = project.convention.getPlugin(JavaPluginConvention)
-        War war = project.tasks[WarPlugin.WAR_TASK_NAME] as War
-        Jar jar = project.tasks.getByName(JavaPlugin.JAR_TASK_NAME) as Jar
+        TaskProvider<War> warProvider = project.tasks.named(WarPlugin.WAR_TASK_NAME) as TaskProvider<War>
+        TaskProvider<Jar> jarProvider = project.tasks.named(JavaPlugin.JAR_TASK_NAME) as TaskProvider<Jar>
 
-        Task configureManifest = project.task('configureManifest') {
+        Task configureManifest = project.tasks.create('configureManifest') {
             doLast {
                 Map<String, ?> attributes = attributesToMap(new JpiManifest(project).mainAttributes)
-                war.manifest.attributes(attributes)
-                war.inputs.property('manifest', attributes)
-                jar.manifest.attributes(attributes)
-                jar.inputs.property('manifest', attributes)
+                warProvider.configure {
+                    it.manifest.attributes(attributes)
+                    it.inputs.property('manifest', attributes)
+                }
+                jarProvider.configure {
+                    it.manifest.attributes(attributes)
+                    it.inputs.property('manifest', attributes)
+                }
             }
 
             dependsOn(javaPluginConvention.sourceSets.getByName(MAIN_SOURCE_SET_NAME).output)
         }
 
-        war.dependsOn(configureManifest)
-        jar.dependsOn(configureManifest)
+        warProvider.configure { it.dependsOn(configureManifest) }
+        jarProvider.configure { it.dependsOn(configureManifest) }
     }
 
     private static configureJpi(Project project) {

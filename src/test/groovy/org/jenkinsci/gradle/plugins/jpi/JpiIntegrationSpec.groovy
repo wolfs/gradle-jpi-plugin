@@ -112,4 +112,18 @@ class JpiIntegrationSpec extends IntegrationSpec {
         then:
         result.task(':resolveTestDependencies').outcome == TaskOutcome.NO_SOURCE
     }
+
+    @Unroll
+    def '#task should run configureManifest'(String task) {
+        when:
+        def result = gradleRunner()
+                .withArguments(task)
+                .build()
+
+        then:
+        result.task(':configureManifest').outcome == TaskOutcome.SUCCESS
+
+        where:
+        task << ['jar', 'war']
+    }
 }
