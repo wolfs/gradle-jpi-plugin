@@ -1,16 +1,9 @@
 package org.jenkinsci.gradle.plugins.jpi
 
 import groovy.json.JsonSlurper
-import groovy.transform.Canonical
 import org.gradle.testkit.runner.BuildResult
 
 class ConfigureRepositoriesIntegrationSpec extends IntegrationSpec {
-    static final Repo CENTRAL = Repo.from([name: 'MavenRepo',
-                                           uri : 'https://repo.maven.apache.org/maven2/',])
-    static final Repo LOCAL = Repo.from([name: 'MavenLocal',
-                                         uri : "file:${System.getProperty('user.home')}/.m2/repository/",])
-    static final Repo JENKINS = Repo.from([name: 'jenkins',
-                                           uri : 'https://repo.jenkins-ci.org/public/',])
     private final String projectName = TestDataGenerator.generateName()
     private File settings
     private File build
@@ -45,9 +38,9 @@ class ConfigureRepositoriesIntegrationSpec extends IntegrationSpec {
 
         then:
         actual.size == 3
-        actual.contains(CENTRAL)
-        actual.contains(LOCAL)
-        actual.contains(JENKINS)
+        actual.contains('MavenRepo')
+        actual.contains('MavenLocal')
+        actual.contains('jenkins')
     }
 
     def 'adds repositories if enabled'() {
@@ -66,9 +59,9 @@ class ConfigureRepositoriesIntegrationSpec extends IntegrationSpec {
 
         then:
         actual.size == 3
-        actual.contains(CENTRAL)
-        actual.contains(LOCAL)
-        actual.contains(JENKINS)
+        actual.contains('MavenRepo')
+        actual.contains('MavenLocal')
+        actual.contains('jenkins')
     }
 
     def 'does not add repositories if disabled'() {
@@ -89,19 +82,7 @@ class ConfigureRepositoriesIntegrationSpec extends IntegrationSpec {
         actual.isEmpty()
     }
 
-    @Canonical
-    private static class Repo {
-        String name
-        URI uri
-
-        static Repo from(Map<String, String> m) {
-            String uri = m['uri']
-            new Repo(m['name'], URI.create(uri.endsWith('/') ? uri : uri + '/'))
-        }
-    }
-
-    private static List<Repo> deserializeReposFrom(BuildResult result) {
-        new JsonSlurper().parseText(result.output)['repositories']
-                .collect { Map<String, String> m -> Repo.from(m) }
+    private static List<String> deserializeReposFrom(BuildResult result) {
+        new JsonSlurper().parseText(result.output)['repositories']*.name
     }
 }
