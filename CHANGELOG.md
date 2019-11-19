@@ -1,5 +1,9 @@
 ## 0.35.0 (unreleased)
 
+  * migrate JavaCompile and GroovyCompile to configuration avoidance api. Task configuration avoidance was first
+    introduced in Gradle 4.9 (released 2018-07-16)
+  * updated to Gradle 6.0.1
+
 ## 0.34.0 (2019-11-15)
 
   * updated to Gradle 6.0

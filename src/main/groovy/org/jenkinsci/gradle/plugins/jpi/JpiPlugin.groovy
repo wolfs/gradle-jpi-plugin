@@ -122,15 +122,15 @@ class JpiPlugin implements Plugin<Project> {
         }
 
         if (!gradleProject.logger.isEnabled(INFO)) {
-            gradleProject.tasks.withType(JavaCompile) {
+            gradleProject.tasks.withType(JavaCompile).configureEach {
                 options.compilerArgs << '-Asezpoz.quiet=true'
             }
-            gradleProject.tasks.withType(GroovyCompile) {
+            gradleProject.tasks.withType(GroovyCompile).configureEach {
                 options.compilerArgs << '-Asezpoz.quiet=true'
             }
         }
 
-        gradleProject.tasks.withType(GroovyCompile) {
+        gradleProject.tasks.withType(GroovyCompile).configureEach {
             groovyOptions.javaAnnotationProcessing = true
         }
 
