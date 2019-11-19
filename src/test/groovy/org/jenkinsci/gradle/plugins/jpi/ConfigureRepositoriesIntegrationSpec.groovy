@@ -95,7 +95,8 @@ class ConfigureRepositoriesIntegrationSpec extends IntegrationSpec {
         URI uri
 
         static Repo from(Map<String, String> m) {
-            new Repo(m['name'], URI.create(m['uri']))
+            String uri = m['uri']
+            new Repo(m['name'], URI.create(uri.endsWith('/') ? uri : uri + '/'))
         }
     }
 
