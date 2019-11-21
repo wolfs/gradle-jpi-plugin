@@ -198,10 +198,11 @@ class JpiPlugin implements Plugin<Project> {
             }
         }
 
-        Task jpi = project.tasks.create(JPI_TASK_NAME)
-        jpi.dependsOn(war)
-        jpi.description = 'Generates the JPI package'
-        jpi.group = BasePlugin.BUILD_GROUP
+        project.tasks.register(JPI_TASK_NAME) {
+            it.dependsOn(war)
+            it.description = 'Generates the JPI package'
+            it.group = BasePlugin.BUILD_GROUP
+        }
     }
 
     private static configureTestDependencies(Project project) {
