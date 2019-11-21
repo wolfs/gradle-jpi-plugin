@@ -131,13 +131,14 @@ class JpiIntegrationSpec extends IntegrationSpec {
             '''.stripIndent()
         projectDir.newFolder('src', 'test', 'java')
         def actualFile = projectDir.newFile()
+        def normalizedPath = actualFile.absolutePath.replaceAll('\\\\', '/')
         def file = projectDir.newFile('src/test/java/ExampleTest.java')
         file << """
             public class ExampleTest {
                 @org.junit.Test
                 public void shouldHaveSystemPropertySet() throws Exception {
                     java.nio.file.Files.write(
-                        java.nio.file.Paths.get("${actualFile.absolutePath}"),
+                        java.nio.file.Paths.get("${normalizedPath}"),
                         java.util.Collections.singletonList(System.getProperty("buildDirectory")),
                         java.nio.charset.StandardCharsets.UTF_8);
                 }
