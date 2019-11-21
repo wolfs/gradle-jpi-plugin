@@ -257,9 +257,10 @@ class JpiPlugin implements Plugin<Project> {
                 project.configurations[PROVIDED_RUNTIME_CONFIGURATION_NAME],
         ]
 
-        War war = project.tasks[WarPlugin.WAR_TASK_NAME] as War
-        war.webInf.from(task.outputDirectory)
-        war.dependsOn(task)
+        project.tasks.named(WarPlugin.WAR_TASK_NAME).configure {
+            it.webInf.from(task.outputDirectory)
+            it.dependsOn(task)
+        }
     }
 
     private static configureInjectedTest(Project project) {
