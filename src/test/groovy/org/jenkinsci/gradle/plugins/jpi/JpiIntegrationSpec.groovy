@@ -119,6 +119,31 @@ class JpiIntegrationSpec extends IntegrationSpec {
         'war'                  | ':configureManifest'       | TaskOutcome.SUCCESS
         'processTestResources' | ':resolveTestDependencies' | TaskOutcome.NO_SOURCE
         'jpi'                  | ':war'                     | TaskOutcome.SUCCESS
+        'compileTestJava'      | ':insertTest'              | TaskOutcome.SKIPPED
+    }
+
+    @Unroll
+    def 'compileTestJava should run :insertTest as #outcome (configured: #value)'(boolean value, TaskOutcome outcome) {
+        given:
+        build << """
+            jenkinsPlugin {
+                coreVersion = '2.190.2'
+                disabledTestInjection = $value
+            }
+            """.stripIndent()
+
+        when:
+        def result = gradleRunner()
+                .withArguments('compileTestJava')
+                .build()
+
+        then:
+        result.task(':insertTest').outcome == outcome
+
+        where:
+        value | outcome
+        true  | TaskOutcome.SKIPPED
+        false | TaskOutcome.SUCCESS
     }
 
     def 'set buildDirectory system property in test'() {

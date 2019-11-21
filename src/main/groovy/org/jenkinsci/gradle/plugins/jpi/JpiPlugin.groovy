@@ -279,15 +279,16 @@ class JpiPlugin implements Plugin<Project> {
         File root = new File(project.buildDir, 'inject-tests')
         testSourceSet.java.srcDirs += root
 
-        TestInsertionTask testInsertionTask = project.tasks.create(TestInsertionTask.TASK_NAME, TestInsertionTask)
-        testInsertionTask.onlyIf {
-            !jpiExtension.disabledTestInjection
+        def testInsertionTask = project.tasks.register(TestInsertionTask.TASK_NAME, TestInsertionTask) {
+            it.onlyIf { !jpiExtension.disabledTestInjection }
         }
 
-        project.tasks.compileTestJava.dependsOn(testInsertionTask)
+        project.tasks.named('compileTestJava').configure { it.dependsOn(testInsertionTask) }
 
         project.afterEvaluate {
-            testInsertionTask.testSuite = new File(root, "${jpiExtension.injectedTestName}.java")
+            testInsertionTask.configure {
+                it.testSuite = new File(root, "${jpiExtension.injectedTestName}.java")
+            }
         }
     }
 
