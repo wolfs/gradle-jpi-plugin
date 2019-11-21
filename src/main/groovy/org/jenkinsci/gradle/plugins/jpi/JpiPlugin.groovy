@@ -120,9 +120,10 @@ class JpiPlugin implements Plugin<Project> {
             it.classifier = 'sources'
             it.from gradleProject.sourceSets.main.allSource
         }
-        gradleProject.task(JAVADOC_JAR_TASK_NAME, type: Jar, dependsOn: 'javadoc') {
-            classifier = 'javadoc'
-            from gradleProject.javadoc.destinationDir
+        gradleProject.tasks.register(JAVADOC_JAR_TASK_NAME, Jar) {
+            it.dependsOn('javadoc')
+            it.classifier = 'javadoc'
+            it.from gradleProject.javadoc.destinationDir
         }
 
         if (!gradleProject.logger.isEnabled(INFO)) {
