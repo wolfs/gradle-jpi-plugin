@@ -120,4 +120,37 @@ class JpiIntegrationSpec extends IntegrationSpec {
         'processTestResources' | ':resolveTestDependencies' | TaskOutcome.NO_SOURCE
         'jpi'                  | ':war'                     | TaskOutcome.SUCCESS
     }
+
+    def 'set buildDirectory system property in test'() {
+        given:
+        build << '''
+            repositories { mavenCentral() }
+            dependencies {
+                testImplementation 'junit:junit:4.12'
+            }
+            '''.stripIndent()
+        projectDir.newFolder('src', 'test', 'java')
+        def actualFile = projectDir.newFile()
+        def file = projectDir.newFile('src/test/java/ExampleTest.java')
+        file << """
+            public class ExampleTest {
+                @org.junit.Test
+                public void shouldHaveSystemPropertySet() throws Exception {
+                    java.nio.file.Files.write(
+                        java.nio.file.Paths.get("${actualFile.absolutePath}"),
+                        java.util.Collections.singletonList(System.getProperty("buildDirectory")),
+                        java.nio.charset.StandardCharsets.UTF_8);
+                }
+            }
+            """.stripIndent()
+
+        when:
+        gradleRunner()
+                .withArguments('test')
+                .build()
+
+        then:
+        def expected = new File(projectDir.root, 'build').toPath().toRealPath().toString()
+        actualFile.text.trim() == expected
+    }
 }

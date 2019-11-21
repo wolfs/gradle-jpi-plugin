@@ -106,8 +106,9 @@ class JpiPlugin implements Plugin<Project> {
         server.dependsOn(ext.mainSourceTree().runtimeClasspath)
 
         // set build directory for Jenkins test harness, JENKINS-26331
-        Test test = gradleProject.tasks.test as Test
-        test.systemProperty('buildDirectory', gradleProject.buildDir.absolutePath)
+        gradleProject.tasks.withType(Test).named('test').configure {
+            it.systemProperty('buildDirectory', gradleProject.buildDir.absolutePath)
+        }
 
         configureLocalizer(gradleProject)
         configureLicenseInfo(gradleProject)
