@@ -100,10 +100,11 @@ class JpiPlugin implements Plugin<Project> {
 
         def ext = gradleProject.extensions.create('jenkinsPlugin', JpiExtension, gradleProject)
 
-        def server = gradleProject.tasks.create(ServerTask.TASK_NAME, ServerTask)
-        server.description = 'Run Jenkins in place with the plugin being developed'
-        server.group = BasePlugin.BUILD_GROUP // TODO
-        server.dependsOn(ext.mainSourceTree().runtimeClasspath)
+        gradleProject.tasks.register(ServerTask.TASK_NAME, ServerTask) {
+            it.description = 'Run Jenkins in place with the plugin being developed'
+            it.group = BasePlugin.BUILD_GROUP // TODO
+            it.dependsOn(ext.mainSourceTree().runtimeClasspath)
+        }
 
         // set build directory for Jenkins test harness, JENKINS-26331
         gradleProject.tasks.withType(Test).named('test').configure {
