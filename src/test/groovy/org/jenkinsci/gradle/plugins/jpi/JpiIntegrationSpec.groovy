@@ -103,27 +103,21 @@ class JpiIntegrationSpec extends IntegrationSpec {
         "shortName 'date'"            | 'date'
     }
 
-    def 'processTestResources should run resolveTestDependencies'() {
-        when:
-        def result = gradleRunner()
-                .withArguments('processTestResources')
-                .build()
-
-        then:
-        result.task(':resolveTestDependencies').outcome == TaskOutcome.NO_SOURCE
-    }
-
     @Unroll
-    def '#task should run configureManifest'(String task) {
+    def '#task should run #dependency'(String task, String dependency, TaskOutcome outcome) {
         when:
         def result = gradleRunner()
                 .withArguments(task)
                 .build()
 
         then:
-        result.task(':configureManifest').outcome == TaskOutcome.SUCCESS
+        result.task(dependency).outcome == outcome
 
         where:
-        task << ['jar', 'war']
+        task                   | dependency                 | outcome
+        'jar'                  | ':configureManifest'       | TaskOutcome.SUCCESS
+        'war'                  | ':configureManifest'       | TaskOutcome.SUCCESS
+        'processTestResources' | ':resolveTestDependencies' | TaskOutcome.NO_SOURCE
+        'jpi'                  | ':war'                     | TaskOutcome.SUCCESS
     }
 }

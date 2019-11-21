@@ -101,7 +101,6 @@ class JpiPluginSpec extends Specification {
         jpi != null
         jpi.description != null
         jpi.group == BasePlugin.BUILD_GROUP
-        jpi.dependsOn.contains(task)
 
         where:
         name  | extension || archiveName
@@ -185,19 +184,5 @@ class JpiPluginSpec extends Specification {
 
         then:
         project.repositories.size() == 0
-    }
-
-    def 'tasks are wired to lifecycle'() {
-        setup:
-        Project project = ProjectBuilder.builder().build()
-
-        when:
-        project.with {
-            apply plugin: 'jpi'
-        }
-        (project as ProjectInternal).evaluate()
-
-        then:
-        project.tasks.jpi.dependsOn.contains(project.tasks.war)
     }
 }
