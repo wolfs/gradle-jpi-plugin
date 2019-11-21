@@ -115,9 +115,10 @@ class JpiPlugin implements Plugin<Project> {
         configureLicenseInfo(gradleProject)
         configureInjectedTest(gradleProject)
 
-        gradleProject.task(SOURCES_JAR_TASK_NAME, type: Jar, dependsOn: 'classes') {
-            classifier = 'sources'
-            from gradleProject.sourceSets.main.allSource
+        gradleProject.tasks.register(SOURCES_JAR_TASK_NAME, Jar) {
+            it.dependsOn('classes')
+            it.classifier = 'sources'
+            it.from gradleProject.sourceSets.main.allSource
         }
         gradleProject.task(JAVADOC_JAR_TASK_NAME, type: Jar, dependsOn: 'javadoc') {
             classifier = 'javadoc'
