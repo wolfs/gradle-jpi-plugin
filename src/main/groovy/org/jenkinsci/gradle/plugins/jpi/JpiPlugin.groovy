@@ -166,8 +166,8 @@ class JpiPlugin implements Plugin<Project> {
         TaskProvider<War> warProvider = project.tasks.named(WarPlugin.WAR_TASK_NAME) as TaskProvider<War>
         TaskProvider<Jar> jarProvider = project.tasks.named(JavaPlugin.JAR_TASK_NAME) as TaskProvider<Jar>
 
-        Task configureManifest = project.tasks.create('configureManifest') {
-            doLast {
+        def configureManifest = project.tasks.register('configureManifest') {
+            it.doLast {
                 Map<String, ?> attributes = attributesToMap(new JpiManifest(project).mainAttributes)
                 warProvider.configure {
                     it.manifest.attributes(attributes)
@@ -179,7 +179,7 @@ class JpiPlugin implements Plugin<Project> {
                 }
             }
 
-            dependsOn(javaPluginConvention.sourceSets.getByName(MAIN_SOURCE_SET_NAME).output)
+            it.dependsOn(javaPluginConvention.sourceSets.getByName(MAIN_SOURCE_SET_NAME).output)
         }
 
         warProvider.configure { it.dependsOn(configureManifest) }
