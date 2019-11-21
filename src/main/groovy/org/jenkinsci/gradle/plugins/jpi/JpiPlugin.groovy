@@ -223,11 +223,12 @@ class JpiPlugin implements Plugin<Project> {
             }
         }
 
-        TestDependenciesTask task = project.tasks.create(TestDependenciesTask.TASK_NAME, TestDependenciesTask)
-        task.configuration = plugins
+        def testDependenciesTask = project.tasks.register(TestDependenciesTask.TASK_NAME, TestDependenciesTask) {
+            it.configuration = plugins
+        }
 
         project.tasks.named(javaConvention.sourceSets.test.processResourcesTaskName).configure {
-            it.dependsOn(task)
+            it.dependsOn(testDependenciesTask)
         }
     }
 
