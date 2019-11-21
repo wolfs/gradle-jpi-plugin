@@ -238,7 +238,9 @@ class JpiPlugin implements Plugin<Project> {
             jpiExtension.localizerOutputDir
         }
         javaConvention.sourceSets.main.java.srcDir { localizer.destinationDir }
-        project.tasks[javaConvention.sourceSets.main.compileJavaTaskName].dependsOn(localizer)
+        project.tasks.named(javaConvention.sourceSets.main.compileJavaTaskName).configure {
+            it.dependsOn(localizer)
+        }
     }
 
     private static configureLicenseInfo(Project project) {
