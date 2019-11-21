@@ -334,13 +334,13 @@ class JpiPlugin implements Plugin<Project> {
     private static configurePublishing(Project project) {
         JpiExtension jpiExtension = project.extensions.getByType(JpiExtension)
 
-        Task jar = project.tasks.getByName(JavaPlugin.JAR_TASK_NAME)
-        Task sourcesJar = project.tasks.getByName(SOURCES_JAR_TASK_NAME)
-        Task javadocJar = project.tasks.getByName(JAVADOC_JAR_TASK_NAME)
-
         // delay configuration until all settings are available (groupId, shortName, ...)
         project.afterEvaluate {
             if (jpiExtension.configurePublishing) {
+                Task jar = project.tasks.getByName(JavaPlugin.JAR_TASK_NAME)
+                Task sourcesJar = project.tasks.getByName(SOURCES_JAR_TASK_NAME)
+                Task javadocJar = project.tasks.getByName(JAVADOC_JAR_TASK_NAME)
+
                 project.plugins.apply(MavenPublishPlugin)
                 PublishingExtension publishingExtension = project.extensions.getByType(PublishingExtension)
                 publishingExtension.publications {
