@@ -400,9 +400,11 @@ class JpiPlugin implements Plugin<Project> {
         SourceSet testSourceSet = javaConvention.sourceSets.getByName(TEST_SOURCE_SET_NAME)
 
         // generate test hpl manifest for the current plugin, to be used during unit test
-        GenerateTestHpl generateTestHpl = project.tasks.create('generate-test-hpl', GenerateTestHpl)
-        generateTestHpl.hplDir.set(project.layout.buildDirectory.dir('generated-resources/test'))
-        testSourceSet.output.dir(generateTestHpl.hplDir)
+        def outputDir = project.layout.buildDirectory.dir('generated-resources/test')
+        project.tasks.register('generate-test-hpl', GenerateTestHpl) {
+            it.hplDir.set(outputDir)
+        }
+        testSourceSet.output.dir(outputDir)
     }
 
     private static void resolvePluginDependencies(Project project) {
