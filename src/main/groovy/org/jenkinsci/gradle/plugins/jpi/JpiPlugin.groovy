@@ -252,22 +252,23 @@ class JpiPlugin implements Plugin<Project> {
     private static configureLicenseInfo(Project project) {
         JavaPluginConvention javaConvention = project.convention.getPlugin(JavaPluginConvention)
 
-        LicenseTask task = project.tasks.create(LICENSE_TASK_NAME, LicenseTask)
-        task.description = 'Generates license information.'
-        task.group = BasePlugin.BUILD_GROUP
-        task.outputDirectory = new File(project.buildDir, 'licenses')
-        task.configurations = [
-                project.configurations[javaConvention.sourceSets.main.compileConfigurationName],
-                project.configurations[javaConvention.sourceSets.main.runtimeConfigurationName],
-        ]
-        task.providedConfigurations = [
-                project.configurations[PROVIDED_COMPILE_CONFIGURATION_NAME],
-                project.configurations[PROVIDED_RUNTIME_CONFIGURATION_NAME],
-        ]
+        def licenseTask = project.tasks.register(LICENSE_TASK_NAME, LicenseTask) {
+            it.description = 'Generates license information.'
+            it.group = BasePlugin.BUILD_GROUP
+            it.outputDirectory = new File(project.buildDir, 'licenses')
+            it.configurations = [
+                    project.configurations[javaConvention.sourceSets.main.compileConfigurationName],
+                    project.configurations[javaConvention.sourceSets.main.runtimeConfigurationName],
+            ]
+            it.providedConfigurations = [
+                    project.configurations[PROVIDED_COMPILE_CONFIGURATION_NAME],
+                    project.configurations[PROVIDED_RUNTIME_CONFIGURATION_NAME],
+            ]
+        }
 
         project.tasks.named(WarPlugin.WAR_TASK_NAME).configure {
-            it.webInf.from(task.outputDirectory)
-            it.dependsOn(task)
+            it.webInf.from(licenseTask.get().outputDirectory)
+            it.dependsOn(licenseTask)
         }
     }
 
