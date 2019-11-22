@@ -236,14 +236,15 @@ class JpiPlugin implements Plugin<Project> {
         JavaPluginConvention javaConvention = project.convention.getPlugin(JavaPluginConvention)
         JpiExtension jpiExtension = project.extensions.getByType(JpiExtension)
 
-        LocalizerTask localizer = project.tasks.create(LocalizerTask.TASK_NAME, LocalizerTask)
-        localizer.description = 'Generates the Java source for the localizer.'
-        localizer.group = BasePlugin.BUILD_GROUP
-        localizer.sourceDirs = javaConvention.sourceSets.main.resources.srcDirs
-        localizer.conventionMapping.map('destinationDir') {
-            jpiExtension.localizerOutputDir
+        def localizer = project.tasks.register(LocalizerTask.TASK_NAME, LocalizerTask) {
+            it.description = 'Generates the Java source for the localizer.'
+            it.group = BasePlugin.BUILD_GROUP
+            it.sourceDirs = javaConvention.sourceSets.main.resources.srcDirs
+            it.conventionMapping.map('destinationDir') {
+                jpiExtension.localizerOutputDir
+            }
         }
-        javaConvention.sourceSets.main.java.srcDir { localizer.destinationDir }
+        javaConvention.sourceSets.main.java.srcDir { localizer.get().destinationDir }
         project.tasks.named(javaConvention.sourceSets.main.compileJavaTaskName).configure {
             it.dependsOn(localizer)
         }

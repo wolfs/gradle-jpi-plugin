@@ -120,6 +120,7 @@ class JpiIntegrationSpec extends IntegrationSpec {
         'processTestResources' | ':resolveTestDependencies' | TaskOutcome.NO_SOURCE
         'jpi'                  | ':war'                     | TaskOutcome.SUCCESS
         'compileTestJava'      | ':insertTest'              | TaskOutcome.SKIPPED
+        'compileJava'          | ':localizer'               | TaskOutcome.SUCCESS
     }
 
     @Unroll

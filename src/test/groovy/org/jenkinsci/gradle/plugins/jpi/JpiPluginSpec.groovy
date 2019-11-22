@@ -143,7 +143,6 @@ class JpiPluginSpec extends Specification {
         localizerTask != null
         localizerTask.destinationDir == new File(project.rootDir, expectedOutputDir)
         localizerTask.sourceDirs == javaConvention.sourceSets.main.resources.srcDirs
-        project.tasks.compileJava.dependsOn.contains(localizerTask)
         javaConvention.sourceSets.main.java.srcDirs.contains(localizerTask.destinationDir)
 
         where:
