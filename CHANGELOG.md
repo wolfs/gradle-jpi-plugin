@@ -1,13 +1,30 @@
-## 0.35.0 (unreleased)
+## 0.36.0 (unreleased)
 
-  * migrate JavaCompile and GroovyCompile to configuration avoidance api. Task configuration avoidance was first
-    introduced in Gradle 4.9 (released 2018-07-16)
-  * migrate to configuration avoidance api:
-    * manifest configuration
-    * war configuration
-    * processTestResources.dependsOn(resolveTestDependencies) relationship
-    * compileJava.dependsOn(localizer) relationship
-  * only resolve jar, sourceJar, and javadocJar tasks if configurePublishing is enabled
+## 0.35.0 (2019-11-22)
+
+  * configure tasks with lazy #named:
+    * compileJava
+    * processTestResources
+    * jar
+    * javadocJar
+    * sourcesJar
+    * war
+  * configure tasks with lazy #configureEach:
+    * GroovyCompile
+    * JavaCompile
+  * register existing tasks with lazy #register:
+    * configureManifest
+    * generate-test-hpl
+    * generateLicenseInfo
+    * insertTest
+    * javadocJar
+    * jpi
+    * localizer
+    * resolveTestDependencies
+    * server
+    * sourceJar
+  * let Gradle create JpiExtension instead of manually instantiating
+  * use of task avoidance APIs requires at least Gradle 4.9 (released: 2018-07-16)
   * updated to Gradle 6.0.1
 
 ## 0.34.0 (2019-11-15)
