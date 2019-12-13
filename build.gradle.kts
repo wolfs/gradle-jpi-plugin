@@ -110,10 +110,9 @@ tasks.addRule("Pattern: testGradle<ID>") {
     }
 }
 
-val check = tasks.getByPath("check")
 setOf("4.10.3", "5.6.4")
         .map { tasks.named("testGradle$it") }
-        .forEach { check.dependsOn(it) }
+        .forEach { tasks.check { dependsOn(it) } }
 
 tasks.withType<Test>().configureEach {
     testLogging {
