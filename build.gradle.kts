@@ -15,7 +15,7 @@ repositories {
     jcenter()
 }
 
-configure<JavaPluginConvention> {
+java {
     sourceCompatibility = VERSION_1_8
     targetCompatibility = VERSION_1_8
 }
@@ -98,23 +98,21 @@ tasks.addRule("Pattern: testGradle<ID>") {
     val taskName = this
     if (!taskName.startsWith("testGradle")) return@addRule
     tasks.register<Test>(taskName) {
-        val t = this
         val gradleVersion = taskName.substringAfter("testGradle")
-        t.systemProperty("gradle.under.test", gradleVersion)
-        t.useJUnit {
+        systemProperty("gradle.under.test", gradleVersion)
+        useJUnit {
             includeCategories("org.jenkinsci.gradle.plugins.jpi.UsesGradleTestKit")
         }
-        t.onlyIf {
+        onlyIf {
             gradleVersion.startsWith('4') && System.getProperty("java.specification.version") == "1.8" ||
                     gradleVersion.startsWith('5')
         }
     }
 }
 
-val check = tasks.getByPath("check")
 setOf("4.10.3", "5.6.4")
         .map { tasks.named("testGradle$it") }
-        .forEach { check.dependsOn(it) }
+        .forEach { tasks.check { dependsOn(it) } }
 
 tasks.withType<Test>().configureEach {
     testLogging {
@@ -127,10 +125,8 @@ codenarc {
     configFile = file("config/codenarc/rules.groovy")
 }
 
-project.withGroovyBuilder {
-    "codenarcTest" {
-        setProperty("configFile", file("config/codenarc/rules-test.groovy"))
-    }
+tasks.codenarcTest {
+    configFile = file("config/codenarc/rules-test.groovy")
 }
 
 group = "org.jenkins-ci.tools"
