@@ -125,10 +125,8 @@ codenarc {
     configFile = file("config/codenarc/rules.groovy")
 }
 
-project.withGroovyBuilder {
-    "codenarcTest" {
-        setProperty("configFile", file("config/codenarc/rules-test.groovy"))
-    }
+tasks.codenarcTest {
+    configFile = file("config/codenarc/rules-test.groovy")
 }
 
 group = "org.jenkins-ci.tools"
