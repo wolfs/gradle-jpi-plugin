@@ -98,13 +98,12 @@ tasks.addRule("Pattern: testGradle<ID>") {
     val taskName = this
     if (!taskName.startsWith("testGradle")) return@addRule
     tasks.register<Test>(taskName) {
-        val t = this
         val gradleVersion = taskName.substringAfter("testGradle")
-        t.systemProperty("gradle.under.test", gradleVersion)
-        t.useJUnit {
+        systemProperty("gradle.under.test", gradleVersion)
+        useJUnit {
             includeCategories("org.jenkinsci.gradle.plugins.jpi.UsesGradleTestKit")
         }
-        t.onlyIf {
+        onlyIf {
             gradleVersion.startsWith('4') && System.getProperty("java.specification.version") == "1.8" ||
                     gradleVersion.startsWith('5')
         }
