@@ -189,12 +189,15 @@ class JpiPlugin implements Plugin<Project> {
     private static configureJpi(Project project) {
         JpiExtension jpiExtension = project.extensions.getByType(JpiExtension)
 
+        def jar = project.tasks.named(JavaPlugin.JAR_TASK_NAME)
         def war = project.tasks.named(WarPlugin.WAR_TASK_NAME)
         project.afterEvaluate {
             war.configure {
                 it.description = 'Generates the JPI package'
                 it.archiveName = "${jpiExtension.shortName}.${jpiExtension.fileExtension}"
                 it.extension = jpiExtension.fileExtension
+                it.classpath -= project.sourceSets.main.output
+                it.classpath(jar)
             }
         }
 
