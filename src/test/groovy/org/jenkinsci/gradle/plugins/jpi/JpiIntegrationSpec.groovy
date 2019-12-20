@@ -111,6 +111,13 @@ class JpiIntegrationSpec extends IntegrationSpec {
         given:
         def jarPathInHpi = "WEB-INF/lib/${projectName}-${projectVersion}.jar" as String
 
+        build << '''\
+            repositories { mavenCentral() }
+            dependencies {
+                implementation 'junit:junit:4.12'
+            }
+            '''.stripIndent()
+
         projectDir.newFolder('src', 'main', 'java', 'my', 'example')
         projectDir.newFile('src/main/java/my/example/Foo.java') << '''\
             package my.example;
@@ -132,6 +139,7 @@ class JpiIntegrationSpec extends IntegrationSpec {
 
         !hpiEntries.contains('WEB-INF/classes/')
         hpiEntries.contains(jarPathInHpi)
+        hpiEntries.contains('WEB-INF/lib/junit-4.12.jar')
 
         def generatedJar = new File(projectDir.root, "${projectName}-${projectVersion}.jar")
         Files.copy(hpiFile.getInputStream(hpiFile.getEntry(jarPathInHpi)), generatedJar.toPath())
