@@ -39,6 +39,7 @@ import org.gradle.api.tasks.bundling.War
 import org.gradle.api.tasks.compile.GroovyCompile
 import org.gradle.api.tasks.compile.JavaCompile
 import org.gradle.api.tasks.testing.Test
+import org.gradle.util.GradleVersion
 
 import static org.gradle.api.logging.LogLevel.INFO
 import static org.gradle.api.plugins.JavaPlugin.TEST_IMPLEMENTATION_CONFIGURATION_NAME
@@ -194,8 +195,15 @@ class JpiPlugin implements Plugin<Project> {
         project.afterEvaluate {
             war.configure {
                 it.description = 'Generates the JPI package'
-                it.archiveName = "${jpiExtension.shortName}.${jpiExtension.fileExtension}"
-                it.extension = jpiExtension.fileExtension
+                def fileName = "${jpiExtension.shortName}.${jpiExtension.fileExtension}"
+                def extension = jpiExtension.fileExtension
+                if (GradleVersion.current() >= GradleVersion.version('5.1')) {
+                    it.archiveFileName.set(fileName)
+                    it.archiveExtension.set(extension)
+                } else {
+                    it.archiveName = fileName
+                    it.extension = extension
+                }
                 it.classpath -= project.sourceSets.main.output
                 it.classpath(jar)
             }

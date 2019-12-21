@@ -10,7 +10,6 @@ import org.gradle.api.plugins.JavaPluginConvention
 import org.gradle.api.plugins.WarPlugin
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
-import org.gradle.api.tasks.bundling.War
 import org.gradle.testfixtures.ProjectBuilder
 import spock.lang.Specification
 
@@ -91,25 +90,24 @@ class JpiPluginSpec extends Specification {
         (project as ProjectInternal).evaluate()
 
         then:
-        War task = project.tasks[WarPlugin.WAR_TASK_NAME] as War
-        task != null
-        task.description != null
-        task.group == BasePlugin.BUILD_GROUP
-        task.archiveName == archiveName
-        task.extension == extension
-        Task jpi = project.tasks[JpiPlugin.JPI_TASK_NAME]
-        jpi != null
-        jpi.description != null
-        jpi.group == BasePlugin.BUILD_GROUP
+        Task warTask = project.tasks[WarPlugin.WAR_TASK_NAME]
+        warTask != null
+        warTask.description != null
+        warTask.group == BasePlugin.BUILD_GROUP
+
+        Task jpiTask = project.tasks[JpiPlugin.JPI_TASK_NAME]
+        jpiTask != null
+        jpiTask.description != null
+        jpiTask.group == BasePlugin.BUILD_GROUP
 
         where:
-        name  | extension || archiveName
-        ''    | 'jpi'     || 'test.jpi'
-        null  | 'jpi'     || 'test.jpi'
-        'foo' | 'jpi'     || 'foo.jpi'
-        ''    | 'hpi'     || 'test.hpi'
-        null  | 'hpi'     || 'test.hpi'
-        'foo' | 'hpi'     || 'foo.hpi'
+        name  | extension
+        ''    | 'jpi'
+        null  | 'jpi'
+        'foo' | 'jpi'
+        ''    | 'hpi'
+        null  | 'hpi'
+        'foo' | 'hpi'
     }
 
     def 'publishing configuration has been skipped'() {
