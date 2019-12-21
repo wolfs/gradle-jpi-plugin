@@ -3,8 +3,12 @@ package org.jenkinsci.gradle.plugins.jpi
 import org.gradle.testkit.runner.TaskOutcome
 import spock.lang.Unroll
 
+import java.nio.file.Files
+import java.util.zip.ZipFile
+
 class JpiIntegrationSpec extends IntegrationSpec {
     private final String projectName = TestDataGenerator.generateName()
+    private final String projectVersion = TestDataGenerator.generateVersion()
     private File settings
     private File build
 
@@ -101,6 +105,48 @@ class JpiIntegrationSpec extends IntegrationSpec {
         "shortName 'banana'"          | 'banana'
         "shortName = 'carrot-plugin'" | 'carrot-plugin'
         "shortName 'date'"            | 'date'
+    }
+
+    def 'should bundle classes as JAR file into HPI file'() {
+        given:
+        def jarPathInHpi = "WEB-INF/lib/${projectName}-${projectVersion}.jar" as String
+
+        build << '''\
+            repositories { mavenCentral() }
+            dependencies {
+                implementation 'junit:junit:4.12'
+            }
+            '''.stripIndent()
+
+        projectDir.newFolder('src', 'main', 'java', 'my', 'example')
+        projectDir.newFile('src/main/java/my/example/Foo.java') << '''\
+            package my.example;
+
+            class Foo {}
+            '''.stripIndent()
+
+        when:
+        def run = gradleRunner()
+                .withArguments("-Pversion=${projectVersion}", 'jpi')
+                .build()
+
+        then:
+        run.task(':jpi').outcome == TaskOutcome.SUCCESS
+
+        def generatedHpi = new File(projectDir.root, "build/libs/${projectName}.hpi")
+        def hpiFile = new ZipFile(generatedHpi)
+        def hpiEntries = hpiFile.entries()*.name
+
+        !hpiEntries.contains('WEB-INF/classes/')
+        hpiEntries.contains(jarPathInHpi)
+        hpiEntries.contains('WEB-INF/lib/junit-4.12.jar')
+
+        def generatedJar = new File(projectDir.root, "${projectName}-${projectVersion}.jar")
+        Files.copy(hpiFile.getInputStream(hpiFile.getEntry(jarPathInHpi)), generatedJar.toPath())
+        def jarFile = new ZipFile(generatedJar)
+        def jarEntries = jarFile.entries()*.name
+
+        jarEntries.contains('my/example/Foo.class')
     }
 
     @Unroll
