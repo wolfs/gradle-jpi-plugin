@@ -118,12 +118,22 @@ class JpiPlugin implements Plugin<Project> {
 
         gradleProject.tasks.register(SOURCES_JAR_TASK_NAME, Jar) {
             it.dependsOn('classes')
-            it.classifier = 'sources'
+            def classifier = 'sources'
+            if (GradleVersion.current() >= GradleVersion.version('5.1')) {
+                it.archiveClassifier.set(classifier)
+            } else {
+                it.classifier = classifier
+            }
             it.from gradleProject.sourceSets.main.allSource
         }
         gradleProject.tasks.register(JAVADOC_JAR_TASK_NAME, Jar) {
             it.dependsOn('javadoc')
-            it.classifier = 'javadoc'
+            def classifier = 'javadoc'
+            if (GradleVersion.current() >= GradleVersion.version('5.1')) {
+                it.archiveClassifier.set(classifier)
+            } else {
+                it.classifier = classifier
+            }
             it.from gradleProject.javadoc.destinationDir
         }
 
