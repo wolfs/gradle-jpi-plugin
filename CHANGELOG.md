@@ -1,4 +1,9 @@
-## 0.36.0 (unreleased)
+## 0.37.0 (unreleased)
+
+## 0.36.0 (2019-12-22)
+
+  * include plugin classes as a jar [JENKINS-54064](https://issues.jenkins-ci.org/browse/JENKINS-54064) - [PR #123](https://github.com/jenkinsci/gradle-jpi-plugin/pull/123)
+  * fix use of deprecated properties in Gradle 6.0 - [PR #124](https://github.com/jenkinsci/gradle-jpi-plugin/pull/124)
 
 ## 0.35.0 (2019-11-22)
 
