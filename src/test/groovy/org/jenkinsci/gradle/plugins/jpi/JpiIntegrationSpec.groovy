@@ -166,6 +166,7 @@ class JpiIntegrationSpec extends IntegrationSpec {
         'processTestResources' | ':resolveTestDependencies' | TaskOutcome.NO_SOURCE
         'jpi'                  | ':war'                     | TaskOutcome.SUCCESS
         'compileTestJava'      | ':insertTest'              | TaskOutcome.SKIPPED
+        'testClasses'          | ':generate-test-hpl'       | TaskOutcome.SUCCESS
         'compileJava'          | ':localizer'               | TaskOutcome.SUCCESS
     }
 
