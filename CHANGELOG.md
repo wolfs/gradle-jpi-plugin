@@ -1,5 +1,9 @@
 ## 0.37.0 (unreleased)
 
+## 0.36.1 (2020-01-02)
+
+  * fix testClasses task dependency so it runs generate-test-hpl - [PR #125](https://github.com/jenkinsci/gradle-jpi-plugin/pull/125)
+
 ## 0.36.0 (2019-12-22)
 
   * include plugin classes as a jar [JENKINS-54064](https://issues.jenkins-ci.org/browse/JENKINS-54064) - [PR #123](https://github.com/jenkinsci/gradle-jpi-plugin/pull/123)
