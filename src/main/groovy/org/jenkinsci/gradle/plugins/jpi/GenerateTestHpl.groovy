@@ -8,7 +8,10 @@ import org.gradle.api.tasks.TaskAction
 import org.gradle.util.GradleVersion
 
 class GenerateTestHpl extends DefaultTask {
+    public static final String TASK_NAME = 'generate-test-hpl'
+
     private static final GradleVersion GRADLE_5_0 = GradleVersion.version('5.0')
+
     @OutputDirectory
     final DirectoryProperty hplDir
 
