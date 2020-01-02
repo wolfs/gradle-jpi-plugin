@@ -32,6 +32,8 @@ import static org.jenkinsci.gradle.plugins.jpi.JpiPlugin.PLUGINS_DEPENDENCY_CONF
  * @author Kohsuke Kawaguchi
  */
 class ServerTask extends DefaultTask {
+    public static final String TASK_NAME = 'server'
+
     private static final String HTTP_PORT = 'jenkins.httpPort'
 
     @TaskAction
@@ -94,6 +96,4 @@ class ServerTask extends DefaultTask {
             System.setProperty(name, value)
         }
     }
-
-    public static final String TASK_NAME = 'server'
 }
