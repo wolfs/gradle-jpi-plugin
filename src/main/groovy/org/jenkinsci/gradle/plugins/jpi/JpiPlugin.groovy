@@ -422,10 +422,13 @@ class JpiPlugin implements Plugin<Project> {
 
         // generate test hpl manifest for the current plugin, to be used during unit test
         def outputDir = project.layout.buildDirectory.dir('generated-resources/test')
-        project.tasks.register('generate-test-hpl', GenerateTestHpl) {
+        testSourceSet.output.dir(outputDir)
+
+        def generateTestHplTask = project.tasks.register('generate-test-hpl', GenerateTestHpl) {
             it.hplDir.set(outputDir)
         }
-        testSourceSet.output.dir(outputDir)
+
+        project.tasks.named(JavaPlugin.TEST_CLASSES_TASK_NAME).configure { it.dependsOn(generateTestHplTask) }
     }
 
     private static void resolvePluginDependencies(Project project) {
