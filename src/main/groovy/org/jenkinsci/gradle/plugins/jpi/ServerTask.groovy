@@ -42,7 +42,7 @@ class ServerTask extends DefaultTask {
         if (files.isEmpty()) {
             throw new GradleException('No jenkins.war dependency is specified')
         }
-        File war = files.toArray()[0]
+        File war = files.first()
 
         generateHpl()
         copyPluginDependencies()
