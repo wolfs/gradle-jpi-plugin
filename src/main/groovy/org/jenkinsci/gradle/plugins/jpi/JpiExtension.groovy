@@ -52,10 +52,7 @@ class JpiExtension {
     }
 
     private static String trimOffPluginSuffix(String s) {
-        if (s.endsWith('-plugin')) {
-            return s[0..-8]
-        }
-        s
+        s.endsWith('-plugin') ? s[0..-8] : s
     }
 
     private String fileExtension

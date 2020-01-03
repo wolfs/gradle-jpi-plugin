@@ -15,13 +15,12 @@
  */
 package org.jenkinsci.gradle.plugins.jpi
 
-import org.gradle.api.artifacts.ResolvedArtifact
-import org.gradle.util.GFileUtils
-
 import java.util.jar.JarFile
 import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
+import org.gradle.api.artifacts.ResolvedArtifact
 import org.gradle.api.tasks.TaskAction
+import org.gradle.util.GFileUtils
 
 import static org.jenkinsci.gradle.plugins.jpi.JpiPlugin.JENKINS_SERVER_DEPENDENCY_CONFIGURATION_NAME
 import static org.jenkinsci.gradle.plugins.jpi.JpiPlugin.PLUGINS_DEPENDENCY_CONFIGURATION_NAME
@@ -32,6 +31,8 @@ import static org.jenkinsci.gradle.plugins.jpi.JpiPlugin.PLUGINS_DEPENDENCY_CONF
  * @author Kohsuke Kawaguchi
  */
 class ServerTask extends DefaultTask {
+    public static final String TASK_NAME = 'server'
+
     private static final String HTTP_PORT = 'jenkins.httpPort'
 
     @TaskAction
@@ -41,7 +42,7 @@ class ServerTask extends DefaultTask {
         if (files.isEmpty()) {
             throw new GradleException('No jenkins.war dependency is specified')
         }
-        File war = files.toArray()[0]
+        File war = files.first()
 
         generateHpl()
         copyPluginDependencies()
@@ -94,6 +95,4 @@ class ServerTask extends DefaultTask {
             System.setProperty(name, value)
         }
     }
-
-    public static final String TASK_NAME = 'server'
 }
