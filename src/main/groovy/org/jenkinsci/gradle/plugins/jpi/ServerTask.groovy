@@ -15,13 +15,12 @@
  */
 package org.jenkinsci.gradle.plugins.jpi
 
-import org.gradle.api.artifacts.ResolvedArtifact
-import org.gradle.util.GFileUtils
-
 import java.util.jar.JarFile
 import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
+import org.gradle.api.artifacts.ResolvedArtifact
 import org.gradle.api.tasks.TaskAction
+import org.gradle.util.GFileUtils
 
 import static org.jenkinsci.gradle.plugins.jpi.JpiPlugin.JENKINS_SERVER_DEPENDENCY_CONFIGURATION_NAME
 import static org.jenkinsci.gradle.plugins.jpi.JpiPlugin.PLUGINS_DEPENDENCY_CONFIGURATION_NAME
