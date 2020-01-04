@@ -1,5 +1,9 @@
 ## 0.37.0 (unreleased)
 
+## 0.36.2 (2020-01-04)
+
+  * disable module metadata generation because it does not contain all variants - [PR #127](https://github.com/jenkinsci/gradle-jpi-plugin/pull/127)
+
 ## 0.36.1 (2020-01-02)
 
   * fix testClasses task dependency so it runs generate-test-hpl - [PR #125](https://github.com/jenkinsci/gradle-jpi-plugin/pull/125)

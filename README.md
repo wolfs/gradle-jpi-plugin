@@ -9,7 +9,7 @@ Add the following to your build.gradle:
 
 ```groovy
 plugins {
-  id 'org.jenkins-ci.jpi' version '0.36.1'
+  id 'org.jenkins-ci.jpi' version '0.36.2'
 }
 
 group = 'org.jenkins-ci.plugins'
