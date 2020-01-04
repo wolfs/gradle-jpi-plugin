@@ -32,6 +32,7 @@ import org.gradle.api.plugins.GroovyPlugin
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.api.publish.maven.plugins.MavenPublishPlugin
+import org.gradle.api.publish.tasks.GenerateModuleMetadata
 import org.gradle.api.tasks.SourceSet
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.api.tasks.bundling.Jar
@@ -366,6 +367,14 @@ class JpiPlugin implements Plugin<Project> {
     }
 
     private static configurePublishing(Project project) {
+        // Disable publication of Gradle module metadata
+        // Currently, this would produce a module metadata file which can't be consumed by downstream projects,
+        // since it doesn't contain any dependencies and only the hpi variant and not jar variant.
+        // Until this is fixed, Gradle module metadata shouldn't be published.
+        project.tasks.withType(GenerateModuleMetadata) {
+            enabled = false
+        }
+
         JpiExtension jpiExtension = project.extensions.getByType(JpiExtension)
 
         // delay configuration until all settings are available (groupId, shortName, ...)
