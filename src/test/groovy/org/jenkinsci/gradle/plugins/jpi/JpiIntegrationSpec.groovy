@@ -160,15 +160,15 @@ class JpiIntegrationSpec extends IntegrationSpec {
         result.task(dependency).outcome == outcome
 
         where:
-        task                             | dependency                                    | outcome
-        'jar'                            | ':configureManifest'                          | TaskOutcome.SUCCESS
-        'war'                            | ':configureManifest'                          | TaskOutcome.SUCCESS
-        'processTestResources'           | ':resolveTestDependencies'                    | TaskOutcome.NO_SOURCE
-        'jpi'                            | ':war'                                        | TaskOutcome.SUCCESS
-        'compileTestJava'                | ':insertTest'                                 | TaskOutcome.SKIPPED
-        'testClasses'                    | ':generate-test-hpl'                          | TaskOutcome.SUCCESS
-        'compileJava'                    | ':localizer'                                  | TaskOutcome.SUCCESS
-        'generateMetaFileForMavenJpiPub' | ':generateMetadataFileForMavenJpiPublication' | TaskOutcome.SKIPPED
+        task                                         | dependency                                    | outcome
+        'jar'                                        | ':configureManifest'                          | TaskOutcome.SUCCESS
+        'war'                                        | ':configureManifest'                          | TaskOutcome.SUCCESS
+        'processTestResources'                       | ':resolveTestDependencies'                    | TaskOutcome.NO_SOURCE
+        'jpi'                                        | ':war'                                        | TaskOutcome.SUCCESS
+        'compileTestJava'                            | ':insertTest'                                 | TaskOutcome.SKIPPED
+        'testClasses'                                | ':generate-test-hpl'                          | TaskOutcome.SUCCESS
+        'compileJava'                                | ':localizer'                                  | TaskOutcome.SUCCESS
+        'generateMetadataFileForMavenJpiPublication' | ':generateMetadataFileForMavenJpiPublication' | TaskOutcome.SKIPPED
     }
 
     @Unroll
